@@ -52,3 +52,12 @@
 .calendar-form{border-top:1px solid var(--line);padding-top:18px;margin-top:20px}
 .calendar-form .actions{margin-top:16px}
 @media(max-width:600px){.calendar-grid{gap:3px}.calendar-day{min-height:59px;padding:6px 3px;font-size:.78rem}.calendar-day small{font-size:.58rem}.calendar-toolbar{align-items:stretch}.calendar-toolbar label{width:100%}}
+
+/* WEDLY v1.0.7: registru invitați */
+.guest-actions{text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.guest-actions .row-controls{justify-content:flex-end}
+.guest-form{border-top:1px solid var(--line);padding-top:18px;margin-top:22px}
+.guest-form .actions{margin-top:16px}
+.guest-form label{display:block}
+.guest-form input,.guest-form select{max-width:100%}
+@media(max-width:600px){.guest-actions{align-items:stretch}.guest-actions select{max-width:150px}.guest-actions .row-controls{justify-content:flex-end}}
