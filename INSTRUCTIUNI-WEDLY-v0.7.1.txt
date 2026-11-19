@@ -1,0 +1,14 @@
+WEDLY v0.7.1 - pachet incremental de rebranding
+
+Sursa: Everafter-wedly-v07.zip primit in conversatie.
+Acest ZIP contine DOAR fisierele modificate; nu este un proiect Next.js complet.
+
+1. Pastreaza branch-ul wedly-v07 selectat.
+2. Descarca si dezarhiveaza acest pachet local.
+3. Copiaza fisierele din pachet in radacina clonei repository-ului, pastrand folderele app/... .
+4. Verifica git diff; commit pe wedly-v07, NU pe main.
+5. Verifica preview deployment Vercel si testeaza login, dashboard, /team, email de invitatie.
+6. Nu rula SQL nou; nu schimba variabilele secrete.
+7. Abia dupa testele reusite deschide Pull Request spre main.
+
+ATENTIE: Aceasta etapa este doar rebranding vizibil. Textele despre nunti in formulare raman pana la implementarea suportului pentru botezuri, cu schimbari de model de date si UI. Nu se pretinde un audit de securitate.
