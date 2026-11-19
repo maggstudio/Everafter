@@ -73,3 +73,15 @@
 .seating-table .list-row{gap:8px;align-items:center}
 .seating-table select{max-width:155px}
 @media(max-width:720px){.seating-grid{grid-template-columns:1fr}.seating-table{padding:12px}}
+
+/* WEDLY v1.0.9: schița sălii */
+.room-plan{margin:24px 0;padding:18px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.room-plan-heading{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.room-plan-heading h3{margin:0 0 8px}
+.room-canvas{position:relative;width:100%;height:390px;border:2px solid var(--sage);border-radius:16px;background-color:#f8f7f3;background-image:linear-gradient(#e9e8e1 1px,transparent 1px),linear-gradient(90deg,#e9e8e1 1px,transparent 1px);background-size:25px 25px;overflow:hidden;cursor:crosshair;touch-action:manipulation}
+.room-stage{position:absolute;top:0;left:34%;width:32%;padding:8px 4px;background:var(--ivory);border:1px solid var(--gold);border-radius:0 0 12px 12px;text-align:center;font-size:.72rem;color:var(--dark)}
+.room-table{position:absolute;transform:translate(-50%,-50%);width:84px;height:70px;border:2px solid var(--sage);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 3px 10px #00000013;color:var(--dark);padding:5px;overflow:hidden}
+.room-table strong{font-size:.75rem;line-height:1.1;overflow-wrap:anywhere}.room-table small{font-size:.7rem}
+.room-round{border-radius:50%}.room-rect{border-radius:8px}.room-selected{outline:3px solid var(--gold);outline-offset:3px;background:#f8f0dd;z-index:2}
+.room-controls{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-top:14px}.room-controls .row-controls{display:flex;gap:5px}.room-controls .row-controls button{min-width:35px;min-height:35px;border:1px solid var(--line);border-radius:8px;background:#fff}
+@media(max-width:600px){.room-plan{padding:10px}.room-canvas{height:330px}.room-table{width:62px;height:58px}.room-table strong{font-size:.65rem}.room-stage{left:25%;width:50%}}
