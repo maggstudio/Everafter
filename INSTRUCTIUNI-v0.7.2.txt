@@ -1,0 +1,13 @@
+WEDLY v0.7.2 — evenimente: nuntă și botez
+
+Acest pachet este un PATCH peste WEDLY v0.7.1, nu un proiect complet.
+
+Fișiere: lib/demo.ts, app/setup/page.tsx, app/dashboard/page.tsx.
+
+1. Creează branch nou din main, de exemplu wedly-v072.
+2. Copiază cele trei fișiere peste cele existente, păstrând căile.
+3. Commit și testează în Vercel Preview cu variabilele Supabase pentru Preview configurate.
+4. Nu rula nicio migrare SQL. Datele noi sunt câmpuri opționale în wedding_modules.content pentru modulul wedding.
+5. Testează o nuntă existentă, un botez nou, salvare/reîncărcare, permisiuni colaboratori și revenirea la nuntă.
+
+Limitări: aplicația existentă folosește în continuare wedding_id / weddings intern; acestea sunt identificatori tehnici compatibili. Nu se implementează încă un selector multi-eveniment sau crearea independentă a mai multor evenimente per cont. Botezul se configurează pe spațiul existent; schimbarea tipului unui eveniment existent nu creează unul nou. Sarcinile deja salvate nu sunt înlocuite automat cu șabloane de botez. Nu schimba tipul unui eveniment real pentru test: folosește un cont sau un mediu de test.

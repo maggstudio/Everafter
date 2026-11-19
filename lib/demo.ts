@@ -1,10 +1,11 @@
 export type Task={id:string;title:string;done:boolean;category:string};
 export type Expense={id:string;name:string;amount:number};
 export type Guest={id:string;name:string;status:'confirmat'|'asteptare'|'refuzat'};
-export type Wedding={first:string;second:string;date:string;city:string;budget:number;guestEstimate:number;packageId:string;addons:string[]};
+export type EventType='wedding'|'baptism'|string;
+export type Wedding={eventType?:EventType;childName?:string;godparents?:string;first:string;second:string;date:string;city:string;budget:number;guestEstimate:number;packageId:string;addons:string[]};
 export const features=[{id:'invitatii',label:'Invitații digitale',price:49},{id:'mese',label:'Planificarea meselor',price:39},{id:'contracte',label:'Contracte și documente',price:59},{id:'remindere',label:'Remindere automate',price:29},{id:'buget',label:'Buget avansat',price:29}];
 export const initialPackages=[{id:'start',name:'Start',price:0,features:[] as string[]},{id:'premium',name:'Premium',price:149,features:['invitatii','mese','buget']},{id:'luxury',name:'Luxury',price:299,features:['invitatii','mese','contracte','remindere','buget']}];
-export const defaultWedding:Wedding={first:'Ana',second:'Andrei',date:'2027-06-20',city:'București',budget:80000,guestEstimate:150,packageId:'start',addons:[]};
+export const defaultWedding:Wedding={eventType:'wedding',childName:'',godparents:'',first:'Ana',second:'Andrei',date:'2027-06-20',city:'București',budget:80000,guestEstimate:150,packageId:'start',addons:[]};
 export const initialTasks:Task[]=[{id:'t1',title:'Stabilirea datei nunții',done:true,category:'Organizare'},{id:'t2',title:'Rezervarea restaurantului',done:false,category:'Furnizori'},{id:'t3',title:'Programarea cununiei civile',done:false,category:'Ceremonii'},{id:'t4',title:'Programarea bisericii',done:false,category:'Ceremonii'},{id:'t5',title:'Programare coafor și machiaj',done:false,category:'Pregătiri'}];
 export const initialExpenses:Expense[]=[{id:'e1',name:'Avans restaurant',amount:5000},{id:'e2',name:'Fotograf',amount:2500}];
 export const initialGuests:Guest[]=[{id:'g1',name:'Maria Popescu',status:'confirmat'},{id:'g2',name:'Alex Ionescu',status:'asteptare'}];
