@@ -85,3 +85,12 @@
 .room-round{border-radius:50%}.room-rect{border-radius:8px}.room-selected{outline:3px solid var(--gold);outline-offset:3px;background:#f8f0dd;z-index:2}
 .room-controls{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-top:14px}.room-controls .row-controls{display:flex;gap:5px}.room-controls .row-controls button{min-width:35px;min-height:35px;border:1px solid var(--line);border-radius:8px;background:#fff}
 @media(max-width:600px){.room-plan{padding:10px}.room-canvas{height:330px}.room-table{width:62px;height:58px}.room-table strong{font-size:.65rem}.room-stage{left:25%;width:50%}}
+
+/* WEDLY v1.1.0: invitații digitale */
+.invitation-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start;margin:20px 0}
+.invitation-editor{display:flex;flex-direction:column;gap:12px}.invitation-editor label{display:flex;flex-direction:column;gap:5px}.invitation-editor input,.invitation-editor select,.invitation-editor textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit}
+.invitation-preview{min-height:520px;padding:40px 24px;text-align:center;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;overflow-wrap:anywhere}
+.invitation-preview h2{font-family:Georgia,serif;font-size:clamp(1.7rem,3vw,2.6rem);margin:0}.invitation-preview h3{font-size:1.05rem;font-weight:400;margin:0}.invitation-preview p{white-space:pre-wrap;margin:4px 0;color:inherit}.invitation-kicker{font-size:.68rem;letter-spacing:.22em}.invitation-greeting{font-family:Georgia,serif;font-style:italic}.invitation-details{display:flex;flex-direction:column;gap:5px}.invitation-footer{font-size:.75rem;margin-top:16px;opacity:.75}
+.invitation-classic{background:#faf6ed;color:#5b4a38;border:double 6px #c6b08d}.invitation-modern{background:#293a35;color:#f9f7f0;border-radius:16px}.invitation-floral{background:radial-gradient(circle at 10% 10%,#e7d5db,transparent 35%),radial-gradient(circle at 90% 90%,#d7e8d4,transparent 35%),#fff9f5;color:#644a54;border:2px solid #e7cbd5;border-radius:20px}
+.invitation-next{margin-top:25px;padding-top:18px;border-top:1px solid var(--line)}
+@media(max-width:750px){.invitation-layout{grid-template-columns:1fr}.invitation-preview{min-height:440px}}
