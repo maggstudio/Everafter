@@ -28,3 +28,12 @@
 .task-edit .task-actions{grid-column:1/-1;margin:0}
 @media(max-width:750px){.task-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:450px){.task-filters,.task-edit{grid-template-columns:1fr}}
+
+/* WEDLY v1.0.5: buget */
+.budget-category{margin:10px 0 14px}
+.budget-category .list-row{border:0;padding:4px 0}
+.budget-category .progress{height:7px}
+.budget-entry-actions{text-align:right;min-width:125px}
+.budget-entry-actions .row-controls{justify-content:flex-end}
+.budget-form{margin-top:24px;border-top:1px solid var(--line);padding-top:12px}
+.budget-form .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
