@@ -10,10 +10,12 @@ type Data={wedding:Wedding;tasks:Task[];expenses:Expense[];guests:Guest[];packag
 const initial:Data={wedding:defaultWedding,tasks:[],expenses:[],guests:[],packages:initialPackages,appointments:[]};
 const modules:Module[]=['wedding','tasks','expenses','guests','packages','calendar'];
 const field:Record<Module,keyof Data>={wedding:'wedding',tasks:'tasks',expenses:'expenses',guests:'guests',packages:'packages',calendar:'appointments'};
-type Store={data:Data;setData:React.Dispatch<React.SetStateAction<Data>>;ready:boolean;saveStatus:string;weddingId:string|null;members:Member[];pending:Member[];isOwner:boolean;can:(module:Module,action:'read'|'write')=>boolean;refresh:()=>Promise<void>};
+export type EventSummary={id:string;name:string;type:string;date:string;city:string;role:string};
+type Store={events:EventSummary[];data:Data;setData:React.Dispatch<React.SetStateAction<Data>>;ready:boolean;saveStatus:string;weddingId:string|null;members:Member[];pending:Member[];isOwner:boolean;can:(module:Module,action:'read'|'write')=>boolean;refresh:()=>Promise<void>};
 const Context=createContext<Store|null>(null);
 export function StoreProvider({children}:{children:React.ReactNode}){
  const [data,setData]=useState<Data>(initial),[ready,setReady]=useState(false),[saveStatus,setSaveStatus]=useState('Se încarcă...');
+ const [events,setEvents]=useState<EventSummary[]>([]);
  const [weddingId,setWeddingId]=useState<string|null>(null),[members,setMembers]=useState<Member[]>([]),[pending,setPending]=useState<Member[]>([]),[userId,setUserId]=useState<string|null>(null);
  const saved=useRef<Data>(initial),loaded=useRef(false),version=useRef(0),isSaving=useRef(false);
  const current=members.find(m=>m.user_id===userId&&m.wedding_id===weddingId&&m.status==='active');
@@ -28,6 +30,18 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  if(v!==version.current)return;if(memberError){setSaveStatus(memberError.message);return}
  const active=(allMembers||[]).filter((m:Member)=>m.status==='active');const invitations=(allMembers||[]).filter((m:Member)=>m.status==='pending');
  setPending(invitations as Member[]);
+ // List only events where this user has an active membership and wedding read permission.
+ const eventIds=active.filter((m:Member)=>m.role==='owner'||Boolean(m.permissions?.wedding?.read)).map((m:Member)=>m.wedding_id);
+ const {data:eventRows}=eventIds.length?await client.from('wedding_modules').select('wedding_id,content').eq('module','wedding').in('wedding_id',eventIds):{data:[]};
+ if(v!==version.current)return;
+ const summaries:EventSummary[]=active.filter((m:Member)=>eventIds.includes(m.wedding_id)).map((m:Member)=>{
+  const info=(eventRows||[]).find((r:any)=>r.wedding_id===m.wedding_id)?.content||{};
+  const type=info.eventType||'wedding';
+  return {id:m.wedding_id,type,date:info.date||'',city:info.city||'',role:m.role,
+   name:type==='baptism'?'Botezul '+(info.childName||'fără nume'):(info.first&&info.second?info.first+' & '+info.second:'Nuntă fără nume')};
+ });
+ setEvents(summaries);
+
  // Owner's wedding is the default; a shared wedding can be selected with ?wedding=<uuid>.
  const selected=typeof window!=='undefined'?new URLSearchParams(window.location.search).get('wedding'):null;
  const chosen=active.find((m:Member)=>m.wedding_id===selected)||active.find((m:Member)=>m.wedding_id===owned)||active[0];
@@ -37,11 +51,11 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  if(v!==version.current)return;setMembers((team||[chosen]) as Member[]);
  const {data:rows,error}=await client.from('wedding_modules').select('module,content').eq('wedding_id',id);
  if(v!==version.current)return;if(error){setSaveStatus(error.message);return}
- const next:Data={...initial};for(const row of rows||[]){const mod=row.module as Module;if(modules.includes(mod)){(next as any)[field[mod]]=row.content}}
+ const next:Data={...initial};for(const row of rows||[]){const mod=row.module as Module;if(modules.includes(mod)){(next as any)[field[mod]]=mod==='wedding'?{...defaultWedding,...row.content}:row.content}}
  // Missing modules are not permission to use demo data: empty lists are intentional.
  saved.current=next;setData(next);loaded.current=true;setReady(true);setSaveStatus('Date sincronizate');
  }
- useEffect(()=>{void refresh();if(!supabase)return;const {data:{subscription}}=supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){version.current++;loaded.current=false;setReady(false);setUserId(null);setWeddingId(null);setData(initial)} });return()=>subscription.unsubscribe()},[]);
+ useEffect(()=>{void refresh();if(!supabase)return;const {data:{subscription}}=supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){version.current++;loaded.current=false;setReady(false);setUserId(null);setWeddingId(null);setEvents([]);setData(initial)} });return()=>subscription.unsubscribe()},[]);
  useEffect(()=>{if(!ready||!loaded.current||!weddingId||!supabase||isSaving.current)return;
  const changed=modules.filter(m=>JSON.stringify(data[field[m]])!==JSON.stringify(saved.current[field[m]]));if(!changed.length)return;
  const denied=changed.filter(m=>!can(m,'write'));if(denied.length){setSaveStatus('Nu ai drept de modificare: '+denied.join(', '));return}
@@ -55,6 +69,6 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  const interval=setInterval(()=>{if(!isSaving.current&&JSON.stringify(data)===JSON.stringify(saved.current))void refresh()},30000);
  return()=>clearInterval(interval);
  },[weddingId,ready,data]);
- return <Context.Provider value={{data,setData,ready,saveStatus,weddingId,members,pending,isOwner,can,refresh}}>{children}</Context.Provider>
+ return <Context.Provider value={{events,data,setData,ready,saveStatus,weddingId,members,pending,isOwner,can,refresh}}>{children}</Context.Provider>
 }
 export function useStore(){const x=useContext(Context);if(!x)throw new Error('StoreProvider lipsă');return x}
