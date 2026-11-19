@@ -2,3 +2,8 @@
 
 /* WEDLY v0.9 */
 .v09-warning{padding:12px 16px;background:#fff3e5;border:1px solid #e8c99f;border-radius:10px;color:#78502c;font-weight:600}
+
+/* WEDLY v1.0.1: Furnizori in desktop and mobile module navigation */
+.side-nav .module-nav-link,.mobile-nav .module-nav-link{display:flex;align-items:center;border-radius:9px;padding:12px;color:var(--dark);text-decoration:none}
+.side-nav .module-nav-link:hover,.mobile-nav .module-nav-link:hover{background:#d6dfd1}
+@media(max-width:650px){.mobile-nav .module-nav-link{white-space:nowrap;padding:9px;flex-shrink:0}}
