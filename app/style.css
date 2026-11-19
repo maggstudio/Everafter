@@ -14,3 +14,17 @@
 .list-row>.row-controls{flex-wrap:wrap;justify-content:flex-end}
 .list-row>.row-controls .text-button{padding:8px 4px}
 @media(max-width:650px){.inline-form label{flex:1 1 100%;width:100%}.list-row>.row-controls{gap:4px}.list-row>.row-controls .button{padding:8px 10px}}
+
+/* WEDLY v1.0.4: task management */
+.task-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}
+.task-filters label,.task-edit label{font-size:.8rem;color:var(--muted)}
+.task-item{border-bottom:1px solid var(--line);padding:5px 10px}
+.task-item .check-row{border:0}
+.task-late{background:#fff2e8;border-left:3px solid #bc744c;border-radius:7px}
+.task-actions{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-bottom:10px}
+.task-actions button:not(.button){border:1px solid var(--line);border-radius:8px;background:white;padding:7px 12px;color:var(--dark)}
+.task-actions .remove-task{color:#a24d48!important}
+.task-edit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px;background:#f7f5ef;border-radius:10px;margin-bottom:12px}
+.task-edit .task-actions{grid-column:1/-1;margin:0}
+@media(max-width:750px){.task-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:450px){.task-filters,.task-edit{grid-template-columns:1fr}}
