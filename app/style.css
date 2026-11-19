@@ -61,3 +61,15 @@
 .guest-form label{display:block}
 .guest-form input,.guest-form select{max-width:100%}
 @media(max-width:600px){.guest-actions{align-items:stretch}.guest-actions select{max-width:150px}.guest-actions .row-controls{justify-content:flex-end}}
+
+/* WEDLY v1.0.8: așezarea la mese */
+.seating-toggle{display:flex;align-items:center;gap:10px;margin:16px 0;font-size:.9rem}
+.seating-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:24px 0}
+.seating-table{padding:18px;background:#fff;border:1px solid var(--line);border-radius:14px;min-width:0}
+.seating-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.seating-heading h3{margin:0 0 4px}
+.seating-heading .row-controls{flex-wrap:wrap}
+.seating-table .progress{margin:14px 0}
+.seating-table .list-row{gap:8px;align-items:center}
+.seating-table select{max-width:155px}
+@media(max-width:720px){.seating-grid{grid-template-columns:1fr}.seating-table{padding:12px}}
