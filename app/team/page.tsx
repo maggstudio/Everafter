@@ -1,7 +1,24 @@
 'use client';
 import Link from 'next/link';import {useEffect,useState} from 'react';import {useStore,type Module,type Permissions,type Member} from '../../lib/store';import {supabase} from '../../lib/supabase';
-const modules:Module[]=['wedding','tasks','expenses','guests','calendar','packages'];
-const labels:Record<Module,string>={wedding:'Detalii nuntă',tasks:'Sarcini',expenses:'Buget',guests:'Invitați',calendar:'Calendar',packages:'Pachete'};
+const modules: Module[] = [
+  'wedding',
+  'tasks',
+  'expenses',
+  'guests',
+  'calendar',
+  'packages',
+  'vendors'
+];
+
+const labels: Record<Module, string> = {
+  wedding: 'Detalii eveniment',
+  tasks: 'Sarcini',
+  expenses: 'Buget',
+  guests: 'Invitați',
+  calendar: 'Calendar',
+  packages: 'Pachete',
+  vendors: 'Furnizori'
+};
 type Invitation={id:string;email:string;role:string;status:string;expires_at:string};
 export default function Team(){const {weddingId,members,pending,isOwner,refresh}=useStore();const [email,setEmail]=useState(''),[role,setRole]=useState<'partner'|'planner'>('planner'),[message,setMessage]=useState(''),[busy,setBusy]=useState(false),[invites,setInvites]=useState<Invitation[]>([]);
  const [permissions,setPermissions]=useState<Permissions>(Object.fromEntries(modules.map(m=>[m,{read:m!=='expenses',write:m==='tasks'||m==='guests'}])));
