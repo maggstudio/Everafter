@@ -1,6 +1,6 @@
 export type Task={id:string;title:string;done:boolean;category:string;deadline?:string;assigneeId?:string;priority?:'low'|'normal'|'high'|'urgent'};
 export type Expense={id:string;name:string;amount:number;category?:string;date?:string;notes?:string};
-export type Guest={id:string;name:string;status:'confirmat'|'asteptare'|'refuzat'};
+export type Guest={id:string;name:string;status:'confirmat'|'asteptare'|'refuzat';group?:string;partySize?:number;phone?:string;email?:string;notes?:string};
 export type EventType='wedding'|'baptism'|string;
 export type Wedding={eventType?:EventType;childName?:string;godparents?:string;dismissedSuggestions?:string[];first:string;second:string;date:string;city:string;budget:number;guestEstimate:number;packageId:string;addons:string[]};
 export const features=[{id:'invitatii',label:'Invitații digitale',price:49},{id:'mese',label:'Planificarea meselor',price:39},{id:'contracte',label:'Contracte și documente',price:59},{id:'remindere',label:'Remindere automate',price:29},{id:'buget',label:'Buget avansat',price:29}];
