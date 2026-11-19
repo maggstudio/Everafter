@@ -37,3 +37,18 @@
 .budget-entry-actions .row-controls{justify-content:flex-end}
 .budget-form{margin-top:24px;border-top:1px solid var(--line);padding-top:12px}
 .budget-form .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+/* WEDLY v1.0.6: calendar lunar */
+.calendar-toolbar{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:22px 0}
+.calendar-toolbar .row-controls{display:flex;align-items:center;gap:14px}
+.calendar-toolbar .row-controls button{background:white;border:1px solid var(--line);border-radius:8px;padding:6px 13px;font-size:1.2rem}
+.calendar-toolbar label{font-size:.82rem;color:var(--muted)}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:28px}
+.calendar-weekday{text-align:center;font-size:.8rem;color:var(--muted);padding:8px 0}
+.calendar-day{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;min-height:76px;padding:10px;border:1px solid var(--line);border-radius:9px;background:white;text-align:left;color:var(--dark)}
+.calendar-day small{font-size:.65rem;color:var(--sage)}
+.calendar-day.is-today{border-color:var(--gold);font-weight:700}
+.calendar-day.is-selected{background:var(--ivory);outline:2px solid var(--sage)}
+.calendar-form{border-top:1px solid var(--line);padding-top:18px;margin-top:20px}
+.calendar-form .actions{margin-top:16px}
+@media(max-width:600px){.calendar-grid{gap:3px}.calendar-day{min-height:59px;padding:6px 3px;font-size:.78rem}.calendar-day small{font-size:.58rem}.calendar-toolbar{align-items:stretch}.calendar-toolbar label{width:100%}}
