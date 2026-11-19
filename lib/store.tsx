@@ -50,6 +50,11 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  if(!errorText){saved.current=snapshot;setSaveStatus('Salvat în cloud')}else setSaveStatus('Eroare: '+errorText);isSaving.current=false;
  },800);return()=>clearTimeout(timeout);
  },[data,ready,weddingId,members,userId]);
+
+ useEffect(()=>{if(!weddingId||!ready)return;
+ const interval=setInterval(()=>{if(!isSaving.current&&JSON.stringify(data)===JSON.stringify(saved.current))void refresh()},30000);
+ return()=>clearInterval(interval);
+ },[weddingId,ready,data]);
  return <Context.Provider value={{data,setData,ready,saveStatus,weddingId,members,pending,isOwner,can,refresh}}>{children}</Context.Provider>
 }
 export function useStore(){const x=useContext(Context);if(!x)throw new Error('StoreProvider lipsă');return x}
