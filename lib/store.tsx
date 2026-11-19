@@ -76,7 +76,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  // Owner's wedding is the default; a shared wedding can be selected with ?wedding=<uuid>.
  const selected=typeof window!=='undefined'?new URLSearchParams(window.location.search).get('wedding'):null;
  const chosen=active.find((m:Member)=>m.wedding_id===selected)||active.find((m:Member)=>m.wedding_id===owned)||active[0];
- if(!chosen){setSaveStatus('Nu există o nuntă accesibilă');return}
+ if(!chosen){setSaveStatus('Nu există un eveniment accesibil');return}
  const id=chosen.wedding_id;setWeddingId(id);
  const {data:team}=await client.from('wedding_members').select('*').eq('wedding_id',id);
  if(v!==version.current)return;setMembers((team||[chosen]) as Member[]);
