@@ -2,14 +2,15 @@
 import {createContext,useContext,useEffect,useRef,useState} from 'react';
 import {defaultWedding,initialPackages,type Wedding,type Task,type Expense,type Guest} from './demo';
 import {supabase} from './supabase';
-export type Module='wedding'|'tasks'|'expenses'|'guests'|'calendar'|'packages';
+export type Module='wedding'|'tasks'|'expenses'|'guests'|'calendar'|'packages'|'vendors';
 export type Permissions=Record<string,{read:boolean;write:boolean}>;
 export type Member={wedding_id:string;user_id:string;role:'owner'|'partner'|'planner';status:'active'|'pending';permissions:Permissions};
 type Package={id:string;name:string;price:number;features:string[]};
-type Data={wedding:Wedding;tasks:Task[];expenses:Expense[];guests:Guest[];packages:Package[];appointments:{name:string;date:string}[]};
-const initial:Data={wedding:defaultWedding,tasks:[],expenses:[],guests:[],packages:initialPackages,appointments:[]};
-const modules:Module[]=['wedding','tasks','expenses','guests','packages','calendar'];
-const field:Record<Module,keyof Data>={wedding:'wedding',tasks:'tasks',expenses:'expenses',guests:'guests',packages:'packages',calendar:'appointments'};
+export type Vendor={id:string;name:string;category:string;contact:string;contractAmount:number;paidAmount:number;dueDate:string;notes:string};
+type Data={vendors:Vendor[];wedding:Wedding;tasks:Task[];expenses:Expense[];guests:Guest[];packages:Package[];appointments:{name:string;date:string}[]};
+const initial:Data={vendors:[],wedding:defaultWedding,tasks:[],expenses:[],guests:[],packages:initialPackages,appointments:[]};
+const modules:Module[]=['wedding','tasks','expenses','guests','packages','calendar','vendors'];
+const field:Record<Module,keyof Data>={wedding:'wedding',tasks:'tasks',expenses:'expenses',guests:'guests',packages:'packages',calendar:'appointments',vendors:'vendors'};
 export type EventSummary={id:string;name:string;type:string;date:string;city:string;role:string};
 type Store={events:EventSummary[];data:Data;setData:React.Dispatch<React.SetStateAction<Data>>;ready:boolean;saveStatus:string;weddingId:string|null;members:Member[];pending:Member[];isOwner:boolean;can:(module:Module,action:'read'|'write')=>boolean;refresh:()=>Promise<void>;selectEvent:(id:string)=>Promise<boolean>};
 const Context=createContext<Store|null>(null);
@@ -20,7 +21,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  const saved=useRef<Data>(initial),loaded=useRef(false),version=useRef(0),isSaving=useRef(false);
  const current=members.find(m=>m.user_id===userId&&m.wedding_id===weddingId&&m.status==='active');
  const isOwner=current?.role==='owner';
- const can=(module:Module,action:'read'|'write')=>Boolean(isOwner||current?.permissions?.[module]?.[action]);
+ const can=(module:Module,action:'read'|'write')=>Boolean(isOwner||current?.permissions?.[module==='vendors'?'expenses':module]?.[action]);
  async function selectEvent(id:string):Promise<boolean>{
   if(!supabase||!events.some(e=>e.id===id))return false;
   if(id===weddingId&&ready)return true;
