@@ -1,42 +1,55 @@
 'use client';
 import {createContext,useContext,useEffect,useRef,useState} from 'react';
-import {defaultWedding,initialTasks,initialExpenses,initialGuests,initialPackages,type Wedding,type Task,type Expense,type Guest} from './demo';
+import {defaultWedding,initialPackages,type Wedding,type Task,type Expense,type Guest} from './demo';
 import {supabase} from './supabase';
+export type Module='wedding'|'tasks'|'expenses'|'guests'|'calendar'|'packages';
+export type Permissions=Record<string,{read:boolean;write:boolean}>;
+export type Member={wedding_id:string;user_id:string;role:'owner'|'partner'|'planner';status:'active'|'pending';permissions:Permissions};
 type Package={id:string;name:string;price:number;features:string[]};
-type Data={wedding:Wedding;tasks:Task[];expenses:Expense[];guests:Guest[];packages:Package[]};
-const initial:Data={wedding:defaultWedding,tasks:initialTasks,expenses:initialExpenses,guests:initialGuests,packages:initialPackages};
-type Store={data:Data;setData:React.Dispatch<React.SetStateAction<Data>>;ready:boolean;saveStatus:string};
+type Data={wedding:Wedding;tasks:Task[];expenses:Expense[];guests:Guest[];packages:Package[];appointments:{name:string;date:string}[]};
+const initial:Data={wedding:defaultWedding,tasks:[],expenses:[],guests:[],packages:initialPackages,appointments:[]};
+const modules:Module[]=['wedding','tasks','expenses','guests','packages','calendar'];
+const field:Record<Module,keyof Data>={wedding:'wedding',tasks:'tasks',expenses:'expenses',guests:'guests',packages:'packages',calendar:'appointments'};
+type Store={data:Data;setData:React.Dispatch<React.SetStateAction<Data>>;ready:boolean;saveStatus:string;weddingId:string|null;members:Member[];pending:Member[];isOwner:boolean;can:(module:Module,action:'read'|'write')=>boolean;refresh:()=>Promise<void>};
 const Context=createContext<Store|null>(null);
 export function StoreProvider({children}:{children:React.ReactNode}){
- const [data,setData]=useState<Data>(initial),[ready,setReady]=useState(false),[userId,setUserId]=useState<string|null>(null),[saveStatus,setSaveStatus]=useState('Se conectează...');
- const generation=useRef(0),skipFirst=useRef(true);
- useEffect(()=>{
-   if(!supabase){setSaveStatus('Supabase neconfigurat');return}
-   const client=supabase;let active=true;
-   async function load(id:string){const token=++generation.current;setReady(false);setSaveStatus('Se încarcă datele...');
-     const {data:row,error}=await client.from('wedding_workspaces').select('wedding_data').eq('user_id',id).maybeSingle();
-     if(!active||token!==generation.current)return;
-     if(error){setSaveStatus('Eroare la încărcare: '+error.message);return}
-     skipFirst.current=true;setData(row?.wedding_data?{...initial,...row.wedding_data}:initial);setUserId(id);setReady(true);setSaveStatus('Date încărcate');
-   }
-   client.auth.getUser().then(({data:{user}})=>{if(active&&user)load(user.id)});
-   const {data:{subscription}}=client.auth.onAuthStateChange((event,session)=>{
-     if(event==='SIGNED_OUT'){generation.current++;setReady(false);setUserId(null);setData(initial);setSaveStatus('Deconectat')}
-     if(event==='SIGNED_IN'&&session?.user&&session.user.id!==userId)load(session.user.id);
-   });
-   return()=>{active=false;subscription.unsubscribe()};
- },[]);
- useEffect(()=>{
-   if(!ready||!userId||!supabase)return;
-   if(skipFirst.current){skipFirst.current=false;return}
-   const client=supabase;const id=userId;
-   setSaveStatus('Se salvează...');
-   const timeout=setTimeout(async()=>{
-     const {error}=await client.from('wedding_workspaces').upsert({user_id:id,wedding_data:data,updated_at:new Date().toISOString()},{onConflict:'user_id'});
-     setSaveStatus(error?'Eroare la salvare: '+error.message:'Salvat în cloud');
-   },700);
-   return()=>clearTimeout(timeout);
- },[data,ready,userId]);
- return <Context.Provider value={{data,setData,ready,saveStatus}}>{children}</Context.Provider>;
+ const [data,setData]=useState<Data>(initial),[ready,setReady]=useState(false),[saveStatus,setSaveStatus]=useState('Se încarcă...');
+ const [weddingId,setWeddingId]=useState<string|null>(null),[members,setMembers]=useState<Member[]>([]),[pending,setPending]=useState<Member[]>([]),[userId,setUserId]=useState<string|null>(null);
+ const saved=useRef<Data>(initial),loaded=useRef(false),version=useRef(0),isSaving=useRef(false);
+ const current=members.find(m=>m.user_id===userId&&m.wedding_id===weddingId&&m.status==='active');
+ const isOwner=current?.role==='owner';
+ const can=(module:Module,action:'read'|'write')=>Boolean(isOwner||current?.permissions?.[module]?.[action]);
+ async function refresh(){if(!supabase)return;const client=supabase;const v=++version.current;loaded.current=false;setReady(false);setSaveStatus('Se încarcă...');
+ const {data:{user},error:authError}=await client.auth.getUser();if(v!==version.current)return;
+ if(authError||!user){setSaveStatus('Autentificare necesară');return}setUserId(user.id);
+ const {data:owned,error:bootstrapError}=await client.rpc('ensure_my_wedding');if(v!==version.current)return;
+ if(bootstrapError){setSaveStatus('Migrarea v0.5 lipsește sau a eșuat: '+bootstrapError.message);return}
+ const {data:allMembers,error:memberError}=await client.from('wedding_members').select('*').eq('user_id',user.id);
+ if(v!==version.current)return;if(memberError){setSaveStatus(memberError.message);return}
+ const active=(allMembers||[]).filter((m:Member)=>m.status==='active');const invitations=(allMembers||[]).filter((m:Member)=>m.status==='pending');
+ setPending(invitations as Member[]);
+ // Owner's wedding is the default; a shared wedding can be selected with ?wedding=<uuid>.
+ const selected=typeof window!=='undefined'?new URLSearchParams(window.location.search).get('wedding'):null;
+ const chosen=active.find((m:Member)=>m.wedding_id===selected)||active.find((m:Member)=>m.wedding_id===owned)||active[0];
+ if(!chosen){setSaveStatus('Nu există o nuntă accesibilă');return}
+ const id=chosen.wedding_id;setWeddingId(id);
+ const {data:team}=await client.from('wedding_members').select('*').eq('wedding_id',id);
+ if(v!==version.current)return;setMembers((team||[chosen]) as Member[]);
+ const {data:rows,error}=await client.from('wedding_modules').select('module,content').eq('wedding_id',id);
+ if(v!==version.current)return;if(error){setSaveStatus(error.message);return}
+ const next:Data={...initial};for(const row of rows||[]){const mod=row.module as Module;if(modules.includes(mod)){(next as any)[field[mod]]=row.content}}
+ // Missing modules are not permission to use demo data: empty lists are intentional.
+ saved.current=next;setData(next);loaded.current=true;setReady(true);setSaveStatus('Date sincronizate');
+ }
+ useEffect(()=>{void refresh();if(!supabase)return;const {data:{subscription}}=supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){version.current++;loaded.current=false;setReady(false);setUserId(null);setWeddingId(null);setData(initial)} });return()=>subscription.unsubscribe()},[]);
+ useEffect(()=>{if(!ready||!loaded.current||!weddingId||!supabase||isSaving.current)return;
+ const changed=modules.filter(m=>JSON.stringify(data[field[m]])!==JSON.stringify(saved.current[field[m]]));if(!changed.length)return;
+ const denied=changed.filter(m=>!can(m,'write'));if(denied.length){setSaveStatus('Nu ai drept de modificare: '+denied.join(', '));return}
+ const client=supabase,id=weddingId;const snapshot=data;setSaveStatus('Se salvează...');
+ const timeout=setTimeout(async()=>{isSaving.current=true;let errorText='';for(const mod of changed){const {error}=await client.from('wedding_modules').upsert({wedding_id:id,module:mod,content:snapshot[field[mod]],updated_at:new Date().toISOString()},{onConflict:'wedding_id,module'});if(error){errorText=error.message;break}}
+ if(!errorText){saved.current=snapshot;setSaveStatus('Salvat în cloud')}else setSaveStatus('Eroare: '+errorText);isSaving.current=false;
+ },800);return()=>clearTimeout(timeout);
+ },[data,ready,weddingId,members,userId]);
+ return <Context.Provider value={{data,setData,ready,saveStatus,weddingId,members,pending,isOwner,can,refresh}}>{children}</Context.Provider>
 }
-export function useStore(){const value=useContext(Context);if(!value)throw new Error('StoreProvider lipsă');return value}
+export function useStore(){const x=useContext(Context);if(!x)throw new Error('StoreProvider lipsă');return x}
