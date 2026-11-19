@@ -2,7 +2,7 @@
 import {createContext,useContext,useEffect,useRef,useState} from 'react';
 import {defaultWedding,initialPackages,type Wedding,type Task,type Expense,type Guest} from './demo';
 import {supabase} from './supabase';
-export type Module='wedding'|'tasks'|'expenses'|'guests'|'calendar'|'packages';
+export type Module='wedding'|'tasks'|'expenses'|'guests'|'calendar'|'packages'|'vendors';
 export type Permissions=Record<string,{read:boolean;write:boolean}>;
 export type Member={wedding_id:string;user_id:string;role:'owner'|'partner'|'planner';status:'active'|'pending';permissions:Permissions};
 type Package={id:string;name:string;price:number;features:string[]};
