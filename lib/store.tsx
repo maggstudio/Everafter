@@ -19,6 +19,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  const [events,setEvents]=useState<EventSummary[]>([]);
  const [weddingId,setWeddingId]=useState<string|null>(null),[members,setMembers]=useState<Member[]>([]),[pending,setPending]=useState<Member[]>([]),[userId,setUserId]=useState<string|null>(null);
  const saved=useRef<Data>(initial),loaded=useRef(false),version=useRef(0),isSaving=useRef(false);
+ const dataRef=useRef(data),polling=useRef(false);dataRef.current=data;
  const current=members.find(m=>m.user_id===userId&&m.wedding_id===weddingId&&m.status==='active');
  const isOwner=current?.role==='owner';
  const can=(module:Module,action:'read'|'write')=>Boolean(isOwner||current?.permissions?.[module==='vendors'?'expenses':module]?.[action]);
@@ -51,7 +52,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
   loaded.current=true;setReady(true);setSaveStatus('Date sincronizate');
   return true;
  }
- async function refresh(){if(!supabase)return;const client=supabase;const v=++version.current;loaded.current=false;setReady(false);setSaveStatus('Se încarcă...');
+ async function refresh(background=false){if(!supabase)return;const client=supabase;const v=++version.current;if(!background){loaded.current=false;setReady(false);setSaveStatus('Se încarcă...');}
  const {data:{user},error:authError}=await client.auth.getUser();if(v!==version.current)return;
  if(authError||!user){setSaveStatus('Autentificare necesară');return}setUserId(user.id);
  const {data:owned,error:bootstrapError}=await client.rpc('ensure_my_wedding');if(v!==version.current)return;
@@ -83,7 +84,8 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  if(v!==version.current)return;if(error){setSaveStatus(error.message);return}
  const next:Data={...initial};for(const row of rows||[]){const mod=row.module as Module;if(modules.includes(mod)){(next as any)[field[mod]]=mod==='wedding'?{...defaultWedding,...row.content}:row.content}}
  // Missing modules are not permission to use demo data: empty lists are intentional.
- saved.current=next;setData(next);loaded.current=true;setReady(true);setSaveStatus('Date sincronizate');
+ if(background&&(isSaving.current||JSON.stringify(dataRef.current)!==JSON.stringify(saved.current)))return;
+ saved.current=next;setData(next);loaded.current=true;setReady(true);if(!background)setSaveStatus('Date sincronizate');
  }
  useEffect(()=>{void refresh();if(!supabase)return;const {data:{subscription}}=supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){version.current++;loaded.current=false;setReady(false);setUserId(null);setWeddingId(null);setEvents([]);setData(initial)} });return()=>subscription.unsubscribe()},[]);
  useEffect(()=>{if(!ready||!loaded.current||!weddingId||!supabase||isSaving.current)return;
@@ -96,7 +98,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  },[data,ready,weddingId,members,userId]);
 
  useEffect(()=>{if(!weddingId||!ready)return;
- const interval=setInterval(()=>{if(!isSaving.current&&JSON.stringify(data)===JSON.stringify(saved.current))void refresh()},30000);
+ const interval=setInterval(()=>{if(polling.current||isSaving.current||JSON.stringify(dataRef.current)!==JSON.stringify(saved.current))return;polling.current=true;void refresh(true).finally(()=>{polling.current=false})},30000);
  return()=>clearInterval(interval);
  },[weddingId,ready,data]);
  return <Context.Provider value={{events,data,setData,ready,saveStatus,weddingId,members,pending,isOwner,can,refresh,selectEvent}}>{children}</Context.Provider>
