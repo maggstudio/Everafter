@@ -16,7 +16,11 @@ export async function POST(req:NextRequest){
  let input:{weddingId?:string;guestId?:string;rsvpUrl?:string};
  try{input=await req.json()}catch{return json('Date invalide.',400)}
  const {weddingId,guestId,rsvpUrl}=input;
- if(!weddingId||!guestId||!rsvpUrl||!/^https:\/\/wedly\.ro\/rsvp\?token=[A-Za-z0-9%_\-]+$/.test(rsvpUrl))return json('Date incomplete sau link RSVP invalid.',400);
+ if(!weddingId||!guestId||!rsvpUrl)return json('Lipsesc evenimentul, invitatul sau linkul RSVP.',400);
+ let parsed:URL;
+ try{parsed=new URL(rsvpUrl)}catch{return json('Linkul RSVP nu este un URL valid.',400)}
+ const trustedHosts=['wedly.ro','www.wedly.ro'];
+ if(parsed.protocol!=='https:'||!trustedHosts.includes(parsed.hostname)||parsed.port||parsed.pathname!=='/rsvp'||parsed.searchParams.size!==1||!parsed.searchParams.get('token')||parsed.hash||parsed.username||parsed.password)return json('Link RSVP invalid. Folosește linkul generat pe wedly.ro.',400);
  const client=createClient(url,anon,{global:{headers:{Authorization:bearer}},auth:{persistSession:false}});
  const admin=createClient(url,secret,{auth:{persistSession:false}});
  const {data:{user},error:authError}=await client.auth.getUser(bearer.slice(7));
