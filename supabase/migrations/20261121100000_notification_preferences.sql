@@ -9,8 +9,7 @@ create table if not exists public.notification_preferences (
  payment_reminders boolean not null default false,
  digest_hour smallint not null default 9 check (digest_hour between 0 and 23),
  updated_at timestamptz not null default now(),
- primary key (wedding_id,user_id),
- foreign key (wedding_id,user_id) references public.wedding_members(wedding_id,user_id) on delete cascade
+ primary key (wedding_id,user_id)
 );
 alter table public.notification_preferences enable row level security;
 drop policy if exists "members manage own notification preferences" on public.notification_preferences;
