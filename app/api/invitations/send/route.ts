@@ -36,7 +36,7 @@ export async function POST(req:NextRequest){
  if(!record||record.revoked_at||Date.parse(record.expires_at)<Date.now())return json('Generează un link RSVP activ înainte de trimitere.',400);
  // Tokenul nu poate fi recuperat din baza de date; expeditorul îl furnizează după generare.
  const {error:reservationError}=await admin.from('invitation_email_log').insert({wedding_id:weddingId,guest_id:guestId,recipient_email:guest.email,rsvp_url:rsvpUrl,status:'sending'});
- if(reservationError)return json('Trimitere deja rezervată sau efectuată. Verifică istoricul înainte de a încerca din nou.',409);
+ if(reservationError){console.error('WEDLY invitation log insert:',reservationError.code,reservationError.message);if(reservationError.code==='23505')return json('Există deja o încercare de trimitere pentru acest invitat. Verifică istoricul.',409);return json('Nu s-a putut înregistra trimiterea în Supabase (cod: '+(reservationError.code||'necunoscut')+'). Verifică Vercel Logs.',503)}
  const w=eventModule?.content||{},d=w.invitationDesign||{};
  const event=w.eventType==='baptism'?'Botezul '+(w.childName||'copilului'):[w.first,w.second].filter(Boolean).join(' & ')||'Evenimentul nostru';
  const date=w.date?new Date(w.date+'T12:00:00').toLocaleDateString('ro-RO'):'Data va fi comunicată';
@@ -63,6 +63,6 @@ export async function GET(req:NextRequest){
  if(!member||member.status!=='active'||!(member.role==='owner'||member.permissions?.guests?.read))return json('Acces interzis.',403);
  const admin=createClient(url,secret,{auth:{persistSession:false}});
  const {data,error}=await admin.from('invitation_email_log').select('guest_id,recipient_email,status,sent_at,created_at').eq('wedding_id',weddingId).order('created_at',{ascending:false}).limit(500);
- if(error)return json('Istoricul nu este disponibil. Verifică migrarea SQL.',503);
+ if(error){console.error('WEDLY invitation log read:',error.code,error.message);return json('Istoricul nu poate fi citit din Supabase (cod: '+(error.code||'necunoscut')+'). Verifică Vercel Logs și cheia service role.',503)}
  return NextResponse.json({rows:data||[]});
 }
