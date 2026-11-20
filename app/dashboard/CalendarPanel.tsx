@@ -1,6 +1,7 @@
 'use client';
 import {useState} from 'react';
 import {useStore,type Appointment} from '../../lib/store';
+import {paidTotal} from './VendorPayments';
 
 const categories=['Ceremonii','Furnizori','Pregătiri personale','Familie','Altele'];
 type Form={name:string;date:string;time:string;category:string;notes:string};
