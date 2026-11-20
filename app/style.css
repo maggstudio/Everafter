@@ -260,3 +260,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .invitation-preview .invitation-photo{display:block;width:min(100%,340px);height:240px;object-fit:cover;object-position:center;border-radius:150px 150px 12px 12px;border:5px solid #ffffff88;box-shadow:0 12px 28px #0000001f;margin:2px auto 14px}
 .public-invitation-page .invitation-photo{width:min(100%,400px);height:clamp(220px,55vw,320px);margin-bottom:22px}
 @media(max-width:550px){.invitation-preview .invitation-photo{height:210px}.public-invitation-page .invitation-photo{height:245px}}
+
+/* Photo positioning editor: zoom remains clipped inside the invitation portrait */
+.invitation-preview .invitation-photo-frame{width:min(100%,340px);height:240px;overflow:hidden;border-radius:150px 150px 12px 12px;border:5px solid #ffffff88;box-shadow:0 12px 28px #0000001f;margin:2px auto 14px;flex-shrink:0}
+.invitation-preview .invitation-photo-frame .invitation-photo{width:100%;height:100%;display:block;object-fit:cover;border:0;border-radius:0;box-shadow:none;margin:0;transform-origin:center;transition:transform .15s ease,object-position .15s ease}
+.public-invitation-page .invitation-photo-frame{width:min(100%,400px);height:clamp(220px,55vw,320px);margin-bottom:22px}
+.invitation-customizer input[type="range"]{width:100%;accent-color:#58735e}
+@media(max-width:550px){.invitation-preview .invitation-photo-frame{height:210px}.public-invitation-page .invitation-photo-frame{height:245px}}
+@media(prefers-reduced-motion:reduce){.invitation-preview .invitation-photo-frame .invitation-photo{transition:none}}
