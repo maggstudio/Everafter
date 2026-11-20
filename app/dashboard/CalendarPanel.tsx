@@ -13,8 +13,8 @@ const icsEscape=(value:string)=>value.replace(/\\/g,'\\\\').replace(/\n/g,'\\n')
 const icsDate=(date:string,time?:string)=>date.replace(/-/g,'')+(time?'T'+time.replace(':','')+'00':'');
 const icsEvent=(id:string,name:string,date:string,time:string|undefined,details:string)=>[
  'BEGIN:VEVENT','UID:'+icsEscape(id)+'@wedly.ro','DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,''),
- 'DTSTART;VALUE=DATE:'+icsDate(date),
- ...(time?['SUMMARY:'+icsEscape(name+' ('+time+')')]:['SUMMARY:'+icsEscape(name)]),
+ ...(time&&/^([01]\\d|2[0-3]):[0-5]\\d$/.test(time)?['DTSTART:'+icsDate(date)+'T'+time.replace(':','')+'00','DURATION:PT1H']:['DTSTART;VALUE=DATE:'+icsDate(date)]),
+ 'SUMMARY:'+icsEscape(name),
  'DESCRIPTION:'+icsEscape(details),'END:VEVENT'
 ].join('\r\n');
 
