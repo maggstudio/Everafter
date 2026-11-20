@@ -1,6 +1,7 @@
 import {NextRequest,NextResponse} from 'next/server';
 import {createClient} from '@supabase/supabase-js';
 import {renderInvitationEmail} from '../../../../lib/invitation-email';
+import {signPublicInvitation} from '../../../../lib/public-invitation';
 
 export const runtime='nodejs';
 const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -48,9 +49,13 @@ export async function POST(req:NextRequest){
  const addFamily=(label:string,names:unknown)=>{if(typeof names==='string'&&names.trim())family.push({label,names:names.trim()})};
  if(w.eventType==='baptism'){if(d.showGodparents!==false)addFamily('Nașii copilului',w.godparents);if(d.showGrandparents!==false)addFamily('Moșii copilului',w.childGrandparents)}else{if(d.showParents!==false){addFamily('Părinții miresei',w.brideParents);addFamily('Părinții mirelui',w.groomParents)}if(d.showGodparents!==false)addFamily('Nașii de cununie',w.weddingGodparents)}
  const lines=['Dragă '+guest.name+',',d.headline||'Te invităm să sărbătorim împreună!',event,d.message||'Te așteptăm cu drag!',...family.map(f=>f.label+': '+f.names),date+(d.time?' · '+d.time:'')+(d.location?' · '+d.location:'')+(w.city?' · '+w.city:''),'Confirmă participarea: '+rsvpUrl];
- const plain=lines.join('\n\n');
+ const token=parsed.searchParams.get('token')!;
+ const invite=signPublicInvitation({eventName:event,headline:d.headline||'Te invităm să sărbătorim împreună!',message:d.message||'Te așteptăm cu drag!',date,time:d.time||'',location:d.location||'',city:w.city||'',theme:d.theme||'classic',family},token,Date.parse(record.expires_at));
+ const interactiveUrl=new URL(rsvpUrl);interactiveUrl.searchParams.set('invite',invite);
+ const destination=interactiveUrl.toString();
+ const plain=[...lines.slice(0,-1),'Deschide invitația și confirmă participarea: '+destination].join('\n\n');
  try{
-  const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+resend,'Content-Type':'application/json'},body:JSON.stringify({from,to:[guest.email],subject:'Invitație WEDLY – '+event,text:plain,html:renderInvitationEmail({guestName:guest.name,eventName:event,headline:d.headline||'Te invităm să sărbătorim împreună!',message:d.message||'Te așteptăm cu drag!',date,time:d.time,location:d.location,city:w.city,rsvpUrl,theme:d.theme,family})})});
+  const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+resend,'Content-Type':'application/json'},body:JSON.stringify({from,to:[guest.email],subject:'Invitație WEDLY – '+event,text:plain,html:renderInvitationEmail({guestName:guest.name,eventName:event,headline:d.headline||'Te invităm să sărbătorim împreună!',message:d.message||'Te așteptăm cu drag!',date,time:d.time,location:d.location,city:w.city,rsvpUrl:destination,theme:d.theme,family})})});
   const result=await response.json().catch(()=>({}));
   if(!response.ok||!result.id){await admin.from('invitation_email_log').update({status:'failed',error:'Provider rejected email'}).eq('wedding_id',weddingId).eq('guest_id',guestId);return json('Furnizorul de email a respins trimiterea. Verifică istoricul.',502)}
   await admin.from('invitation_email_log').update({status:'sent',provider_id:result.id,sent_at:new Date().toISOString()}).eq('wedding_id',weddingId).eq('guest_id',guestId);
