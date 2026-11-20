@@ -227,3 +227,16 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 @keyframes wedly-ornament-appear{from{opacity:0;transform:scale(.75)}to{opacity:.75;transform:scale(1)}}
 @media(max-width:600px){.public-invitation-page{padding-left:12px;padding-right:12px}.public-invitation-page .invitation-preview{min-height:570px;padding:65px 30px;gap:17px;border-radius:15px}.public-invitation-page .invitation-preview::before{inset:10px}.public-invitation-page .invitation-preview::after{inset:15px}.public-invitation-page .invitation-family strong{font-size:1.07rem}.public-rsvp-form{padding:24px 18px}}
 @media(prefers-reduced-motion:reduce){.public-invitation-page .invitation-preview,.public-invitation-page .invitation-ornament{animation:none}}
+
+/* Invitation visual editor, shared between dashboard and public invitation */
+.invitation-customizer{border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0 22px;display:grid;gap:12px}
+.invitation-customizer legend{font-weight:700}
+.invitation-color-options{display:flex;flex-wrap:wrap;gap:11px;padding:7px 2px}
+.invitation-color-swatch{width:36px;height:36px;border:3px solid white;border-radius:50%;box-shadow:0 0 0 1px #0003;cursor:pointer}
+.invitation-color-swatch.selected{box-shadow:0 0 0 3px #2f634b}
+.invitation-color-swatch:focus-visible{outline:3px solid #2f634b;outline-offset:4px}
+.invitation-preview{--invitation-accent:inherit}
+.invitation-preview .invitation-ornament{font-family:Georgia,serif;font-size:1.8rem;line-height:1}
+.invitation-preview .invitation-ornament,.invitation-preview .invitation-kicker,.invitation-preview h2,.invitation-preview .invitation-family small{color:var(--invitation-accent)}
+.invitation-preview.invitation-font-modern h2,.invitation-preview.invitation-font-modern h3,.invitation-preview.invitation-font-modern .invitation-family strong{font-family:Arial,Helvetica,sans-serif}
+.invitation-preview.invitation-font-romantic h2,.invitation-preview.invitation-font-romantic h3,.invitation-preview.invitation-font-romantic .invitation-family strong{font-family:"Palatino Linotype","Book Antiqua",Georgia,serif;font-style:italic}
