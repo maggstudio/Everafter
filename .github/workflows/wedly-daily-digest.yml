@@ -1,9 +1,6 @@
 name: WEDLY - Email digest scheduler
 
 on:
-  schedule:
-    # Hourly at minute 17 UTC; endpoint checks current Europe/Bucharest hour.
-    - cron: '17 * * * *'
   workflow_dispatch:
 
 permissions:
