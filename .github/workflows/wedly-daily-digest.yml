@@ -1,0 +1,34 @@
+name: WEDLY - Email digest scheduler
+
+on:
+  schedule:
+    # Hourly at minute 17 UTC; endpoint checks current Europe/Bucharest hour.
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wedly-email-digest
+  cancel-in-progress: false
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Call secured WEDLY digest endpoint
+        env:
+          WEDLY_CRON_SECRET: ${{ secrets.WEDLY_CRON_SECRET }}
+        shell: bash
+        run: |
+          if [ -z "$WEDLY_CRON_SECRET" ]; then
+            echo "::error::Missing repository Actions secret WEDLY_CRON_SECRET"
+            exit 1
+          fi
+          curl --fail-with-body --show-error --silent --max-time 120 \
+            --retry 2 --retry-delay 10 \
+            -H "Authorization: Bearer $WEDLY_CRON_SECRET" \
+            -H "Accept: application/json" \
+            "https://wedly.ro/api/notifications/digest"
