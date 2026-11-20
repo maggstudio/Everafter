@@ -1,5 +1,5 @@
 export type Task={id:string;title:string;done:boolean;category:string;deadline?:string;assigneeId?:string;priority?:'low'|'normal'|'high'|'urgent'};
-export type Expense={id:string;name:string;amount:number;category?:string;date?:string;notes?:string};
+export type Expense={id:string;name:string;amount:number;category?:string;date?:string;notes?:string;vendorId?:string;vendorPaymentId?:string};
 export type Guest={id:string;name:string;status:'confirmat'|'asteptare'|'refuzat';group?:string;partySize?:number;phone?:string;email?:string;notes?:string};
 export type EventType='wedding'|'baptism'|string;
 export type SeatingTable={id:string;name:string;capacity:number;guestIds:string[];x?:number;y?:number;shape?:'round'|'rect'};
