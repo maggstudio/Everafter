@@ -10,7 +10,7 @@ export async function GET(req:NextRequest){
  if(!url||!key||!apiKey||!from)return NextResponse.json({error:'Missing configuration'},{status:503});
  const db=createClient(url,key,{auth:{persistSession:false}});
  const {data:events,error}=await db.from('rsvp_notification_queue').select('id,wedding_id,guest_id,guest_name,response_status,party_size').is('processed_at',null).order('id',{ascending:true}).limit(30);
- if(error){console.error('WEDLY RSVP queue read failed',{code:error.code,message:error.message,hint:error.hint});return NextResponse.json({error:'Queue unavailable',code:error.code||'unknown'},{status:500})}
+ if(error){let configuredRole='unavailable';try{const payload=JSON.parse(Buffer.from(key.split('.')[1],'base64url').toString('utf8')) as {role?:string};configuredRole=payload.role||'missing'}catch{}console.error('WEDLY RSVP queue read failed',{code:error.code,message:error.message,hint:error.hint,configuredRole,supabaseHost:new URL(url).hostname});return NextResponse.json({error:'Queue unavailable',code:error.code||'unknown'},{status:500})}
  let sent=0,failed=0;
  for(const event of (events||[]) as Queue[]){
   const {data:preferences,error:prefError}=await db.from('notification_preferences').select('user_id').eq('wedding_id',event.wedding_id).eq('rsvp_immediate',true);
