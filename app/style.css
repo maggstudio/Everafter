@@ -240,3 +240,18 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .invitation-preview .invitation-ornament,.invitation-preview .invitation-kicker,.invitation-preview h2,.invitation-preview .invitation-family small{color:var(--invitation-accent)}
 .invitation-preview.invitation-font-modern h2,.invitation-preview.invitation-font-modern h3,.invitation-preview.invitation-font-modern .invitation-family strong{font-family:Arial,Helvetica,sans-serif}
 .invitation-preview.invitation-font-romantic h2,.invitation-preview.invitation-font-romantic h3,.invitation-preview.invitation-font-romantic .invitation-family strong{font-family:"Palatino Linotype","Book Antiqua",Georgia,serif;font-style:italic}
+
+/* Decorative invitation background presets: CSS-only, fast and privacy-friendly */
+.invitation-background-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0}
+.invitation-background-choice{min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:2px solid transparent;border-radius:10px;color:#594e48;cursor:pointer;padding:10px 4px}
+.invitation-background-choice span{font-size:24px;font-family:Georgia,serif}
+.invitation-background-choice small{color:inherit;font-size:.75rem}
+.invitation-background-choice.selected{border-color:#3d745c;box-shadow:0 0 0 2px #b7d7c5}
+.invitation-background-choice:focus-visible{outline:3px solid #3d745c;outline-offset:3px}
+.invitation-bg-plain.invitation-background-choice{background:#faf7f1}
+.invitation-bg-watercolor{background-image:radial-gradient(ellipse at 8% 12%,#d7b6c544,transparent 48%),radial-gradient(ellipse at 92% 80%,#a4b5c455,transparent 50%),linear-gradient(135deg,#fff9f7,#f3e9ed)}
+.invitation-bg-botanical{background-image:radial-gradient(ellipse at 0% 0%,#83a68866,transparent 44%),radial-gradient(ellipse at 100% 100%,#6b987c66,transparent 42%),linear-gradient(140deg,#f8fcf5,#e6eee4)}
+.invitation-bg-marble{background-image:repeating-linear-gradient(120deg,transparent 0 46px,#a5a19b19 47px 49px,transparent 51px 115px),linear-gradient(145deg,#fff,#eae9e6)}
+.invitation-bg-gold{background-image:radial-gradient(ellipse at 50% -20%,#fff8d9 0%,transparent 65%),linear-gradient(135deg,#f6e9c7,#fffaf0 52%,#e8d4a7)}
+.invitation-bg-blush{background-image:radial-gradient(ellipse at 85% 5%,#e4a7b54a,transparent 50%),radial-gradient(ellipse at 5% 90%,#d5b6cb5e,transparent 50%),linear-gradient(135deg,#fff8f7,#f8e9ee)}
+@media(max-width:550px){.invitation-background-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
