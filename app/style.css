@@ -255,3 +255,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .invitation-bg-gold{background-image:radial-gradient(ellipse at 50% -20%,#fff8d9 0%,transparent 65%),linear-gradient(135deg,#f6e9c7,#fffaf0 52%,#e8d4a7)}
 .invitation-bg-blush{background-image:radial-gradient(ellipse at 85% 5%,#e4a7b54a,transparent 50%),radial-gradient(ellipse at 5% 90%,#d5b6cb5e,transparent 50%),linear-gradient(135deg,#fff8f7,#f8e9ee)}
 @media(max-width:550px){.invitation-background-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Private invitation photo: responsive portrait framing */
+.invitation-preview .invitation-photo{display:block;width:min(100%,340px);height:240px;object-fit:cover;object-position:center;border-radius:150px 150px 12px 12px;border:5px solid #ffffff88;box-shadow:0 12px 28px #0000001f;margin:2px auto 14px}
+.public-invitation-page .invitation-photo{width:min(100%,400px);height:clamp(220px,55vw,320px);margin-bottom:22px}
+@media(max-width:550px){.invitation-preview .invitation-photo{height:210px}.public-invitation-page .invitation-photo{height:245px}}
