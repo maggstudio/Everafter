@@ -4,7 +4,7 @@ import {useEffect,useState} from 'react';
 import {useStore} from '../../../lib/store';
 import {supabase} from '../../../lib/supabase';
 type RecordRow={id:string;guest_id:string;guest_name:string;status:string;party_size:number;dietary_notes:string;expires_at:string;revoked_at:string|null;responded_at:string|null};
-export default function RsvpManage(){const {data,ready,weddingId,can}=useStore();const [rows,setRows]=useState<RecordRow[]>([]),[message,setMessage]=useState(''),[links,setLinks]=useState<Record<string,string>>({}),[busy,setBusy]=useState(false);
+export default function RsvpManage(){const {data,ready,weddingId,can}=useStore();const [rows,setRows]=useState<RecordRow[]>([]),[message,setMessage]=useState(''),[links,setLinks]=useState<Record<string,string>>({}),[busy,setBusy]=useState(false),[sending,setSending]=useState<string|null>(null),[history,setHistory]=useState<Record<string,{status:string;sent_at:string|null}>>({});
  const readable=can('guests','read'),writable=can('guests','write');
  async function load(){if(!supabase||!weddingId||!readable)return;const {data:result,error}=await supabase.rpc('rsvp_list',{p_wedding:weddingId});if(error)setMessage(error.message);else setRows((result||[]) as RecordRow[])}
  useEffect(()=>{void load();void loadHistory()},[weddingId,ready]);
