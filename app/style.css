@@ -178,3 +178,25 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .seating-table:hover{box-shadow:0 5px 22px rgba(38,59,44,.07)}
 .invitation-next{border-radius:12px}
 @media(max-width:650px){.module-head{align-items:stretch}.module-head h2{width:100%}.module-head .button{width:100%}.panel>.task-filters{padding:12px}.panel>.budget-form,.panel>.calendar-form,.panel>.guest-form{padding:15px}.calendar-grid{padding:5px}.panel>.list-row{gap:10px}}
+
+
+/* Invitation design gallery and ceremonial family blocks */
+.invitation-theme-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0 22px}
+.invitation-theme-option{min-width:0;min-height:145px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:2px solid transparent;border-radius:14px;padding:16px;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s}
+.invitation-theme-option:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px #00000018}
+.invitation-theme-option.selected{border-color:#3d745c;box-shadow:0 0 0 2px #b7d7c5}
+.invitation-theme-option strong,.invitation-theme-option small{color:inherit}
+.invitation-theme-monogram{font-family:Georgia,serif;font-size:1.8rem;letter-spacing:.05em}
+.invitation-family{display:grid;gap:8px;margin:24px auto;text-align:center}
+.invitation-family p{margin:0;display:flex;flex-direction:column;gap:3px}
+.invitation-family small{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;opacity:.72}
+.invitation-family strong{font-family:Georgia,serif;font-size:1.12rem;font-weight:500}
+.invitation-royal{background:linear-gradient(135deg,#521f32,#762b46);color:#f8e6bd;border-color:#d9ba79}
+.invitation-botanical{background:linear-gradient(155deg,#e7eee1,#c9d8c6);color:#2d503e;border-color:#9ab79e}
+.invitation-terracotta{background:linear-gradient(145deg,#fff1e5,#e8b9a2);color:#773e2d;border-color:#c78467}
+.invitation-midnight{background:linear-gradient(145deg,#101c34,#273c5b);color:#e8d7a8;border-color:#bba36d}
+.invitation-champagne{background:linear-gradient(145deg,#fffdf5,#eadfc9);color:#6e5845;border-color:#d3b98e}
+.invitation-preview.invitation-royal,.invitation-preview.invitation-midnight{box-shadow:inset 0 0 0 10px #ffffff12,inset 0 0 0 12px #e9d7aa80}
+.invitation-preview.invitation-botanical,.invitation-preview.invitation-champagne,.invitation-preview.invitation-terracotta{box-shadow:inset 0 0 0 10px #ffffff66,inset 0 0 0 12px #92765355}
+.invitation-preview.invitation-royal .invitation-details,.invitation-preview.invitation-midnight .invitation-details{border-color:#e9d7aa77}
+@media(max-width:550px){.invitation-theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.invitation-theme-option{padding:10px;min-height:125px}}
