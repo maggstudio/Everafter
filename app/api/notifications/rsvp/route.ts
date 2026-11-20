@@ -11,20 +11,20 @@ export async function GET(req:NextRequest){
  const db=createClient(url,key,{auth:{persistSession:false}});
  const {data:events,error}=await db.from('rsvp_notification_queue').select('id,wedding_id,guest_id,guest_name,response_status,party_size').is('processed_at',null).order('id',{ascending:true}).limit(30);
  if(error){let configuredRole='unavailable';try{const payload=JSON.parse(Buffer.from(key.split('.')[1],'base64url').toString('utf8')) as {role?:string};configuredRole=payload.role||'missing'}catch{}console.error('WEDLY RSVP queue read failed',{code:error.code,message:error.message,hint:error.hint,configuredRole,supabaseHost:new URL(url).hostname});return NextResponse.json({error:'Queue unavailable',code:error.code||'unknown'},{status:500})}
- let sent=0,failed=0;
+ let sent=0,failed=0,eligible=0,skipped=0;
  for(const event of (events||[]) as Queue[]){
   const {data:preferences,error:prefError}=await db.from('notification_preferences').select('user_id').eq('wedding_id',event.wedding_id).eq('rsvp_immediate',true);
-  if(prefError){failed++;continue}
+  if(prefError){console.error('WEDLY RSVP preferences read failed',{queueId:event.id,code:prefError.code,message:prefError.message});failed++;continue}
   let complete=true;
   for(const pref of preferences||[]){
    const {data:member,error:memberError}=await db.from('wedding_members').select('role,status,permissions').eq('wedding_id',event.wedding_id).eq('user_id',pref.user_id).maybeSingle();
-   if(memberError){complete=false;continue}
-   if(!member||member.status!=='active'||!(member.role==='owner'||member.permissions?.guests?.read))continue;
+   if(memberError){console.error('WEDLY RSVP member lookup failed',{queueId:event.id,code:memberError.code,message:memberError.message});complete=false;continue}
+   if(!member||member.status!=='active'||!(member.role==='owner'||member.permissions?.guests?.read)){skipped++;continue}eligible++;
    const {data:existing,error:lookupError}=await db.from('rsvp_notification_delivery').select('status').eq('queue_id',event.id).eq('user_id',pref.user_id).maybeSingle();
-   if(lookupError){complete=false;continue}
+   if(lookupError){console.error('WEDLY RSVP delivery lookup failed',{queueId:event.id,code:lookupError.code,message:lookupError.message});complete=false;continue}
    if(existing)continue; // No blind retry: provider may have accepted a timed-out request.
    const {error:reserveError}=await db.from('rsvp_notification_delivery').insert({queue_id:event.id,user_id:pref.user_id,status:'processing'});
-   if(reserveError){complete=false;continue}
+   if(reserveError){console.error('WEDLY RSVP delivery reserve failed',{queueId:event.id,code:reserveError.code,message:reserveError.message});complete=false;continue}
    try{
     const {data:recipient,error:userError}=await db.auth.admin.getUserById(pref.user_id);
     if(userError||!recipient.user?.email)throw Error('Recipient unavailable');
@@ -39,7 +39,7 @@ export async function GET(req:NextRequest){
     sent++;
    }catch(e){console.error('RSVP notification failed',event.id,e);await db.from('rsvp_notification_delivery').update({status:'failed'}).eq('queue_id',event.id).eq('user_id',pref.user_id);failed++}
   }
-  if(complete)await db.from('rsvp_notification_queue').update({processed_at:new Date().toISOString()}).eq('id',event.id).is('processed_at',null);
+  if(complete){const {error:finishError}=await db.from('rsvp_notification_queue').update({processed_at:new Date().toISOString()}).eq('id',event.id).is('processed_at',null);if(finishError){console.error('WEDLY RSVP queue completion failed',{queueId:event.id,code:finishError.code,message:finishError.message});failed++}}
  }
- return NextResponse.json({processed:(events||[]).length,sent,failed});
+ console.info('WEDLY RSVP processing summary',{queued:(events||[]).length,eligible,skipped,sent,failed});return NextResponse.json({processed:(events||[]).length,eligible,skipped,sent,failed});
 }
