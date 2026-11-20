@@ -2,6 +2,7 @@ import {NextRequest,NextResponse} from 'next/server';
 import {createClient} from '@supabase/supabase-js';
 export const runtime='nodejs';
 export const dynamic='force-dynamic';
+export const maxDuration=60;
 type Queue={id:number;wedding_id:string;guest_id:string|null;guest_name:string;response_status:string;party_size:number};
 export async function GET(req:NextRequest){
  if(!process.env.CRON_SECRET||req.headers.get('authorization')!=='Bearer '+process.env.CRON_SECRET)return NextResponse.json({error:'Unauthorized'},{status:401});
