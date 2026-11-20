@@ -1,0 +1,28 @@
+'use client';
+import {useEffect,useState} from 'react';
+import {supabase} from '../../lib/supabase';
+import {useStore} from '../../lib/store';
+type Doc={id:string;wedding_id:string;vendor_id:string;file_name:string;storage_path:string;file_size:number;status:'draft'|'pending'|'signed';created_at:string};
+const labels={draft:'Ciornă',pending:'În așteptarea semnării',signed:'Semnat (marcat manual)'};
+export default function VendorDocuments({vendorId}:{vendorId:string}){
+ const {weddingId,can}=useStore();
+ const [docs,setDocs]=useState<Doc[]>([]),[file,setFile]=useState<File|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[loaded,setLoaded]=useState(false);
+ const writable=can('vendors','write');
+ async function load(){if(!supabase||!weddingId)return;const {data,error}=await supabase.from('vendor_documents').select('id,wedding_id,vendor_id,file_name,storage_path,file_size,status,created_at').eq('wedding_id',weddingId).eq('vendor_id',vendorId).order('created_at',{ascending:false});setLoaded(true);if(error){setError('Nu se pot încărca documentele. Verifică migrarea v1.3: '+error.message);return}setDocs((data||[]) as Doc[]);setError('')}
+ useEffect(()=>{setDocs([]);setLoaded(false);void load()},[weddingId,vendorId]);
+ async function upload(e:React.FormEvent){e.preventDefault();if(!supabase||!weddingId||!file||!writable)return;if(file.size===0||file.size>10485760||!file.name.toLowerCase().endsWith('.pdf')||file.type!=='application/pdf'){setError('Selectează un PDF valid de maximum 10 MB.');return}
+ setBusy(true);setError('');const path=weddingId+'/'+vendorId+'/'+crypto.randomUUID()+'.pdf';
+ try{const {error:upError}=await supabase.storage.from('wedly-contracts').upload(path,file,{contentType:'application/pdf',upsert:false});if(upError)throw upError;
+ const {error:dbError}=await supabase.from('vendor_documents').insert({wedding_id:weddingId,vendor_id:vendorId,file_name:file.name.slice(0,200),storage_path:path,file_size:file.size,status:'draft'});
+ if(dbError){await supabase.storage.from('wedly-contracts').remove([path]);throw dbError}
+ setFile(null);const input=document.getElementById('vendor-pdf-'+vendorId) as HTMLInputElement|null;if(input)input.value='';await load()
+ }catch(e){setError(e instanceof Error?e.message:'Încărcarea a eșuat.')}finally{setBusy(false)}}
+ async function open(doc:Doc,download=false){if(!supabase)return;setError('');const {data,error}=await supabase.storage.from('wedly-contracts').createSignedUrl(doc.storage_path,60,download?{download:doc.file_name}:undefined);if(error||!data?.signedUrl){setError(error?.message||'Nu se poate deschide documentul.');return}window.open(data.signedUrl,'_blank','noopener,noreferrer')}
+ async function status(doc:Doc,value:Doc['status']){if(!supabase||!writable)return;setBusy(true);const {error}=await supabase.from('vendor_documents').update({status:value}).eq('id',doc.id).eq('wedding_id',weddingId);if(error)setError(error.message);else await load();setBusy(false)}
+ async function remove(doc:Doc){if(!supabase||!writable||!window.confirm('Ștergi definitiv documentul „'+doc.file_name+'”?'))return;setBusy(true);setError('');const {error:storageError}=await supabase.storage.from('wedly-contracts').remove([doc.storage_path]);if(storageError){setError(storageError.message);setBusy(false);return}const {error:dbError}=await supabase.from('vendor_documents').delete().eq('id',doc.id).eq('wedding_id',weddingId);if(dbError)setError('Fișierul a fost șters, dar metadatele nu au putut fi eliminate: '+dbError.message);await load();setBusy(false)}
+ return <div className="budget-form"><h4>Documente și contracte PDF</h4>{error&&<p role="alert" className="v09-warning">{error}</p>}{!loaded&&<p>Se încarcă documentele...</p>}
+ {docs.map(doc=><div className="list-row" key={doc.id}><div><strong>{doc.file_name}</strong><small>{Math.ceil(doc.file_size/1024)} KB · {new Date(doc.created_at).toLocaleDateString('ro-RO')}</small><small>{labels[doc.status]}</small></div><div className="row-controls"><button type="button" className="text-button" onClick={()=>void open(doc)}>Vezi</button><button type="button" className="text-button" onClick={()=>void open(doc,true)}>Descarcă</button>{writable&&<><select aria-label={'Status '+doc.file_name} disabled={busy} value={doc.status} onChange={e=>void status(doc,e.target.value as Doc['status'])}><option value="draft">Ciornă</option><option value="pending">În așteptarea semnării</option><option value="signed">Semnat (manual)</option></select><button type="button" className="remove" disabled={busy} onClick={()=>void remove(doc)}>Șterge</button></>}</div></div>)}
+ {loaded&&docs.length===0&&<p className="hint">Nu există documente încărcate pentru acest furnizor.</p>}
+ {writable&&<form onSubmit={e=>void upload(e)}><label>Încarcă un contract PDF (max. 10 MB)<input id={'vendor-pdf-'+vendorId} type="file" accept="application/pdf,.pdf" disabled={busy} onChange={e=>setFile(e.target.files?.[0]||null)}/></label><button type="submit" className="button" disabled={busy||!file}>{busy?'Se procesează...':'Încarcă documentul'}</button></form>}
+ <p className="hint">Fișiere private; linkurile de acces expiră după 60 de secunde. Statusul „Semnat” este doar o evidență manuală, nu o semnătură electronică.</p></div>
+}
