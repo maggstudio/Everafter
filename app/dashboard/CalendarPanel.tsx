@@ -8,6 +8,16 @@ type Form={name:string;date:string;time:string;category:string;notes:string};
 const blank:Form={name:'',date:'',time:'',category:'Altele',notes:''};
 const dayString=(date:Date)=>[date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-');
 const formatDate=(value:string)=>new Date(value+'T12:00:00').toLocaleDateString('ro-RO',{day:'numeric',month:'long',year:'numeric'});
+
+const icsEscape=(value:string)=>value.replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
+const icsDate=(date:string,time?:string)=>date.replace(/-/g,'')+(time?'T'+time.replace(':','')+'00':'');
+const icsEvent=(id:string,name:string,date:string,time:string|undefined,details:string)=>[
+ 'BEGIN:VEVENT','UID:'+icsEscape(id)+'@wedly.ro','DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,''),
+ 'DTSTART;VALUE=DATE:'+icsDate(date),
+ ...(time?['SUMMARY:'+icsEscape(name+' ('+time+')')]:['SUMMARY:'+icsEscape(name)]),
+ 'DESCRIPTION:'+icsEscape(details),'END:VEVENT'
+].join('\r\n');
+
 export default function CalendarPanel(){
  const {data,setData,can}=useStore();
  const [month,setMonth]=useState(()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),1)});
@@ -32,6 +42,13 @@ export default function CalendarPanel(){
  const visibleVendorDues=vendorDues.filter(v=>!selectedDay||v.dueDate===selectedDay).sort((a,b)=>a.dueDate.localeCompare(b.dueDate));
  const visibleTasks=tasks.filter(t=>!selectedDay||t.deadline===selectedDay).sort((a,b)=>(a.deadline||'').localeCompare(b.deadline||''));
  const upcoming=appointments.filter(a=>a.date>=today&&a.date<=dayString(new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()+7))).length;
+ const exportCalendar=()=>{const events:string[]=[];
+ for(const a of appointments){if(/^\d{4}-\d{2}-\d{2}$/.test(a.date))events.push(icsEvent(a.id||a.name+'-'+a.date,a.name,a.date,a.time,a.notes||'Programare WEDLY'))}
+ for(const t of tasks){if(t.deadline&&/^\d{4}-\d{2}-\d{2}$/.test(t.deadline))events.push(icsEvent(t.id,t.title,t.deadline,undefined,'Termen sarcină WEDLY'+(t.done?' (finalizată)':'')))}
+ for(const v of vendorDues){if(/^\d{4}-\d{2}-\d{2}$/.test(v.dueDate))events.push(icsEvent(v.id,'Scadență: '+v.name,v.dueDate,undefined,'Rest de plată: '+new Intl.NumberFormat('ro-RO',{style:'currency',currency:'RON'}).format(v.contractAmount-paidTotal(v))))}
+ const content=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//WEDLY//Event Calendar//RO','CALSCALE:GREGORIAN','METHOD:PUBLISH',...events,'END:VCALENDAR'].join('\r\n')+'\r\n';
+ const blob=new Blob([content],{type:'text/calendar;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='wedly-calendar.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ };
  const change=(key:keyof Form,value:string)=>setForm(prev=>({...prev,[key]:value}));
  const reset=()=>{setShowForm(false);setEditing(null);setForm(blank)};
  const save=(event:React.FormEvent)=>{event.preventDefault();if(!canWrite||!form.name.trim()||!form.date)return;
@@ -39,7 +56,7 @@ export default function CalendarPanel(){
  setData(prev=>({...prev,appointments:editing===null?[...prev.appointments,item]:prev.appointments.map((a,i)=>i===editing?item:a)}));reset();
  };
  const edit=(a:Appointment,index:number)=>{setShowForm(true);setEditing(index);setForm({name:a.name,date:a.date,time:a.time||'',category:a.category||'Altele',notes:a.notes||''})};
- return <section className="panel"><div className="module-head"><h2>Calendar și programări</h2>{canWrite&&<button type="button" className="button" onClick={()=>{reset();setShowForm(true)}}>+ Adaugă programare</button>}</div><p>Programările și termenele sarcinilor sunt afișate împreună, dar se editează în modulele lor respective.</p>
+ return <section className="panel"><div className="module-head"><h2>Calendar și programări</h2><div className="row-controls"><button type="button" className="button secondary" onClick={exportCalendar}>Exportă calendar (.ics)</button>{canWrite&&<button type="button" className="button" onClick={()=>{reset();setShowForm(true)}}>+ Adaugă programare</button>}</div></div><p>Programările și termenele sarcinilor sunt afișate împreună, dar se editează în modulele lor respective.</p>
  <div className="stats two-stats"><article><span>Programări viitoare (7 zile)</span><strong>{upcoming}</strong></article><article><span>Programări înregistrate</span><strong>{appointments.length}</strong></article></div>
  <h3>Scadențe furnizori</h3>{visibleVendorDues.length?visibleVendorDues.map(v=><div className="list-row" key={v.id}><span>{v.name} · Rest de plată: {new Intl.NumberFormat('ro-RO',{style:'currency',currency:'RON'}).format(v.contractAmount-paidTotal(v))}</span><small>{formatDate(v.dueDate)}</small></div>):<p>Nu există scadențe de furnizori pentru selecția curentă.</p>}
  <div className="calendar-toolbar"><div className="row-controls"><button type="button" onClick={()=>setMonth(d=>new Date(d.getFullYear(),d.getMonth()-1,1))} aria-label="Luna precedentă">‹</button><strong>{month.toLocaleDateString('ro-RO',{month:'long',year:'numeric'})}</strong><button type="button" onClick={()=>setMonth(d=>new Date(d.getFullYear(),d.getMonth()+1,1))} aria-label="Luna următoare">›</button></div><label>Categoria programărilor<select value={categoryFilter} onChange={e=>setCategoryFilter(e.target.value)}><option value="all">Toate</option>{categories.map(c=><option key={c}>{c}</option>)}</select></label><button type="button" className="text-button" onClick={()=>{const d=new Date();setMonth(new Date(d.getFullYear(),d.getMonth(),1));setSelectedDay(null)}}>Astăzi / toate zilele</button></div>
