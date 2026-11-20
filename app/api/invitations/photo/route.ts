@@ -27,3 +27,19 @@ export async function POST(req:NextRequest){
  if(error)return fail('Încărcarea a eșuat. Verifică migrarea pentru bucket.',503);
  return NextResponse.json({path});
 }
+
+export async function GET(req:NextRequest){
+ if(!url||!anon||!secret)return new NextResponse(null,{status:503});
+ const bearer=req.headers.get('authorization')||'',path=new URL(req.url).searchParams.get('path')||'';
+ if(!bearer.startsWith('Bearer ')||!/^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(jpg|png|webp)$/i.test(path))return new NextResponse(null,{status:400});
+ const client=createClient(url,anon,{global:{headers:{Authorization:bearer}},auth:{persistSession:false}});
+ const {data:{user}}=await client.auth.getUser(bearer.slice(7));if(!user)return new NextResponse(null,{status:401});
+ const weddingId=path.split('/')[0];
+ const {data:member}=await client.from('wedding_members').select('role,status,permissions').eq('wedding_id',weddingId).eq('user_id',user.id).maybeSingle();
+ if(!member||member.status!=='active'||!(member.role==='owner'||member.permissions?.wedding?.read))return new NextResponse(null,{status:403});
+ const admin=createClient(url,secret,{auth:{persistSession:false}});
+ const {data,error}=await admin.storage.from('wedly-invitation-photos').download(path);
+ if(error||!data)return new NextResponse(null,{status:404});
+ const ext=path.split('.').pop();
+ return new NextResponse(await data.arrayBuffer(),{headers:{'Content-Type':ext==='png'?'image/png':ext==='webp'?'image/webp':'image/jpeg','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
+}
