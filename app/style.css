@@ -268,3 +268,13 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px soli
 .invitation-customizer input[type="range"]{width:100%;accent-color:#58735e}
 @media(max-width:550px){.invitation-preview .invitation-photo-frame{height:210px}.public-invitation-page .invitation-photo-frame{height:245px}}
 @media(prefers-reduced-motion:reduce){.invitation-preview .invitation-photo-frame .invitation-photo{transition:none}}
+
+/* Public landing navigation and information pages */
+.top nav{align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.top nav .button{padding:9px 14px;font-size:.84rem}
+.public-footer{display:flex;justify-content:space-between;gap:16px;align-items:center;border-top:1px solid var(--line);margin-top:36px;flex-wrap:wrap}
+.public-footer nav{display:flex;gap:18px;flex-wrap:wrap}
+.landing-next{text-align:center;padding:32px}
+.landing-next p{max-width:640px;margin:12px auto 24px}
+#functionalitati{scroll-margin-top:24px}
+@media(max-width:600px){.top{gap:12px;align-items:flex-start}.top nav{gap:10px}.top nav a{font-size:.8rem}.top .brand{font-size:1.3rem}.hero{padding:60px 18px}.public-footer{justify-content:center;text-align:center}}
