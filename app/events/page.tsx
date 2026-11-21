@@ -23,6 +23,7 @@ export default function EventsPage(){
  async function create(e:React.FormEvent){e.preventDefault();if(!supabase||busy)return;setBusy(true);setError('');
   const {data,error:rpcError}=await supabase.rpc('create_my_event',{p_type:type,p_first:first.trim(),p_second:second.trim(),p_date:date,p_city:city.trim(),p_child_name:type==='baptism'?child.trim():'',p_godparents:type==='baptism'?godparents.trim():''});
   if(rpcError||!data){setError(rpcError?.message||'Nu am putut crea evenimentul. Verifică migrarea v08.sql.');setBusy(false);return}
+  try{sessionStorage.setItem('wedly-discover-new-event',String(data))}catch{};
   window.location.href='/dashboard?wedding='+encodeURIComponent(data);
  }
  if(!ready)return <AuthLoading message={saveStatus}/>;
