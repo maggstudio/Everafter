@@ -2,6 +2,7 @@
 import {useEffect,useState} from 'react';
 import {useStore} from '../../lib/store';
 import RsvpPanel from './RsvpPanel';
+import GiftCountingPanel from './GiftCountingPanel';
 import {supabase} from '../../lib/supabase';
 import type {Guest} from '../../lib/demo';
 
@@ -25,6 +26,7 @@ export default function GuestsPanel(){
  const [statusFilter,setStatusFilter]=useState('all');
  const [groupFilter,setGroupFilter]=useState('all');
  const [sort,setSort]=useState('name');
+ const [showGifts,setShowGifts]=useState(false);
  const [printOrder,setPrintOrder]=useState<'alphabetical'|'seating'>('alphabetical');
  if(!can('guests','read'))return <section className="panel"><p>Nu ai acces la invitați.</p></section>;
  const writable=can('guests','write');
@@ -39,10 +41,12 @@ export default function GuestsPanel(){
  const reset=()=>{setForm(empty);setEditing(null);setShowForm(false)};
  const edit=(g:Guest)=>{setShowForm(true);setEditing(g.id);setForm({name:g.name,status:g.status,group:g.group||'Altele',partySize:String(size(g)),phone:g.phone||'',email:g.email||'',notes:g.notes||''})};
  const save=(event:React.FormEvent)=>{event.preventDefault();if(!writable)return;const count=Number(form.partySize);if(!form.name.trim()||!Number.isInteger(count)||count<1||count>100)return;
- const next:Guest={id:editing||crypto.randomUUID(),name:form.name.trim().slice(0,160),status:form.status,group:form.group,partySize:count,phone:form.phone.trim().slice(0,60)||undefined,email:form.email.trim().slice(0,180)||undefined,notes:form.notes.trim().slice(0,500)||undefined};
+ const existing=editing?data.guests.find(g=>g.id===editing):undefined;
+ const next:Guest={...existing,id:editing||crypto.randomUUID(),name:form.name.trim().slice(0,160),status:form.status,group:form.group,partySize:count,phone:form.phone.trim().slice(0,60)||undefined,email:form.email.trim().slice(0,180)||undefined,notes:form.notes.trim().slice(0,500)||undefined};
  setData(d=>({...d,guests:editing?d.guests.map(g=>g.id===editing?next:g):[...d.guests,next]}));reset();
  };
  return <><section className="panel"><div className="guest-page-title"><div><h2>Invitați</h2><p>Persoane, confirmări și emailuri — totul într-o singură listă.</p></div><div className="row-controls">{writable&&<button type="button" className="button" onClick={()=>{reset();setShowForm(true)}}>+ Adaugă invitat</button>}<button className="button secondary" type="button" disabled={refreshing} onClick={()=>void refreshRsvp()}>{refreshing?"Se actualizează...":"Actualizează"}</button></div></div>{rsvpError&&<p role="status">{rsvpError}</p>}
+ <div className="gift-module-toggle"><button type="button" className="button secondary" aria-expanded={showGifts} onClick={()=>setShowGifts(v=>!v)}>{showGifts?'Închide numărarea darului':'💶 Numărarea darului (lei / euro)'}</button></div>{showGifts&&<GiftCountingPanel/>}
  <div className="stats"><article><span>Invitații / grupuri</span><strong>{guests.length}</strong></article><article><span>Persoane estimate</span><strong>{totalPeople}</strong></article><article><span>Persoane confirmate</span><strong>{confirmedPeople}</strong></article><article><span>În așteptare</span><strong>{pendingPeople}</strong></article></div>
  <div className="task-filters"><label>Caută<input placeholder="Nume, telefon, email" value={search} onChange={e=>setSearch(e.target.value)}/></label><label>Status<select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}><option value="all">Toate</option>{Object.entries(statusLabels).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label><label>Grup<select value={groupFilter} onChange={e=>setGroupFilter(e.target.value)}><option value="all">Toate grupurile</option>{groups.map(g=><option key={g}>{g}</option>)}</select></label><label>Sortare<select value={sort} onChange={e=>setSort(e.target.value)}><option value="name">Nume</option><option value="size">Număr persoane</option><option value="status">Status</option></select></label></div>
  <div className="guest-print-toolbar"><label>Listă pentru imprimare<select value={printOrder} onChange={e=>setPrintOrder(e.target.value as 'alphabetical'|'seating')}><option value="alphabetical">Ordine alfabetică</option><option value="seating">Ordinea meselor</option></select></label><button type="button" className="button secondary" disabled={guests.length===0} onClick={printList}>Printează / Salvează PDF</button><small className="hint">Se exportă lista completă, indiferent de filtre. În fereastra de imprimare poți alege „Salvare ca PDF”.</small></div>
