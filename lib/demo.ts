@@ -1,6 +1,6 @@
 export type Task={id:string;title:string;done:boolean;category:string;deadline?:string;assigneeId?:string;priority?:'low'|'normal'|'high'|'urgent'};
 export type Expense={id:string;name:string;amount:number;category?:string;date?:string;notes?:string;vendorId?:string;vendorPaymentId?:string};
-export type Guest={id:string;name:string;status:'confirmat'|'asteptare'|'refuzat';group?:string;partySize?:number;phone?:string;email?:string;notes?:string};
+export type Guest={id:string;name:string;status:'confirmat'|'asteptare'|'refuzat';group?:string;partySize?:number;phone?:string;email?:string;notes?:string;giftAmount?:number;giftCurrency?:'RON'|'EUR'};
 export type EventType='wedding'|'baptism'|string;
 export type SeatingTable={id:string;name:string;capacity:number;guestIds:string[];x?:number;y?:number;shape?:'round'|'rect'};
 export type InvitationDesign={theme:'classic'|'modern'|'floral'|'royal'|'botanical'|'terracotta'|'midnight'|'champagne';headline:string;message:string;location:string;time:string;showFamily?:boolean;showGodparents?:boolean;showGrandparents?:boolean;showParents?:boolean;accentColor?:string;fontStyle?:'classic'|'modern'|'romantic';ornament?:'stars'|'flowers'|'none';backgroundStyle?:'plain'|'watercolor'|'botanical'|'marble'|'gold'|'blush';photoPath?:string;photoPositionX?:number;photoPositionY?:number;photoZoom?:number};
