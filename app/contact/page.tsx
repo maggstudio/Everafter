@@ -1,0 +1,3 @@
+import Link from 'next/link';
+export const metadata={title:'Contact | WEDLY',description:'Informații de contact și asistență WEDLY'};
+export default function Contact(){return <main className="shell narrow"><Link href="/" className="brand">WEDLY ✦</Link><section className="panel"><h1>Contact și asistență</h1><p>Pentru întrebări despre cont, invitații sau funcționarea platformei, folosește deocamdată canalele de asistență comunicate de administratorul WEDLY.</p><p>O adresă oficială de suport va fi publicată aici după configurare și verificare. Nu trimite parole, chei API sau date sensibile prin mesaje nesecurizate.</p><Link href="/">Înapoi la prima pagină</Link></section></main>}
