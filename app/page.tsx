@@ -1,28 +1,16 @@
-'use client';
 import Link from 'next/link';
-import {useEffect,useState} from 'react';
-import {useStore} from '../lib/store';
-import {supabase} from '../lib/supabase';
-
 const features=[
- {icon:'♡',title:'Invitații & RSVP',description:'Trimite invitații digitale și urmărește răspunsurile RSVP ale invitaților.'},
- {icon:'▦',title:'Planificarea meselor',description:'Pregătește lista invitaților. Distribuirea vizuală la mese este în dezvoltare.'},
- {icon:'◷',title:'Calendar & programări',description:'Notează ceremonii, întâlniri și programări cu datele lor importante.'},
- {icon:'₾',title:'Buget & cheltuieli',description:'Monitorizează bugetul, cheltuielile și suma disponibilă.'},
- {icon:'✍',title:'Furnizori & contracte',description:'Urmărește furnizorii, sumele contractate, avansurile și scadențele. Documentele sunt în dezvoltare.'},
- {icon:'✦',title:'Pachete flexibile',description:'Compară pachetele și alege modulele opționale pentru evenimentul tău.'}
+ {icon:'♡',title:'Invitații digitale & RSVP',description:'Personalizează invitațiile, trimite emailuri și urmărește confirmările.'},
+ {icon:'▦',title:'Așezarea la mese',description:'Organizează mesele și repartizează invitații în planul evenimentului.'},
+ {icon:'◷',title:'Calendar & checklist',description:'Planifică sarcinile, programările și termenele importante.'},
+ {icon:'₾',title:'Buget & cheltuieli',description:'Urmărește bugetul, plățile și sumele rămase.'},
+ {icon:'✍',title:'Furnizori',description:'Centralizează furnizorii, avansurile și scadențele. Gestionarea documentelor se extinde treptat.'},
+ {icon:'✦',title:'Colaborare',description:'Invită partenerul sau organizatorii și controlează permisiunile.'}
 ];
 export default function Home(){
- const {events,ready}=useStore();
- const [loggedIn,setLoggedIn]=useState<boolean|null>(null);
- useEffect(()=>{
-  let mounted=true;
-  if(!supabase){setLoggedIn(false);return}
-  void supabase.auth.getSession().then(({data})=>{if(mounted)setLoggedIn(Boolean(data.session))});
-  const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,session)=>{if(mounted)setLoggedIn(Boolean(session))});
-  return()=>{mounted=false;subscription.unsubscribe()};
- },[]);
- const href=loggedIn===false?'/login':!ready?'/events':events.length===0?'/events':events.length===1?'/dashboard':'/events';
- const label=loggedIn===false?'Începe organizarea':!ready?'Evenimentele mele':events.length===0?'Creează primul eveniment':'Evenimentele mele';
- return <main className="landing"><header className="top"><strong className="brand">WEDLY<span>✦</span></strong><nav><Link href="/events">Evenimente</Link><Link href="/dashboard">Dashboard</Link></nav></header><section className="hero"><span className="eyebrow">ORGANIZARE EVENIMENTE · ROMÂNIA</span><h1>Ziua voastră specială.<br/><em>Perfect organizată.</em></h1><p>Nunți și botezuri: invitați, buget, calendar, furnizori și toate detaliile evenimentului, într-un singur loc.</p><div className="actions"><Link className="button" href={href}>{label}</Link><Link className="button secondary" href="/events">Vezi evenimentele</Link></div></section><section className="feature-grid">{features.map(feature=><article className="feature" key={feature.title}><div className="feature-icon">{feature.icon}</div><h3>{feature.title}</h3><p>{feature.description}</p></article>)}</section><footer>WEDLY · România · v1.0.3</footer></main>
+ return <main className="landing"><header className="top"><Link className="brand" href="/" aria-label="WEDLY, prima pagină">WEDLY<span>✦</span></Link><nav aria-label="Navigare principală"><Link href="#functionalitati">Funcționalități</Link><Link href="/login">Autentificare</Link><Link className="button" href="/login?mode=signup">Creează cont</Link></nav></header>
+ <section className="hero"><span className="eyebrow">ORGANIZARE EVENIMENTE · ROMÂNIA</span><h1>Ziua voastră specială.<br/><em>Perfect organizată.</em></h1><p>Nunți și botezuri: invitați, buget, calendar, furnizori și toate detaliile evenimentului, într-un singur loc.</p><div className="actions"><Link className="button" href="/login?mode=signup">Creează cont gratuit</Link><Link className="button secondary" href="#functionalitati">Descoperă funcționalitățile</Link></div><p className="hint">Crearea contului este gratuită. Accesul la unele module poate depinde de pachetul ales.</p></section>
+ <section id="functionalitati" aria-labelledby="features-title"><h2 id="features-title">Tot ce ai nevoie pentru organizare</h2><div className="feature-grid">{features.map(feature=><article className="feature" key={feature.title}><div className="feature-icon" aria-hidden="true">{feature.icon}</div><h3>{feature.title}</h3><p>{feature.description}</p></article>)}</div></section>
+ <section className="panel landing-next"><h2>Începe cu propriul eveniment</h2><p>După înregistrare, creezi un eveniment de nuntă sau botez și alegi modulele potrivite. Poți reveni oricând la organizare din contul tău.</p><div className="actions"><Link className="button" href="/login?mode=signup">Înregistrează-te</Link><Link className="button secondary" href="/login">Am deja cont</Link></div></section>
+ <footer className="public-footer"><span>© {new Date().getFullYear()} WEDLY · România</span><nav aria-label="Informații"><Link href="/confidentialitate">Confidențialitate</Link><Link href="/contact">Contact</Link></nav></footer></main>
 }
