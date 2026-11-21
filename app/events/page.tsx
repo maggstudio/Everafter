@@ -1,3 +1,4 @@
+import AuthLoading from '../components/AuthLoading';
 'use client';
 import Link from 'next/link';
 import {useState} from 'react';
@@ -24,9 +25,10 @@ export default function EventsPage(){
   if(rpcError||!data){setError(rpcError?.message||'Nu am putut crea evenimentul. Verifică migrarea v08.sql.');setBusy(false);return}
   window.location.href='/dashboard?wedding='+encodeURIComponent(data);
  }
+ if(!ready)return <AuthLoading message={saveStatus}/>;
  return <main className="shell narrow"><Link href="/dashboard" className="brand">WEDLY ✦</Link>
  <div className="panel"><span className="eyebrow">SPAȚIILE TALE</span><h1>Evenimentele mele</h1>{error&&<p role="alert" style={{color:"crimson"}}>{error}</p>}
- {!ready?<p>{saveStatus}</p>:events.length===0?<p>Nu ai încă evenimente accesibile.</p>:<div>{events.map(event=><div className="list-row" key={event.id}><div><b>{event.name}</b><div><small>{event.type==='baptism'?'Botez':'Nuntă'} · {event.city||'Oraș nespecificat'} · {event.date||'Fără dată'} · {event.role==='owner'?'Organizator':'Colaborator'}</small></div></div><button type="button" className="button" disabled={Boolean(opening)} onClick={()=>void openEvent(event.id)}>{opening===event.id?'Se deschide...':'Deschide'}</button></div>)}</div>}
+ {events.length===0?<p>Nu ai încă evenimente accesibile.</p>:<div>{events.map(event=><div className="list-row" key={event.id}><div><b>{event.name}</b><div><small>{event.type==='baptism'?'Botez':'Nuntă'} · {event.city||'Oraș nespecificat'} · {event.date||'Fără dată'} · {event.role==='owner'?'Organizator':'Colaborator'}</small></div></div><button type="button" className="button" disabled={Boolean(opening)} onClick={()=>void openEvent(event.id)}>{opening===event.id?'Se deschide...':'Deschide'}</button></div>)}</div>}
  </div><div className="panel"><h2>Creează un eveniment nou</h2><p>Fiecare eveniment are invitați, buget, sarcini și colaboratori separați.</p>
  <form onSubmit={create}><label>Tip eveniment<select value={type} onChange={e=>setType(e.target.value as 'wedding'|'baptism')}><option value="wedding">Nuntă</option><option value="baptism">Botez</option></select></label>
  <div className="two"><label>{type==='baptism'?'Primul părinte':'Primul partener'}<input required maxLength={100} value={first} onChange={e=>setFirst(e.target.value)}/></label>
