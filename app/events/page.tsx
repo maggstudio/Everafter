@@ -1,5 +1,5 @@
-import AuthLoading from '../components/AuthLoading';
 'use client';
+import AuthLoading from '../components/AuthLoading';
 import Link from 'next/link';
 import {useState} from 'react';
 import {useRouter} from 'next/navigation';
