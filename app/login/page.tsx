@@ -1,5 +1,5 @@
 'use client';
-import {useState} from 'react';
+import {useEffect,useState} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {supabase} from '../../lib/supabase';
@@ -9,6 +9,7 @@ export default function Login(){
  const [mode,setMode]=useState<'login'|'signup'|'forgot'>('login');
  const [message,setMessage]=useState(''),[busy,setBusy]=useState(false);
  const router=useRouter();
+ useEffect(()=>{if(new URLSearchParams(window.location.search).get('mode')==='signup')setMode('signup')},[]);
  async function submit(e:React.FormEvent){
   e.preventDefault();if(!supabase){setMessage('Serviciul de autentificare nu este configurat.');return}
   setBusy(true);setMessage('');
