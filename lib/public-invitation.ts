@@ -1,5 +1,5 @@
 import {createHmac,timingSafeEqual} from 'node:crypto';
-export type PublicInvitation={eventName:string;headline:string;message:string;date:string;time:string;location:string;city:string;theme:string;accentColor?:string;fontStyle?:string;ornament?:string;backgroundStyle?:string;family:{label:string;names:string}[];expires:number;photoPath?:string;backgroundPhotoPath?:string;photoPositionX?:number;photoPositionY?:number;photoZoom?:number;tokenHash:string};
+export type PublicInvitation={eventName:string;headline:string;message:string;date:string;time:string;location:string;city:string;theme:string;accentColor?:string;fontStyle?:string;ornament?:string;backgroundStyle?:string;presetBackgroundId?:string;family:{label:string;names:string}[];expires:number;photoPath?:string;backgroundPhotoPath?:string;photoPositionX?:number;photoPositionY?:number;photoZoom?:number;tokenHash:string};
 const key=()=>process.env.INVITATION_LINK_SECRET||process.env.SUPABASE_SERVICE_ROLE_KEY;
 const digest=(token:string)=>createHmac('sha256',key()||'').update(token).digest('hex');
 export function signPublicInvitation(details:Omit<PublicInvitation,'tokenHash'|'expires'>,token:string,expires:number){
