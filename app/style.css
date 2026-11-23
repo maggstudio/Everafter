@@ -861,3 +861,28 @@ html[data-wedly-theme=dark] .invitation-preview{color-scheme:light;--dark:#333c3
 }
 .theme-public-control{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
 .theme-public-control select{width:auto;margin:0;padding:6px 8px;font-size:.8rem}
+
+/* Notification center */
+.mobile-head-actions,.desktop-notification-actions{display:flex;align-items:center;gap:12px}
+.notification-center{position:relative}
+.notification-bell{position:relative;display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:transparent;color:var(--dark);cursor:pointer}
+.notification-count{position:absolute;right:-5px;top:-5px;min-width:19px;height:19px;padding:0 4px;border-radius:20px;background:#a13b63;color:white;font-size:10px;display:grid;place-items:center;font-weight:700}
+.notification-backdrop{position:fixed;inset:0;z-index:1100;background:#17131c66;border:0}
+.notification-popover{position:absolute;right:0;top:52px;width:min(380px,calc(100vw - 28px));z-index:1101;background:#fff;color:var(--dark);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 12px 45px #17131c33}
+.notification-popover header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.notification-popover header h2{margin:0}
+.notification-popover header button{border:0;background:transparent;color:inherit;padding:8px}
+.notification-mark{display:flex;align-items:center;gap:7px;margin:10px 0}
+.notification-mark:disabled{opacity:.45}
+.notification-list{max-height:55dvh;overflow:auto;display:grid;gap:5px}
+.notification-item{display:flex;align-items:center;gap:12px;text-align:left;padding:12px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--dark);width:100%;font:inherit}
+.notification-item span{display:grid;gap:5px;flex:1;min-width:0;overflow-wrap:anywhere}
+.notification-item small{color:var(--muted)}
+.notification-item.unread{background:var(--ivory)}
+.notification-item i{width:8px;height:8px;flex-shrink:0;border-radius:50%;background:#a96abb}
+html[data-wedly-theme=dark] .notification-popover{background:#241e2c}
+@media(display-mode:standalone) and (max-width:900px){
+.desktop-notification-actions .notification-center{display:none}
+.mobile-head .notification-popover{position:fixed;top:calc(70px + env(safe-area-inset-top,0px));left:12px;right:12px;width:auto}
+.main-area .mobile-head:has(.notification-popover){z-index:1200}
+}
