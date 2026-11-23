@@ -1,3 +1,4 @@
+import {brandedEmail} from '../../../../lib/brand-email';
 import {NextRequest,NextResponse} from 'next/server';
 import {createClient} from '@supabase/supabase-js';
 export const runtime='nodejs';
@@ -32,7 +33,7 @@ export async function GET(req:NextRequest){
     const w=wedding?.content||{},eventName=w.eventType==='baptism'?'Botez '+(w.childName||''):[w.first,w.second].filter(Boolean).join(' & ')||'Eveniment WEDLY';
     const action=event.response_status==='confirmat'?'a confirmat participarea':'a refuzat participarea';
     const text=[event.guest_name+' '+action+'.',event.response_status==='confirmat'?'Număr persoane: '+event.party_size:'', 'Eveniment: '+eventName,'Detalii: https://wedly.ro/dashboard?view=guests'].filter(Boolean).join('\n');
-    const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify({from,to:[recipient.user.email],subject:'WEDLY RSVP – '+event.guest_name,text})});
+    const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify({from,to:[recipient.user.email],subject:'WEDLY RSVP – '+event.guest_name,text,html:brandedEmail('Confirmare RSVP',[event.guest_name+' '+action+'.',event.response_status==='confirmat'?'Număr persoane: '+event.party_size:'', 'Eveniment: '+eventName,'https://wedly.ro/dashboard?view=guests'].filter(Boolean))})});
     const result=await response.json().catch(()=>({}));
     if(!response.ok||!result.id)throw Error('Provider rejected email');
     await db.from('rsvp_notification_delivery').update({status:'sent',provider_id:result.id}).eq('queue_id',event.id).eq('user_id',pref.user_id);
