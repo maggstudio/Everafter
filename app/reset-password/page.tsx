@@ -1,3 +1,4 @@
+import BrandLogo from '../components/BrandLogo';
 'use client';
 import {useEffect,useState} from 'react';
 import Link from 'next/link';
@@ -44,5 +45,5 @@ export default function ResetPassword(){
   await supabase.auth.signOut();
   router.replace('/login');
  }
- return <main className="shell narrow"><Link className="brand" href="/">WEDLY ✦</Link><section className="panel"><span className="eyebrow">SECURITATE CONT</span><h1>Parolă nouă</h1>{ready&&<form onSubmit={submit}><label>Parolă nouă<input type="password" autoComplete="new-password" minLength={8} required value={password} onChange={e=>setPassword(e.target.value)}/></label><label>Confirmă parola<input type="password" autoComplete="new-password" minLength={8} required value={confirm} onChange={e=>setConfirm(e.target.value)}/></label><button className="button full" disabled={busy} type="submit">{busy?'Se actualizează...':'Salvează parola nouă'}</button></form>}{message&&<p role="status">{message}</p>}<p><Link href="/login">Înapoi la autentificare</Link></p></section></main>
+ return <main className="shell narrow"><Link className="brand" href="/"><BrandLogo/></Link><section className="panel"><span className="eyebrow">SECURITATE CONT</span><h1>Parolă nouă</h1>{ready&&<form onSubmit={submit}><label>Parolă nouă<input type="password" autoComplete="new-password" minLength={8} required value={password} onChange={e=>setPassword(e.target.value)}/></label><label>Confirmă parola<input type="password" autoComplete="new-password" minLength={8} required value={confirm} onChange={e=>setConfirm(e.target.value)}/></label><button className="button full" disabled={busy} type="submit">{busy?'Se actualizează...':'Salvează parola nouă'}</button></form>}{message&&<p role="status">{message}</p>}<p><Link href="/login">Înapoi la autentificare</Link></p></section></main>
 }
