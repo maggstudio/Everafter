@@ -963,3 +963,14 @@ html[data-wedly-theme=dark] .global-search-results button{background:#493653;bor
 .reception-map-table.rect{border-radius:6px}
 .reception-map-table.highlight{background:#47734e;color:white;border:2px solid #244c2a;z-index:2;box-shadow:0 0 0 4px #47734e44;font-weight:bold}
 .wedly-reception-public footer{margin-top:24px;font-size:11px}
+
+.reception-poster-editor{display:grid;gap:16px;margin-top:20px;border-top:1px solid var(--line);padding-top:20px}
+.poster-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px}
+.poster-fields label{display:grid;gap:6px;min-width:0}
+.poster-fields input,.poster-fields select,.poster-fields textarea{width:100%;min-width:0;box-sizing:border-box}
+.reception-poster-preview{width:min(100%,420px);box-sizing:border-box;aspect-ratio:210/297;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(5px,1.4vw,12px);padding:clamp(12px,4vw,30px);outline:1px solid currentColor;outline-offset:-8px;text-align:center;overflow-wrap:anywhere}
+.reception-poster-preview h2,.reception-poster-preview h3,.reception-poster-preview p{margin:0}
+.reception-poster-preview h2{font-size:clamp(22px,5vw,34px)}
+.reception-poster-preview h3{font-size:clamp(16px,3vw,24px)}
+.reception-poster-preview .poster-qr{width:48%;height:auto;background:white}
+.reception-poster-preview .poster-photo{width:35%;aspect-ratio:1;object-fit:cover;border-radius:50%}
