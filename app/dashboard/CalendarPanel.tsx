@@ -1,5 +1,5 @@
 'use client';
-import {useState} from 'react';
+import {useEffect,useState} from 'react';
 import {useStore,type Appointment} from '../../lib/store';
 import {paidTotal} from './VendorPayments';
 
@@ -18,11 +18,12 @@ const icsEvent=(id:string,name:string,date:string,time:string|undefined,details:
  'DESCRIPTION:'+icsEscape(details),'END:VEVENT'
 ].join('\r\n');
 
-export default function CalendarPanel(){
+export default function CalendarPanel({quickAdd=0}:{quickAdd?:number}){
  const {data,setData,can}=useStore();
  const [month,setMonth]=useState(()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),1)});
  const [form,setForm]=useState<Form>(blank);
  const [showForm,setShowForm]=useState(false);
+ useEffect(()=>{if(quickAdd){setShowForm(true);const t=setTimeout(()=>document.querySelector('.calendar-form')?.scrollIntoView({block:'center',behavior:'smooth'}),100);return()=>clearTimeout(t)}},[quickAdd]);
 
  const [editing,setEditing]=useState<number|null>(null);
  const [categoryFilter,setCategoryFilter]=useState('all');
