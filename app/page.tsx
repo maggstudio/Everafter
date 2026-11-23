@@ -1,4 +1,4 @@
-import BrandLogo from './components/BrandLogo';
+import SmartHomeLogo from './components/SmartHomeLogo';
 import Link from 'next/link';
 const highlights=[
  {icon:'✉',number:'01',title:'Creezi și trimiți invitațiile pe email',description:'Personalizezi invitația digitală, o trimiți invitaților și le oferi un link pentru confirmarea participării.',tag:'Invitații digitale + email'},
@@ -9,7 +9,7 @@ const highlights=[
  {icon:'₾',number:'06',title:'Notezi darul primit de la fiecare invitat',description:'Înregistrezi în lei sau euro cât a oferit fiecare invitat ori familie și poți consulta ulterior registrul darurilor.',tag:'Evidența darului'}
 ];
 export default function Home(){
- return <main className="landing"><header className="top"><Link className="brand" href="/" aria-label="WEDLY, prima pagină"><BrandLogo showMotto/></Link><nav aria-label="Navigare principală"><Link href="/login">Autentificare</Link></nav></header>
+ return <main className="landing"><header className="top"><SmartHomeLogo showMotto/><nav aria-label="Navigare principală"><Link href="/login">Autentificare</Link></nav></header>
  <section className="hero christmas-hero">
  <div className="christmas-ribbon">🎄 OFERTĂ SPECIALĂ DE CRĂCIUN · WEDLY 2027</div>
  <span className="eyebrow">PENTRU VIITORII MIRI · ROMÂNIA</span>
