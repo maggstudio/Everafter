@@ -783,3 +783,23 @@ button,a,input,select,textarea{transition:background-color .18s ease,border-colo
  .pwa-fab,.mobile-nav button{transition:background-color .15s,transform .15s}
  .pwa-fab:active,.mobile-nav button:active{transform:scale(.96)}
 }
+
+/* Device-local theme. Invitation artwork and public pages retain their original palette. */
+.theme-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:16px 0}
+.theme-options button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:76px;padding:10px 4px;border:1px solid var(--line);border-radius:13px;background:transparent;color:var(--dark);font:inherit;font-size:.85rem}
+.theme-options button[aria-pressed=true]{background:#f3e7f2;border-color:#92528d;color:#50205e;font-weight:700}
+@media screen{
+html[data-wedly-theme=dark] body:has(.app-layout){background:#17131c}
+html[data-wedly-theme=dark] .app-layout{--cream:#17131c;--ivory:#302738;--sage:#b5c9ae;--dark:#f0eaf2;--muted:#bdb1c5;--gold:#e0bc88;--line:#45394d;--brand-primary:#d7b1e0;--brand-soft:#382b42;--focus-ring:#d4a1e5;--shadow-card:none;color:var(--dark);background:var(--cream);color-scheme:dark}
+html[data-wedly-theme=dark] .app-layout :is(.sidebar,.panel,.stats article,.seating-table,.room-plan,.guest-rsvp-detail,.guest-rsvp-link,.task-edit,.calendar-grid,.calendar-day,.dashboard-quick-actions button,.settings-hub-link,.mobile-head,.mobile-nav,.mobile-more-modules,.pwa-quick-sheet,.event-delete-dialog){background:#241e2c;color:var(--dark);border-color:var(--line);box-shadow:none}
+html[data-wedly-theme=dark] .app-layout :is(.countdown,.total,.progress,.pill){background:#382b42;color:#f0eaf2;border-color:var(--line)}
+html[data-wedly-theme=dark] .app-layout :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background:#1b1722;color:#f0eaf2;border-color:#55465e}
+html[data-wedly-theme=dark] .app-layout :is(.side-nav button,.mobile-nav button,.module-nav-link,.mobile-more-modules button,.mobile-more-modules a,.pwa-quick-sheet button,.calendar-toolbar button,.task-actions button:not(.button)){background:transparent;color:#e4d9eb;border-color:var(--line)}
+html[data-wedly-theme=dark] .app-layout :is(.side-nav button.active,.mobile-nav button.active,.calendar-day.is-selected,.theme-options button[aria-pressed=true],.settings-hub-link:hover,.dashboard-quick-actions button:hover){background:#47324f;color:#f3d8fa;border-color:#93699e}
+html[data-wedly-theme=dark] .app-layout .button:not(.secondary){background:#d7b1e0;color:#25182d;border-color:#d7b1e0}
+html[data-wedly-theme=dark] .app-layout :is(.button.secondary,.text-button,.wedly-brand-name,.wedly-brand-motto,.settings-hub-link span){color:#d7b1e0;border-color:#66516f}
+html[data-wedly-theme=dark] .app-layout :is(.task-late,.v09-warning){background:#3d2b24;color:#ffd3ad;border-color:#a66d4c}
+html[data-wedly-theme=dark] .app-layout .remove{color:#ffb0b0}
+html[data-wedly-theme=dark] .app-layout .pwa-fab{background:#a96abb;color:#17131c}
+html[data-wedly-theme=dark] .app-layout .invitation-preview{--dark:#333c34;--muted:#7e8279;--gold:#b59a70;--line:#e5e2d9;color-scheme:light}
+}
