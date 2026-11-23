@@ -12,4 +12,6 @@ begin
 end;$$;
 revoke all on function public.wedly_reception_limit(text) from public,anon,authenticated;
 grant execute on function public.wedly_reception_limit(text) to service_role;
+grant usage on schema public to service_role;
 commit;
+notify pgrst, 'reload schema';
