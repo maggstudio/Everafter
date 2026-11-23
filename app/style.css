@@ -974,3 +974,24 @@ html[data-wedly-theme=dark] .global-search-results button{background:#493653;bor
 .reception-poster-preview h3{font-size:clamp(16px,3vw,24px)}
 .reception-poster-preview .poster-qr{width:48%;height:auto;background:white}
 .reception-poster-preview .poster-photo{width:35%;aspect-ratio:1;object-fit:cover;border-radius:50%}
+
+.wedly-reception-public{--rc-bg:#f5efe5;--rc-card:#fffdf8;--rc-text:#40372e;--rc-muted:#66594b;--rc-line:#ded2bf;--rc-soft:#eee5d5;background:var(--rc-bg);color:var(--rc-text)}
+.wedly-reception-public[data-reception-theme=botanical]{--rc-bg:#e6eee4;--rc-card:#f8fbf5;--rc-text:#294437;--rc-muted:#4d6554;--rc-line:#b4c6ae;--rc-soft:#e0ebdc}
+.wedly-reception-public[data-reception-theme=modern]{--rc-bg:#eeeeee;--rc-card:#ffffff;--rc-text:#202020;--rc-muted:#555555;--rc-line:#cccccc;--rc-soft:#f1f1f1}
+.wedly-reception-public[data-reception-theme=midnight]{--rc-bg:#101a2b;--rc-card:#17243a;--rc-text:#f5e6bf;--rc-muted:#d5c9ae;--rc-line:#8c7956;--rc-soft:#263650}
+.wedly-reception-public[data-reception-theme=rose]{--rc-bg:#f7e4e9;--rc-card:#fff5f7;--rc-text:#633347;--rc-muted:#80546a;--rc-line:#dfb8c4;--rc-soft:#f4dce4}
+.wedly-reception-public .reception-card{background:var(--rc-card);color:var(--rc-text);border-color:var(--rc-line);min-width:0}
+.wedly-reception-public p,.wedly-reception-public small,.wedly-reception-public footer{color:var(--rc-muted)}
+.wedly-reception-public .reception-table{background:var(--rc-soft)}
+.wedly-reception-public .reception-ornament{font-size:32px;color:var(--reception-accent);margin-bottom:8px}
+.wedly-reception-public[data-reception-font=modern] :is(h1,h2,h3){font-family:Arial,sans-serif}
+.wedly-reception-public[data-reception-font=romantic] :is(h1,h2,h3){font-family:Palatino,Georgia,serif;font-style:italic}
+.wedly-reception-public[data-reception-theme=midnight] button:not(.reception-result){background:#f5e6bf;color:#17243a}
+.wedly-reception-public .reception-map-scroll{overflow:auto;max-height:65dvh;border:1px solid var(--rc-line);border-radius:14px}
+.wedly-reception-public .reception-map{margin:0;box-sizing:border-box;max-width:none}
+.wedly-reception-public .reception-zoom-controls{display:flex;gap:8px;justify-content:center}
+.wedly-reception-public .reception-zoom-controls button{width:auto;min-width:48px}
+.wedly-reception-public button:disabled{opacity:.5}
+.reception-welcome{animation:reception-enter .45s ease-out}
+@keyframes reception-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.reception-welcome{animation:none}}
