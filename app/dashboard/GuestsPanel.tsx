@@ -42,7 +42,7 @@ export default function GuestsPanel(){
  const edit=(g:Guest)=>{setShowForm(true);setEditing(g.id);setForm({name:g.name,status:g.status,group:g.group||'Altele',partySize:String(size(g)),phone:g.phone||'',notes:g.notes||''})};
  const save=(event:React.FormEvent)=>{event.preventDefault();if(!writable)return;const count=Number(form.partySize);if(!form.name.trim()||!Number.isInteger(count)||count<1||count>100)return;
  const existing=editing?data.guests.find(g=>g.id===editing):undefined;
- const next:Guest={...existing,id:editing||crypto.randomUUID(),name:form.name.trim().slice(0,160),status:form.status,group:form.group,partySize:count,phone:form.phone.trim().slice(0,60)||undefined,notes:form.notes.trim().slice(0,500)||undefined};
+ const next:Guest={...existing,id:editing||crypto.randomUUID(),name:form.name.trim().slice(0,160),status:form.status,group:form.group,partySize:count,phone:form.phone.trim().slice(0,60)||undefined,email:undefined,notes:form.notes.trim().slice(0,500)||undefined};
  setData(d=>({...d,guests:editing?d.guests.map(g=>g.id===editing?next:g):[...d.guests,next]}));reset();
  };
  return <><section className="panel"><div className="guest-page-title"><div><h2>Invitați</h2><p>Persoane, confirmări și distribuirea invitațiilor — totul într-o singură listă.</p></div><div className="row-controls">{writable&&<button type="button" className="button" onClick={()=>{reset();setShowForm(true)}}>+ Adaugă invitat</button>}<button className="button secondary" type="button" disabled={refreshing} onClick={()=>void refreshRsvp()}>{refreshing?"Se actualizează...":"Actualizează"}</button></div></div>{rsvpError&&<p role="status">{rsvpError}</p>}
