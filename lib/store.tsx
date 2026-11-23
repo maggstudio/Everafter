@@ -58,7 +58,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  async function refreshInPlace(){if(!loaded.current||polling.current||isSaving.current||JSON.stringify(dataRef.current)!==JSON.stringify(saved.current))return;polling.current=true;try{await refresh(true)}finally{polling.current=false}}
  async function refresh(background=false){if(!supabase)return;const client=supabase;const v=++version.current;if(!background){loaded.current=false;setReady(false);setSaveStatus('Se încarcă...');}
  const {data:{user},error:authError}=await client.auth.getUser();if(v!==version.current)return;
- if(authError||!user){if(!user&&!authError||authError?.status===401||authError?.status===403){loaded.current=false;setReady(false);setUserId(null);setWeddingId(null);setMembers([]);setData(initial)}setSaveStatus('Autentificare necesară');return}authUser.current=user.id;setUserId(user.id);
+ if(authError||!user){const {data:{session},error:sessionError}=await client.auth.getSession();if(v!==version.current)return;const expired=!session&&!sessionError;if(expired){loaded.current=false;authUser.current=null;selectedEvent.current=null;setReady(false);setUserId(null);setWeddingId(null);setMembers([]);setPending([]);setEvents([]);saved.current=initial;setData(initial);setSaveStatus('Autentificare necesară')}else{setSaveStatus('Sincronizare în așteptare')}return}authUser.current=user.id;setUserId(user.id);
  // Never bootstrap a new event on refresh: an account may intentionally have zero events.
  const {data:allMembers,error:memberError}=await client.from('wedding_members').select('*').eq('user_id',user.id);
  if(v!==version.current)return;if(memberError){setSaveStatus(memberError.message);return}
@@ -93,7 +93,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  const next:Data={...initial};for(const row of rows||[]){const mod=row.module as Module;if(modules.includes(mod)){(next as any)[field[mod]]=mod==='wedding'?{...defaultWedding,...row.content}:row.content}}
  // Missing modules are not permission to use demo data: empty lists are intentional.
  if(background&&(isSaving.current||JSON.stringify(dataRef.current)!==JSON.stringify(saved.current)))return;
- selectedEvent.current=id;try{localStorage.setItem('wedly-event:'+user.id,id)}catch{}setWeddingId(id);setMembers((team||[chosen]) as Member[]);saved.current=next;setData(next);loaded.current=true;setReady(true);if(!background)setSaveStatus('Date sincronizate');
+ selectedEvent.current=id;try{localStorage.setItem('wedly-event:'+user.id,id)}catch{}setWeddingId(id);setMembers((team||[chosen]) as Member[]);saved.current=next;setData(next);loaded.current=true;setReady(true);setSaveStatus('Date sincronizate');
  }
  useEffect(()=>{
   booting.current=true;void refresh().finally(()=>{booting.current=false});if(!supabase)return;
@@ -101,7 +101,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
    if(event==='SIGNED_OUT'){
     version.current++;authUser.current=null;selectedEvent.current=null;loaded.current=false;setReady(false);setSaveStatus('Autentificare necesară');
     setUserId(null);setWeddingId(null);setMembers([]);setEvents([]);setData(initial);
-   }else if(event==='SIGNED_IN'&&session){
+   }else if((event==='SIGNED_IN'||event==='TOKEN_REFRESHED')&&session){
     // Auth state may become available after the initial getUser call.
     // Defer Supabase queries until the auth callback has completed.
     setTimeout(()=>{if(authUser.current===session.user.id&&loaded.current){void refreshInPlace();return}if(booting.current&&(!authUser.current||authUser.current===session.user.id))return;booting.current=true;void refresh().finally(()=>{booting.current=false})},0);
@@ -119,7 +119,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
 
  useEffect(()=>{if(!weddingId||!ready)return;
  const interval=setInterval(()=>{if(polling.current||isSaving.current||JSON.stringify(dataRef.current)!==JSON.stringify(saved.current))return;polling.current=true;void refresh(true).finally(()=>{polling.current=false})},30000);
- return()=>clearInterval(interval);
+ const resume=()=>{if(document.visibilityState==='visible')void refreshInPlace()};document.addEventListener('visibilitychange',resume);window.addEventListener('online',resume);return()=>{clearInterval(interval);document.removeEventListener('visibilitychange',resume);window.removeEventListener('online',resume)};
  },[weddingId,ready,data]);
  return <Context.Provider value={{events,data,setData,ready,saveStatus,weddingId,members,pending,isOwner,can,refresh,refreshInPlace,selectEvent}}>{children}</Context.Provider>
 }
