@@ -688,19 +688,6 @@ button,a,input,select,textarea{transition:background-color .18s ease,border-colo
 @media(max-width:650px){.landing .top .wedly-brand-symbol{width:38px;height:38px;flex-basis:38px}.landing .top .wedly-brand-name{font-size:1.23rem}.landing .top .wedly-brand-motto{font-size:.55rem;white-space:normal}.wedly-brand{gap:8px}.mobile-head .wedly-brand-name{font-size:1.13rem}}
 
 
-/* Built-in wedding background library */
-.invitation-preset-filters{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
-.invitation-preset-filters button{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 11px;color:var(--dark);font-size:.8rem}
-.invitation-preset-filters button.selected{border-color:#456a58;background:#e7eee8;font-weight:700}
-.invitation-preset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px;max-height:490px;overflow-y:auto;padding:6px 4px 12px}
-.invitation-preset-card{background:#fff;border:2px solid #e5e2d9;border-radius:12px;padding:5px;display:flex;flex-direction:column;gap:6px;min-width:0;text-align:center;color:var(--dark)}
-.invitation-preset-card.selected{border-color:#387657;box-shadow:0 0 0 2px #b7d7c5}
-.invitation-preset-card:hover:not(:disabled){border-color:#729982}
-.invitation-preset-card small{font-size:.71rem;line-height:1.25;padding:0 2px 4px}
-.invitation-preset-art{width:100%;aspect-ratio:2/3;background-size:cover;background-position:center;border-radius:7px;display:flex;align-items:center;justify-content:center}
-.invitation-preset-art span{font:italic 1.3rem Georgia,serif;color:#66564c;text-shadow:0 1px 4px #fff}
-
-
 /* Invitation typography safety: decorations stay behind a readable, fluid content column.
    Content grows vertically instead of being clipped or overlapping other text. */
 .invitation-preview{height:auto;overflow:visible;box-sizing:border-box;gap:clamp(9px,1.8vw,17px);line-height:1.45}
