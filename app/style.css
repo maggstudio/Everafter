@@ -1007,3 +1007,20 @@ html[data-wedly-theme=dark] .global-search-results button{background:#493653;bor
 .reception-occupancy article{display:grid;gap:8px;padding:14px;border:1px solid var(--line);border-radius:12px}
 .reception-occupancy small{color:var(--muted)}
 @media(max-width:600px){.reception-tabs button{flex-direction:column;font-size:12px;padding:8px 4px}.reception-module .checkin-list{max-height:65dvh}.reception-module .checkin-list article .row-controls{flex-wrap:wrap}}
+
+.wedly-splash{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px;background:#faf8f4;color:#50205e;box-sizing:border-box}
+.wedly-splash-inner{width:min(100%,420px);display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center}
+.wedly-splash .wedly-brand{display:flex;flex-direction:column;align-items:center;gap:16px}
+.wedly-splash .wedly-brand-symbol{width:86px;height:86px}
+.wedly-splash .wedly-brand-copy{align-items:center;text-align:center}
+.wedly-splash .wedly-brand-name{font-size:36px;letter-spacing:.14em;color:inherit}
+.wedly-splash .wedly-brand-motto{color:inherit;opacity:.7}
+.wedly-splash-progress{width:112px;height:3px;border-radius:8px;overflow:hidden;background:#50205e20}
+.wedly-splash-progress span{display:block;width:40%;height:100%;border-radius:8px;background:#80528f;animation:wedly-splash-slide 1.2s ease-in-out infinite}
+@keyframes wedly-splash-slide{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
+.wedly-splash-recovery{max-width:100%;display:grid;gap:10px}
+.wedly-splash-recovery .actions{justify-content:center;flex-wrap:wrap}
+html[data-wedly-theme=dark] .wedly-splash{background:#17131c;color:#e2c4ec}
+html[data-wedly-theme=dark] .wedly-splash-progress{background:#ffffff18}
+html[data-wedly-theme=dark] .wedly-splash-progress span{background:#c49ad5}
+@media(prefers-reduced-motion:reduce){.wedly-splash-progress span{animation:none;width:100%;opacity:.6}}
