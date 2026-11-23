@@ -24,6 +24,12 @@ export async function POST(req:NextRequest){
  const bearer=req.headers.get('authorization')||'';
  if(bearer.startsWith('Bearer ')){const {data:{user}}=await admin.auth.getUser(bearer.slice(7));if(user&&user.email?.toLowerCase()===email)userId=user.id}
  const {error}=await admin.from('contact_messages').insert({sender_name:name,sender_email:email,category,subject,message,user_id:userId});
- if(error){console.error('Contact insert failed',error.code);return fail('Mesajul nu a putut fi salvat.',503)}
+ if(error){
+  console.error('WEDLY contact insert failed',{code:error.code,message:error.message,details:error.details,hint:error.hint});
+  if(error.code==='42P01'||error.code==='PGRST205')return fail('Formularul nu este configurat complet. Administratorul trebuie să aplice migrarea contact_support.sql.',503);
+  if(error.code==='42703'||error.code==='PGRST204')return fail('Structura tabelului de contact este incompletă. Administratorul trebuie să verifice migrarea contact_support.sql.',503);
+  if(error.code==='42501')return fail('Salvarea este blocată de permisiunile bazei de date. Contactează administratorul.',503);
+  return fail('Mesajul nu a putut fi salvat. Cod diagnostic: '+(error.code||'DB_UNKNOWN')+'.',503);
+ }
  return NextResponse.json({ok:true},{status:201,headers:{'Cache-Control':'no-store'}});
 }
