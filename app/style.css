@@ -487,3 +487,67 @@ button,a,input,select,textarea{transition:background-color .18s ease,border-colo
 .landing-power-cta .button{white-space:nowrap}
 @media(max-width:900px){.landing-power-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.landing-superpowers-head{align-items:flex-start}.landing-zero-stamp{min-width:160px}}
 @media(max-width:640px){.landing-superpowers{padding:52px 17px}.landing-superpowers-head{display:block}.landing-zero-stamp{margin:24px 0 0;max-width:240px}.landing-power-grid{grid-template-columns:1fr;gap:13px}.landing-power-card{min-height:230px;padding:23px}.landing-power-top{margin-bottom:14px}.landing-power-cta{flex-direction:column;align-items:stretch;padding:23px}.landing-power-cta .button{text-align:center}.landing-hero-proof span{font-size:.78rem;padding:7px 10px}}
+
+/* Mobile-only landing refinements; desktop layout and styles remain unchanged. */
+@media (max-width:720px){
+ .landing{width:100%;max-width:100%;padding:0 14px 28px;overflow-x:clip}
+ .landing .top{padding:17px 3px;align-items:center;gap:12px}
+ .landing .top .brand{font-size:1.48rem;white-space:nowrap}
+ .landing .top nav a{display:inline-flex;align-items:center;min-height:44px;padding:8px 10px;font-size:.87rem;font-weight:700}
+ .landing .christmas-hero{margin:6px 0 0;padding:31px 15px 29px!important;border-radius:20px}
+ .landing .christmas-ribbon{max-width:100%;font-size:.65rem;line-height:1.45;letter-spacing:.035em;white-space:normal;margin-bottom:20px;padding:10px 13px}
+ .landing .christmas-hero .eyebrow{display:block;font-size:.64rem;letter-spacing:.13em}
+ .landing .christmas-hero h1{font-size:clamp(2.25rem,9vw,3.7rem);line-height:1.08;letter-spacing:-.05em;margin:14px auto 17px;overflow-wrap:break-word}
+ .landing .christmas-lead{font-size:.98rem;line-height:1.65;margin-bottom:18px!important}
+ .landing .landing-hero-proof{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:17px 0 22px}
+ .landing .landing-hero-proof span{justify-content:center;text-align:center;min-width:0;padding:9px 6px;border-radius:12px;font-size:.76rem;line-height:1.35}
+ .landing .christmas-pricing{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:18px auto 21px}
+ .landing .christmas-price-card{min-width:0;min-height:135px;padding:12px 4px;gap:6px;border-radius:13px}
+ .landing .christmas-price-card>span{font-size:.66rem;letter-spacing:.06em}
+ .landing .christmas-price-card strong{font-size:clamp(1.1rem,4.7vw,1.55rem)}
+ .landing .christmas-price-card del{font-size:.8rem}
+ .landing .christmas-price-card small{font-size:.65rem;line-height:1.3}
+ .landing .christmas-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+ .landing .christmas-actions .button{display:flex;align-items:center;justify-content:center;width:100%;min-height:51px;white-space:normal;padding:12px 14px!important;font-size:.96rem!important;line-height:1.3}
+ .landing .christmas-trust{font-size:.78rem;line-height:1.65;margin:16px auto 10px!important}
+ .landing .christmas-disclosure{font-size:.72rem;line-height:1.5}
+ .landing .landing-superpowers{padding:51px 3px 39px}
+ .landing .landing-superpowers-head{margin-bottom:22px}
+ .landing .landing-superpowers-head h2{font-size:clamp(1.85rem,7vw,2.65rem);line-height:1.14;letter-spacing:-.035em;overflow-wrap:break-word}
+ .landing .landing-superpowers-head h2 br{display:none}
+ .landing .landing-superpowers-head p{font-size:.96rem;line-height:1.6}
+ .landing .landing-zero-stamp{max-width:none;width:100%;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:13px;align-items:center;text-align:left;padding:17px 20px;margin:22px 0 0;border-radius:17px}
+ .landing .landing-zero-stamp strong{font-size:2.8rem;grid-row:span 2}
+ .landing .landing-zero-stamp span{font-size:.84rem;margin:0}
+ .landing .landing-zero-stamp small{font-size:.71rem}
+ .landing .landing-power-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+ .landing .landing-power-card{min-width:0;min-height:0;padding:22px 21px;border-radius:18px}
+ .landing .landing-power-top{margin-bottom:14px}
+ .landing .landing-power-icon{width:49px;height:49px;font-size:1.65rem;border-radius:14px}
+ .landing .landing-power-card h3{font-size:1.48rem}
+ .landing .landing-power-card p{font-size:.94rem;line-height:1.57;margin-bottom:19px}
+ .landing .landing-power-tag{font-size:.73rem;line-height:1.45}
+ .landing .landing-power-cta{margin-top:15px;padding:21px 19px;gap:15px;border-radius:17px}
+ .landing .landing-power-cta strong{font-size:1.2rem;line-height:1.35}
+ .landing .landing-power-cta p{font-size:.9rem;line-height:1.5}
+ .landing .landing-power-cta .button{width:100%;display:flex;align-items:center;justify-content:center;white-space:normal;min-height:49px}
+ .landing .landing-product-teaser{grid-template-columns:minmax(0,1fr);gap:23px;margin:30px 0;padding:14px 0}
+ .landing .landing-product-teaser h2{font-size:clamp(1.9rem,7vw,2.5rem)}
+ .landing .landing-product-teaser .button{max-width:100%;white-space:normal;text-align:center}
+ .landing .landing-teaser-preview{min-width:0;transform:none;padding:20px;border-radius:17px;gap:14px}
+ .landing .landing-teaser-preview>strong{font-size:1.7rem}
+ .landing .landing-next{margin:26px 0 0;padding:24px 17px}
+ .landing .landing-next .actions{display:grid;grid-template-columns:minmax(0,1fr)}
+ .landing .landing-next .button{width:100%;text-align:center}
+ .landing .public-footer{gap:14px;padding:25px 5px}
+}
+@media (max-width:380px){
+ .landing{padding-inline:10px}
+ .landing .christmas-hero{padding-inline:11px!important}
+ .landing .christmas-hero h1{font-size:clamp(2rem,9.2vw,2.4rem)}
+ .landing .christmas-pricing{gap:5px}
+ .landing .christmas-price-card{padding:10px 2px;min-height:125px}
+ .landing .christmas-price-card strong{font-size:1.05rem}
+ .landing .christmas-price-card small{font-size:.61rem}
+ .landing .landing-power-card{padding:19px 17px}
+}
