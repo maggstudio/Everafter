@@ -14,7 +14,7 @@ const initial:Data={vendors:[],wedding:defaultWedding,tasks:[],expenses:[],guest
 const modules:Module[]=['wedding','tasks','expenses','guests','packages','calendar','vendors'];
 const field:Record<Module,keyof Data>={wedding:'wedding',tasks:'tasks',expenses:'expenses',guests:'guests',packages:'packages',calendar:'appointments',vendors:'vendors'};
 export type EventSummary={id:string;name:string;type:string;date:string;city:string;role:string};
-type Store={events:EventSummary[];data:Data;setData:React.Dispatch<React.SetStateAction<Data>>;ready:boolean;saveStatus:string;weddingId:string|null;members:Member[];pending:Member[];isOwner:boolean;can:(module:Module,action:'read'|'write')=>boolean;refresh:()=>Promise<void>;selectEvent:(id:string)=>Promise<boolean>};
+type Store={events:EventSummary[];data:Data;setData:React.Dispatch<React.SetStateAction<Data>>;ready:boolean;saveStatus:string;weddingId:string|null;members:Member[];pending:Member[];isOwner:boolean;can:(module:Module,action:'read'|'write')=>boolean;refresh:()=>Promise<void>;refreshInPlace:()=>Promise<void>;selectEvent:(id:string)=>Promise<boolean>};
 const Context=createContext<Store|null>(null);
 export function StoreProvider({children}:{children:React.ReactNode}){
  const [data,setData]=useState<Data>(initial),[ready,setReady]=useState(false),[saveStatus,setSaveStatus]=useState('Se încarcă...');
@@ -54,9 +54,10 @@ export function StoreProvider({children}:{children:React.ReactNode}){
   loaded.current=true;setReady(true);setSaveStatus('Date sincronizate');
   return true;
  }
+ async function refreshInPlace(){if(!loaded.current||polling.current||isSaving.current||JSON.stringify(dataRef.current)!==JSON.stringify(saved.current))return;polling.current=true;try{await refresh(true)}finally{polling.current=false}}
  async function refresh(background=false){if(!supabase)return;const client=supabase;const v=++version.current;if(!background){loaded.current=false;setReady(false);setSaveStatus('Se încarcă...');}
  const {data:{user},error:authError}=await client.auth.getUser();if(v!==version.current)return;
- if(authError||!user){setSaveStatus('Autentificare necesară');return}setUserId(user.id);
+ if(authError||!user){if(!user&&!authError||authError?.status===401||authError?.status===403){loaded.current=false;setReady(false);setUserId(null);setWeddingId(null);setMembers([]);setData(initial)}setSaveStatus('Autentificare necesară');return}setUserId(user.id);
  // Never bootstrap a new event on refresh: an account may intentionally have zero events.
  const {data:allMembers,error:memberError}=await client.from('wedding_members').select('*').eq('user_id',user.id);
  if(v!==version.current)return;if(memberError){setSaveStatus(memberError.message);return}
@@ -76,7 +77,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
 
  // Owner's wedding is the default; a shared wedding can be selected with ?wedding=<uuid>.
  const selected=typeof window!=='undefined'?new URLSearchParams(window.location.search).get('wedding'):null;
- const chosen=active.find((m:Member)=>m.wedding_id===selected)||active.find((m:Member)=>m.role==='owner')||active[0];
+ const chosen=active.filter((m:Member)=>eventIds.includes(m.wedding_id)).find((m:Member)=>m.wedding_id===selected)||active.find((m:Member)=>eventIds.includes(m.wedding_id)&&m.role==='owner')||active.find((m:Member)=>eventIds.includes(m.wedding_id));
  if(!chosen){
   saved.current=initial;loaded.current=true;setWeddingId(null);setMembers([]);setData(initial);setReady(true);
   setSaveStatus('Nu ai evenimente. Poți crea unul nou din Evenimentele mele.');return;
@@ -117,6 +118,6 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  const interval=setInterval(()=>{if(polling.current||isSaving.current||JSON.stringify(dataRef.current)!==JSON.stringify(saved.current))return;polling.current=true;void refresh(true).finally(()=>{polling.current=false})},30000);
  return()=>clearInterval(interval);
  },[weddingId,ready,data]);
- return <Context.Provider value={{events,data,setData,ready,saveStatus,weddingId,members,pending,isOwner,can,refresh,selectEvent}}>{children}</Context.Provider>
+ return <Context.Provider value={{events,data,setData,ready,saveStatus,weddingId,members,pending,isOwner,can,refresh,refreshInPlace,selectEvent}}>{children}</Context.Provider>
 }
 export function useStore(){const x=useContext(Context);if(!x)throw new Error('StoreProvider lipsă');return x}
