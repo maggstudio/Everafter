@@ -1,5 +1,5 @@
-import BrandLogo from '../components/BrandLogo';
 'use client';
+import BrandLogo from '../components/BrandLogo';
 import AuthLoading from '../components/AuthLoading';
 import Link from 'next/link';import {useEffect,useState} from 'react';import {useStore} from '../../lib/store';import {money,type Task} from '../../lib/demo';import {supabase} from '../../lib/supabase';import BudgetPanel from './BudgetPanel';import CalendarPanel from './CalendarPanel';import GuestsPanel from './GuestsPanel';import SeatingPanel from './SeatingPanel';import InvitationsPanel from './InvitationsPanel';import VendorsPanel from './VendorsPanel';import AutoVendorDiscovery from './AutoVendorDiscovery';import NotificationSettingsPanel from './NotificationSettingsPanel';
 type View='overview'|'tasks'|'budget'|'guests'|'calendar'|'seating'|'invitations'|'vendors'|'notifications'|'settings';
