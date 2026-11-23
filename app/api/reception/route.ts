@@ -19,7 +19,7 @@ export async function POST(req:NextRequest){
  const event=w.data?.content as Wedding|undefined;const config=event?.reception;
  if(!event||!config?.enabled||config.token!==b.token)return json({error:'Recepția nu este activă.'},404);
  const now=new Date().toISOString();if(config.from&&now<config.from||config.until&&now>config.until)return json({error:'Recepția nu este activă în acest moment.'},404);
- const info={title:event.eventType==='baptism'?(event.childName||'Botez'):[event.first,event.second].join(' & '),date:event.date,message:config.message,accent:config.accent};
+ const info={title:event.eventType==='baptism'?(event.childName||'Botez'):[event.first,event.second].join(' & '),date:event.date,message:config.message,accent:config.accent,theme:config.theme||'classic',font:config.font||'elegant'};
  if(typeof b.query!=='string'||!b.query.trim())return json({info,results:[]});
  const q=norm(b.query);if(q.length<3||q.length>160)return json({info,results:[]});
  const g=await db.from('wedding_modules').select('content').eq('wedding_id',b.event).eq('module','guests').maybeSingle();if(g.error)return json({error:'Căutarea nu este disponibilă.'},503);
