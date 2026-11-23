@@ -40,7 +40,7 @@ declare secret text; state jsonb; begin
  return secret;
 end $$;
 revoke all on function public.rsvp_share_link(uuid,text,text) from public;
-grant execute on function public.rsvp_share_link(uuid,uuid,text) to authenticated;
+grant execute on function public.rsvp_share_link(uuid,text,text) to authenticated;
 
 create or replace function public.rsvp_cancel_shared_link(p_wedding uuid,p_guest_id text)
 returns void language plpgsql security definer set search_path = '' as $$
