@@ -57,8 +57,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  async function refresh(background=false){if(!supabase)return;const client=supabase;const v=++version.current;if(!background){loaded.current=false;setReady(false);setSaveStatus('Se încarcă...');}
  const {data:{user},error:authError}=await client.auth.getUser();if(v!==version.current)return;
  if(authError||!user){setSaveStatus('Autentificare necesară');return}setUserId(user.id);
- const {data:owned,error:bootstrapError}=await client.rpc('ensure_my_wedding');if(v!==version.current)return;
- if(bootstrapError){setSaveStatus('Migrarea v0.5 lipsește sau a eșuat: '+bootstrapError.message);return}
+ // Never bootstrap a new event on refresh: an account may intentionally have zero events.
  const {data:allMembers,error:memberError}=await client.from('wedding_members').select('*').eq('user_id',user.id);
  if(v!==version.current)return;if(memberError){setSaveStatus(memberError.message);return}
  const active=(allMembers||[]).filter((m:Member)=>m.status==='active');const invitations=(allMembers||[]).filter((m:Member)=>m.status==='pending');
@@ -77,8 +76,11 @@ export function StoreProvider({children}:{children:React.ReactNode}){
 
  // Owner's wedding is the default; a shared wedding can be selected with ?wedding=<uuid>.
  const selected=typeof window!=='undefined'?new URLSearchParams(window.location.search).get('wedding'):null;
- const chosen=active.find((m:Member)=>m.wedding_id===selected)||active.find((m:Member)=>m.wedding_id===owned)||active[0];
- if(!chosen){setSaveStatus('Nu există un eveniment accesibil');return}
+ const chosen=active.find((m:Member)=>m.wedding_id===selected)||active.find((m:Member)=>m.role==='owner')||active[0];
+ if(!chosen){
+  saved.current=initial;loaded.current=true;setWeddingId(null);setMembers([]);setData(initial);setReady(true);
+  setSaveStatus('Nu ai evenimente. Poți crea unul nou din Evenimentele mele.');return;
+ }
  const id=chosen.wedding_id;setWeddingId(id);
  const {data:team}=await client.from('wedding_members').select('*').eq('wedding_id',id);
  if(v!==version.current)return;setMembers((team||[chosen]) as Member[]);
