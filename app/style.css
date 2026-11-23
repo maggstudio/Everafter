@@ -803,3 +803,13 @@ html[data-wedly-theme=dark] .app-layout .remove{color:#ffb0b0}
 html[data-wedly-theme=dark] .app-layout .pwa-fab{background:#a96abb;color:#17131c}
 html[data-wedly-theme=dark] .app-layout .invitation-preview{--dark:#333c34;--muted:#7e8279;--gold:#b59a70;--line:#e5e2d9;color-scheme:light}
 }
+
+/* Apply saved theme before hydration, including the authentication screen. */
+@media screen{
+html[data-wedly-theme=dark]:has(.wedly-auth-loading),html[data-wedly-theme=dark]:has(.wedly-auth-loading) body{background:#17131c;color:#f0eaf2;color-scheme:dark}
+html[data-wedly-theme=dark] .wedly-auth-loading{--dark:#f0eaf2;--muted:#bdb1c5;--line:#45394d;--brand-primary:#d7b1e0;--shadow-card:none;color:var(--dark)}
+html[data-wedly-theme=dark] .wedly-auth-loading .panel{background:#241e2c;color:#f0eaf2;border-color:#45394d;box-shadow:none}
+html[data-wedly-theme=dark] .wedly-auth-loading .button:not(.secondary){background:#d7b1e0;color:#25182d;border-color:#d7b1e0}
+html[data-wedly-theme=dark] .wedly-auth-loading .button.secondary{background:transparent;color:#d7b1e0;border-color:#66516f}
+html[data-wedly-theme=dark]:has(.app-layout){background:#17131c}
+}
