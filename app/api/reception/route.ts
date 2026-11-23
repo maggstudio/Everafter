@@ -13,8 +13,9 @@ export async function POST(req:NextRequest){
  const db=createClient(url,key,{auth:{persistSession:false}});
  const ip=req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()||'unknown';
  const fingerprint=createHash('sha256').update(key+'|'+ip+'|'+b.event).digest('hex');
- const limit=await db.rpc('wedly_reception_limit',{p_fingerprint:fingerprint});if(limit.error)return json({error:'Recepția nu este configurată.'},503);if(!limit.data)return json({error:'Prea multe căutări. Încearcă peste un minut.'},429);
+ const limit=await db.rpc('wedly_reception_limit',{p_fingerprint:fingerprint});if(limit.error){console.error('Reception rate limit failed',{code:limit.error.code,message:limit.error.message});return json({error:'Recepția nu este configurată. Cod diagnostic: '+(limit.error.code||'DB_UNKNOWN')},503);}if(!limit.data)return json({error:'Prea multe căutări. Încearcă peste un minut.'},429);
  const w=await db.from('wedding_modules').select('content').eq('wedding_id',b.event).eq('module','wedding').maybeSingle();
+ if(w.error){console.error('Reception event lookup failed',{code:w.error.code,message:w.error.message});return json({error:'Evenimentul nu poate fi încărcat. Cod diagnostic: '+(w.error.code||'DB_UNKNOWN')},503);}
  const event=w.data?.content as Wedding|undefined;const config=event?.reception;
  if(!event||!config?.enabled||config.token!==b.token)return json({error:'Recepția nu este activă.'},404);
  const now=new Date().toISOString();if(config.from&&now<config.from||config.until&&now>config.until)return json({error:'Recepția nu este activă în acest moment.'},404);
