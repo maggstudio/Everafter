@@ -8,7 +8,7 @@ create table if not exists public.contact_messages(
  subject text not null check(char_length(subject) between 3 and 160),
  message text not null check(char_length(message) between 10 and 4000),
  user_id uuid references auth.users(id) on delete set null,
- status text not null default 'new' check(status in ('new','answered')),
+ status text not null default 'new' check(status in ('new','processing','answered')),
  created_at timestamptz not null default now(),
  answered_at timestamptz,
  reply_text text,
