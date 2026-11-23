@@ -813,3 +813,28 @@ html[data-wedly-theme=dark] .wedly-auth-loading .button:not(.secondary){backgrou
 html[data-wedly-theme=dark] .wedly-auth-loading .button.secondary{background:transparent;color:#d7b1e0;border-color:#66516f}
 html[data-wedly-theme=dark]:has(.app-layout){background:#17131c}
 }
+
+/* Dark theme: nested module surfaces, tables and semantic states. */
+@media screen{
+html[data-wedly-theme=dark] .app-layout{--module-surface:#241e2c;--module-raised:#302738;--module-hover:#3b3045}
+html[data-wedly-theme=dark] .app-layout :is(.guest-table-scroll,.guest-table-detail,.guest-print-toolbar,.gift-counting,.vendor-discovery,.vendor-discovery-card,.invitation-godparents-editor,.panel>.task-filters,.panel>.budget-form,.panel>.calendar-form,.panel>.guest-form,.room-table,.room-controls .row-controls button,.invitation-steps button){background:var(--module-surface);color:var(--dark);border-color:var(--line)}
+html[data-wedly-theme=dark] .app-layout :is(.guest-data-table,.guest-data-table tbody,.gift-table){background:var(--module-surface);color:var(--dark)}
+html[data-wedly-theme=dark] .app-layout .guest-data-table thead,
+html[data-wedly-theme=dark] .app-layout .guest-data-table tbody tr:nth-child(even){background:var(--module-raised)}
+html[data-wedly-theme=dark] .app-layout .guest-data-table tbody tr:hover,
+html[data-wedly-theme=dark] .app-layout .guest-data-table tbody tr.guest-table-expanded,
+html[data-wedly-theme=dark] .app-layout :is(.panel>.list-row:hover,.calendar-day:hover,.button.secondary:hover,.sidebar-bottom a:hover,.side-nav button:hover,.mobile-nav button:hover){background:var(--module-hover);color:var(--dark);border-color:var(--line)}
+html[data-wedly-theme=dark] .app-layout .guest-data-table :is(th,td,tr){border-color:var(--line)}
+html[data-wedly-theme=dark] .app-layout :is(.guest-data-table th,.guest-data-table td:first-child small,.vendor-discovery-card small){color:var(--muted)}
+html[data-wedly-theme=dark] .app-layout .guest-data-table td:before{color:var(--muted)}
+html[data-wedly-theme=dark] .app-layout .guest-status-ok{background:#244638;color:#b9efcc}
+html[data-wedly-theme=dark] .app-layout .guest-status-error{background:#542e35;color:#ffc4c7}
+html[data-wedly-theme=dark] .app-layout .guest-status-muted{background:#403747;color:#ded3e5}
+html[data-wedly-theme=dark] .app-layout .room-canvas{background-color:#1b1722;background-image:linear-gradient(#302738 1px,transparent 1px),linear-gradient(90deg,#302738 1px,transparent 1px)}
+html[data-wedly-theme=dark] .app-layout :is(.room-selected,.invitation-steps button.active){background:#47324f;color:#f3d8fa;border-color:#93699e}
+html[data-wedly-theme=dark] .app-layout .dashboard-attention>button{background:#3d2b24;color:#ffd3ad}
+html[data-wedly-theme=dark] .app-layout .panel .row-controls .remove:hover{background:#542e35}
+html[data-wedly-theme=dark] .app-layout .panel>.task-filters :is(input,select){background:#1b1722;color:var(--dark);border-color:#55465e}
+html[data-wedly-theme=dark] .app-layout .main-area .mobile-more-modules :is(button,a){background:var(--module-raised);color:var(--dark);border-color:var(--line)}
+html[data-wedly-theme=dark] .app-layout .main-area .mobile-nav button.active{background:#47324f;color:#f3d8fa}
+}
