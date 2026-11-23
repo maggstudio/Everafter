@@ -947,3 +947,19 @@ html[data-wedly-theme=dark] .global-search-results button{background:#493653;bor
 .checkin-list small{color:var(--muted)}
 .checkin-pass{display:grid;justify-items:center;gap:12px;padding:16px;border:1px solid var(--line);border-radius:16px;margin-top:12px}
 .checkin-pass img{max-width:100%;height:auto;background:white;border-radius:8px}
+
+.wedly-reception-public{min-height:100dvh;background:#f5efe5;color:#40372e;padding:24px 12px;display:grid;align-items:start;justify-items:center;box-sizing:border-box}
+.wedly-reception-public .reception-card{width:min(100%,560px);box-sizing:border-box;background:#fffdf8;border:1px solid #ded2bf;border-radius:24px;padding:clamp(18px,5vw,36px);text-align:center;box-shadow:0 10px 40px #70563d15;color:#40372e}
+.wedly-reception-public h1,.wedly-reception-public h2,.wedly-reception-public h3{color:var(--reception-accent);font-family:Georgia,serif}
+.wedly-reception-public p,.wedly-reception-public small,.wedly-reception-public footer{color:#66594b}
+.wedly-reception-public form{display:grid;gap:10px}
+.wedly-reception-public input{width:100%;box-sizing:border-box;background:white;color:#40372e;border:1px solid #cdbda6;padding:14px;border-radius:12px;font-size:16px}
+.wedly-reception-public button{background:var(--reception-accent);color:white;border:0;border-radius:12px;padding:14px;min-height:48px;font:inherit;width:100%;margin:6px 0}
+.wedly-reception-public button.reception-result{background:#fff;color:#40372e;border:1px solid #ded2bf;text-align:left}
+.wedly-reception-public .reception-table{background:#eee5d5;border-radius:16px;padding:16px;margin:20px 0}
+.wedly-reception-public .reception-map{position:relative;aspect-ratio:1/1.1;border:1px solid #cdbda6;background:#faf6ed;border-radius:14px;margin:12px 0;overflow:hidden}
+.reception-stage{position:absolute;top:3%;left:50%;transform:translateX(-50%);font-size:11px;color:#66594b}
+.reception-map-table{position:absolute;transform:translate(-50%,-50%);width:15%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;text-align:center;font-size:clamp(8px,2.5vw,12px);line-height:1.1;background:#e4d6be;color:#40372e;border:1px solid #bda98a;overflow-wrap:anywhere}
+.reception-map-table.rect{border-radius:6px}
+.reception-map-table.highlight{background:#47734e;color:white;border:2px solid #244c2a;z-index:2;box-shadow:0 0 0 4px #47734e44;font-weight:bold}
+.wedly-reception-public footer{margin-top:24px;font-size:11px}
