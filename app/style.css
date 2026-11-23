@@ -708,3 +708,22 @@ button,a,input,select,textarea{transition:background-color .18s ease,border-colo
  body.wedly-print-invitation .invitation-layout .invitation-preview{height:auto!important;min-height:0!important;overflow:visible!important;page-break-inside:auto!important;break-inside:auto!important}
  body.wedly-print-invitation .invitation-layout .invitation-preview>*{break-inside:avoid}
 }
+
+
+/* Public support form and private owner inbox */
+.contact-form{display:grid;gap:14px;margin-top:22px;position:relative}
+.contact-form label{display:grid;gap:7px;font-weight:600}
+.contact-form input,.contact-form textarea,.contact-form select{width:100%;box-sizing:border-box}
+.contact-form .button{justify-self:start}
+.contact-inbox-grid{display:grid;grid-template-columns:minmax(220px,1fr) minmax(0,1.5fr);gap:16px;margin-top:18px}
+.contact-inbox-list{display:flex;flex-direction:column;gap:8px;max-height:620px;overflow:auto}
+.contact-inbox-item{display:flex;flex-direction:column;align-items:stretch;gap:7px;text-align:left;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px;color:var(--dark);cursor:pointer;overflow-wrap:anywhere}
+.contact-inbox-item>span:first-child{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.contact-inbox-item.selected{border-color:#44765c;background:#eef5ef}
+.contact-inbox-item small{font-size:.76rem;color:var(--muted)}
+.contact-inbox-detail{min-width:0;border:1px solid var(--line);border-radius:12px;padding:18px;overflow-wrap:anywhere}
+.contact-inbox-detail label{display:grid;gap:8px;margin:18px 0}
+.contact-inbox-detail textarea{width:100%;box-sizing:border-box}
+.contact-message-body,.contact-sent-reply{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;background:#f7f7f3;padding:16px;border-radius:10px;margin:16px 0}
+.contact-sent-reply{background:#eaf4ed}
+@media(max-width:740px){.contact-inbox-grid{grid-template-columns:minmax(0,1fr)}.contact-inbox-list{max-height:350px}}
