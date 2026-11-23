@@ -937,3 +937,13 @@ html[data-wedly-theme=dark] .global-search-results button{background:#493653;bor
 .activity-timeline article{position:relative;display:grid;gap:6px;border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--dark);background:var(--cream)}
 .activity-timeline article:before{content:"";position:absolute;left:-23px;top:16px;width:10px;height:10px;border-radius:50%;background:#a96abb;border:2px solid var(--cream)}
 .activity-timeline time,.activity-timeline small{font-size:.8rem;color:var(--muted)}
+
+.checkin-panel{margin:14px 0}
+.checkin-panel h2,.checkin-panel button{display:flex;align-items:center;gap:8px}
+.checkin-camera{display:block;width:100%;max-width:480px;aspect-ratio:4/3;object-fit:cover;border-radius:16px;background:#17131c;margin:12px auto}
+.checkin-list{display:grid;gap:8px;max-height:55dvh;overflow:auto;margin-top:12px}
+.checkin-list article{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border:1px solid var(--line);border-radius:12px;padding:12px}
+.checkin-list article>div:first-child{display:grid;gap:5px;min-width:0;overflow-wrap:anywhere}
+.checkin-list small{color:var(--muted)}
+.checkin-pass{display:grid;justify-items:center;gap:12px;padding:16px;border:1px solid var(--line);border-radius:16px;margin-top:12px}
+.checkin-pass img{max-width:100%;height:auto;background:white;border-radius:8px}
