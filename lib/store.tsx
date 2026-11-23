@@ -20,6 +20,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  const [data,setData]=useState<Data>(initial),[ready,setReady]=useState(false),[saveStatus,setSaveStatus]=useState('Se încarcă...');
  const [events,setEvents]=useState<EventSummary[]>([]);
  const [weddingId,setWeddingId]=useState<string|null>(null),[members,setMembers]=useState<Member[]>([]),[pending,setPending]=useState<Member[]>([]),[userId,setUserId]=useState<string|null>(null);
+ const selectedEvent=useRef<string|null>(null);
  const saved=useRef<Data>(initial),loaded=useRef(false),version=useRef(0),isSaving=useRef(false);
  const dataRef=useRef(data),polling=useRef(false),authUser=useRef<string|null>(null),booting=useRef(false);dataRef.current=data;
  const current=members.find(m=>m.user_id===userId&&m.wedding_id===weddingId&&m.status==='active');
@@ -50,7 +51,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
   for(const row of moduleResult.data||[]){const mod=row.module as Module;if(modules.includes(mod)){
    (next as any)[field[mod]]=mod==='wedding'?{...defaultWedding,...row.content}:row.content;
   }}
-  saved.current=next;setMembers(team);setWeddingId(id);setData(next);
+  selectedEvent.current=id;try{localStorage.setItem('wedly-event:'+userId,id)}catch{}saved.current=next;setMembers(team);setWeddingId(id);setData(next);
   loaded.current=true;setReady(true);setSaveStatus('Date sincronizate');
   return true;
  }
@@ -77,26 +78,28 @@ export function StoreProvider({children}:{children:React.ReactNode}){
 
  // Owner's wedding is the default; a shared wedding can be selected with ?wedding=<uuid>.
  const selected=typeof window!=='undefined'?new URLSearchParams(window.location.search).get('wedding'):null;
- const chosen=active.filter((m:Member)=>eventIds.includes(m.wedding_id)).find((m:Member)=>m.wedding_id===selected)||active.find((m:Member)=>eventIds.includes(m.wedding_id)&&m.role==='owner')||active.find((m:Member)=>eventIds.includes(m.wedding_id));
+ let remembered:string|null=null;try{remembered=localStorage.getItem('wedly-event:'+user.id)}catch{}
+ const preferred=selected||selectedEvent.current||remembered;
+ const chosen=active.filter((m:Member)=>eventIds.includes(m.wedding_id)).find((m:Member)=>m.wedding_id===preferred)||active.find((m:Member)=>eventIds.includes(m.wedding_id)&&m.role==='owner')||active.find((m:Member)=>eventIds.includes(m.wedding_id));
  if(!chosen){
-  saved.current=initial;loaded.current=true;setWeddingId(null);setMembers([]);setData(initial);setReady(true);
+  selectedEvent.current=null;saved.current=initial;loaded.current=true;setWeddingId(null);setMembers([]);setData(initial);setReady(true);
   setSaveStatus('Nu ai evenimente. Poți crea unul nou din Evenimentele mele.');return;
  }
- const id=chosen.wedding_id;setWeddingId(id);
+ const id=chosen.wedding_id;const switching=selectedEvent.current!==id;if(background&&switching){setSaveStatus('Evenimentul selectat nu mai este disponibil.');return}
  const {data:team}=await client.from('wedding_members').select('*').eq('wedding_id',id);
- if(v!==version.current)return;setMembers((team||[chosen]) as Member[]);
+ if(v!==version.current)return;
  const {data:rows,error}=await client.from('wedding_modules').select('module,content').eq('wedding_id',id);
  if(v!==version.current)return;if(error){setSaveStatus(error.message);return}
  const next:Data={...initial};for(const row of rows||[]){const mod=row.module as Module;if(modules.includes(mod)){(next as any)[field[mod]]=mod==='wedding'?{...defaultWedding,...row.content}:row.content}}
  // Missing modules are not permission to use demo data: empty lists are intentional.
  if(background&&(isSaving.current||JSON.stringify(dataRef.current)!==JSON.stringify(saved.current)))return;
- saved.current=next;setData(next);loaded.current=true;setReady(true);if(!background)setSaveStatus('Date sincronizate');
+ selectedEvent.current=id;try{localStorage.setItem('wedly-event:'+user.id,id)}catch{}setWeddingId(id);setMembers((team||[chosen]) as Member[]);saved.current=next;setData(next);loaded.current=true;setReady(true);if(!background)setSaveStatus('Date sincronizate');
  }
  useEffect(()=>{
   booting.current=true;void refresh().finally(()=>{booting.current=false});if(!supabase)return;
   const {data:{subscription}}=supabase.auth.onAuthStateChange((event,session)=>{
    if(event==='SIGNED_OUT'){
-    version.current++;authUser.current=null;loaded.current=false;setReady(false);setSaveStatus('Autentificare necesară');
+    version.current++;authUser.current=null;selectedEvent.current=null;loaded.current=false;setReady(false);setSaveStatus('Autentificare necesară');
     setUserId(null);setWeddingId(null);setMembers([]);setEvents([]);setData(initial);
    }else if(event==='SIGNED_IN'&&session){
     // Auth state may become available after the initial getUser call.
