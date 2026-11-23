@@ -3,6 +3,7 @@ import {createClient} from '@supabase/supabase-js';
 export const runtime='nodejs';
 const prices:Record<string,number>={premium:14900,luxury:29900};
 export async function POST(req:NextRequest){
+ return NextResponse.json({error:'WEDLY este gratuit în perioada de lansare. Plățile sunt dezactivate.'},{status:403});
  try{
  const stripeKey=process.env.STRIPE_SECRET_KEY,dbUrl=process.env.NEXT_PUBLIC_SUPABASE_URL,anon=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY||process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,service=process.env.SUPABASE_SERVICE_ROLE_KEY,site=process.env.NEXT_PUBLIC_SITE_URL;
  if(!stripeKey||!dbUrl||!anon||!service||!site)return NextResponse.json({error:'Stripe nu este configurat încă.'},{status:503});
