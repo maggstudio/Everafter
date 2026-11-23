@@ -1,15 +1,16 @@
 'use client';
-import {useState} from 'react';
+import {useEffect,useState} from 'react';
 import {useStore} from '../../lib/store';
 import {money,type Expense} from '../../lib/demo';
 
 const categories=['Restaurant','Foto / Video','Muzică / DJ','Flori / Decor','Ținute','Ceremonie','Transport','Invitații','Altele'];
 const emptyForm={name:'',amount:'',category:'Altele',date:'',notes:''};
 type FormState=typeof emptyForm;
-export default function BudgetPanel(){
+export default function BudgetPanel({quickAdd=0}:{quickAdd?:number}){
  const {data,setData,can}=useStore();
  const [form,setForm]=useState<FormState>(emptyForm);
  const [showForm,setShowForm]=useState(false);
+ useEffect(()=>{if(quickAdd){setShowForm(true);const t=setTimeout(()=>document.querySelector('.budget-form')?.scrollIntoView({block:'center',behavior:'smooth'}),100);return()=>clearTimeout(t)}},[quickAdd]);
 
  const [editing,setEditing]=useState<string|null>(null);
  const [categoryFilter,setCategoryFilter]=useState('all');
