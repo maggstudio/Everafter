@@ -4,7 +4,7 @@ Logo aprobat: monograma W cu inimă, într-un pătrat cu gradient roz-magenta-pr
 
 - `public/brand/wedly-icon.svg`: simbol vectorial pentru interfață, favicon și aplicație.
 - `public/brand/wedly-logo.svg`: lockup vectorial WEDLY cu motto.
-- `app/icon.svg`: favicon automat Next.js.
+- `public/brand/wedly-icon.png`: simbol PNG pentru emailuri și documente (128 × 128).\n- `public/brand/wedly-icon.webp`: versiune WEBP compactă (64 × 64).\n- `public/brand/wedly.ico`: pictogramă ICO (128 × 128).\n- `app/icon.svg`: favicon automat Next.js.
 - `app/components/BrandLogo.tsx`: componenta folosită în navigarea platformei.
 - `lib/brand-email.ts`: identitate pentru notificări și emailuri operaționale.
 - Documentele administrative PDF sunt imprimate cu antet WEDLY.
