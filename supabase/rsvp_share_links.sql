@@ -4,15 +4,18 @@
 begin;
 create table if not exists public.rsvp_share_secrets (
  wedding_id uuid not null references public.weddings(id) on delete cascade,
- guest_id uuid not null,
+ guest_id text not null,
  token text not null,
  created_at timestamptz not null default now(),
  primary key(wedding_id,guest_id)
 );
+alter table public.rsvp_share_secrets alter column guest_id type text using guest_id::text;
 alter table public.rsvp_share_secrets enable row level security;
 revoke all on public.rsvp_share_secrets from public,anon,authenticated;
 
-create or replace function public.rsvp_share_link(p_wedding uuid,p_guest_id uuid,p_guest_name text)
+drop function if exists public.rsvp_share_link(uuid,uuid,text);
+drop function if exists public.rsvp_cancel_shared_link(uuid,uuid);
+create or replace function public.rsvp_share_link(p_wedding uuid,p_guest_id text,p_guest_name text)
 returns text language plpgsql security definer set search_path = '' as $$
 declare secret text; state jsonb; begin
  if auth.uid() is null or not exists(
@@ -21,7 +24,7 @@ declare secret text; state jsonb; begin
    and (m.role='owner' or coalesce((m.permissions->'guests'->>'write')::boolean,false))
  ) then raise exception 'Permission denied'; end if;
  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_wedding::text||':'||p_guest_id::text,923));
- select to_jsonb(r) into state from public.rsvp_list(p_wedding) r where r.guest_id::text=p_guest_id::text limit 1;
+ select to_jsonb(r) into state from public.rsvp_list(p_wedding) r where r.guest_id=p_guest_id limit 1;
  if state is not null and state->>'responded_at' is not null then
    raise exception 'Invitatul a răspuns deja.';
  end if;
@@ -36,10 +39,10 @@ declare secret text; state jsonb; begin
  on conflict(wedding_id,guest_id) do update set token=excluded.token,created_at=now();
  return secret;
 end $$;
-revoke all on function public.rsvp_share_link(uuid,uuid,text) from public;
+revoke all on function public.rsvp_share_link(uuid,text,text) from public;
 grant execute on function public.rsvp_share_link(uuid,uuid,text) to authenticated;
 
-create or replace function public.rsvp_cancel_shared_link(p_wedding uuid,p_guest_id uuid)
+create or replace function public.rsvp_cancel_shared_link(p_wedding uuid,p_guest_id text)
 returns void language plpgsql security definer set search_path = '' as $$
 begin
  if auth.uid() is null or not exists(
@@ -50,6 +53,6 @@ begin
  perform public.rsvp_revoke(p_wedding,p_guest_id);
  delete from public.rsvp_share_secrets where wedding_id=p_wedding and guest_id=p_guest_id;
 end $$;
-revoke all on function public.rsvp_cancel_shared_link(uuid,uuid) from public;
-grant execute on function public.rsvp_cancel_shared_link(uuid,uuid) to authenticated;
+revoke all on function public.rsvp_cancel_shared_link(uuid,text) from public;
+grant execute on function public.rsvp_cancel_shared_link(uuid,text) to authenticated;
 commit;
