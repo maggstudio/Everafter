@@ -730,3 +730,40 @@ button,a,input,select,textarea{transition:background-color .18s ease,border-colo
 
 /* Installable WEDLY experience */
 .pwa-install{position:fixed;z-index:1000;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:min(560px,calc(100% - 24px));box-sizing:border-box;background:#fff;border:1px solid #eadce8;border-radius:18px;box-shadow:0 12px 45px #50205e26;display:flex;align-items:center;gap:12px;padding:12px;color:#352438}.pwa-install img{border-radius:12px;flex:none}.pwa-install>div{flex:1;min-width:0}.pwa-install strong,.pwa-install small{display:block}.pwa-install small{font-size:.76rem;line-height:1.35;margin-top:4px}.pwa-install-action{border:0;background:#50205e;color:#fff;border-radius:10px;padding:10px 12px;font-weight:600;cursor:pointer}.pwa-install-close{border:0;background:none;color:#68536a;font-size:24px;padding:4px;cursor:pointer}@media(max-width:400px){.pwa-install{gap:8px;padding:10px}.pwa-install img{width:36px;height:36px}.pwa-install-action{padding:9px;font-size:.78rem}}@media(display-mode:standalone){body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}.pwa-install{display:none}}
+
+
+/* Standalone WEDLY mobile app: web layout stays unchanged. */
+.pwa-nav-icon,.pwa-menu-backdrop,.main-area .mobile-more-modules .pwa-only-link{display:none}
+@media (display-mode:standalone) and (max-width:900px){
+ .app-layout .sidebar{display:none}
+ .app-layout{display:block;min-height:100dvh}
+ .app-layout .main-area{width:100%;max-width:100%;box-sizing:border-box;padding:0 14px calc(100px + env(safe-area-inset-bottom,0px))}
+ .main-area .mobile-head{position:sticky;top:0;z-index:30;background:#faf8f4;min-height:60px;padding:8px 14px;margin:0 -14px 14px;border-bottom:1px solid #e9e3e8}
+ .main-area .mobile-head button{min-width:44px;min-height:44px;border-radius:14px}
+ .main-area .mobile-nav{position:fixed;z-index:1002;bottom:0;left:0;right:0;width:100%;max-width:none;box-sizing:border-box;display:flex;justify-content:space-evenly;align-items:stretch;gap:2px;margin:0;padding:8px max(6px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));background:#fff;border-top:1px solid #e7dce7;box-shadow:0 -6px 24px #50205e0d;overflow:visible}
+ .main-area .mobile-nav button{flex:1 1 0;min-width:0;min-height:55px;display:flex;flex-direction:column;gap:4px;padding:6px 2px;border:0;border-radius:12px;background:transparent;color:#756778;font-size:clamp(.61rem,2.8vw,.77rem);font-weight:600;white-space:normal;line-height:1.2}
+ .main-area .mobile-nav button.active{background:#f5e8f2;color:#70275e}
+ .main-area .pwa-nav-icon{display:block;flex-shrink:0}
+ .pwa-menu-backdrop{display:block;position:fixed;inset:0;z-index:1000;background:#24172955;border:0;width:100%;height:100%;border-radius:0}
+ .main-area .mobile-more-modules{position:fixed;z-index:1001;left:0;right:0;bottom:calc(71px + env(safe-area-inset-bottom,0px));margin:0;padding:20px 14px 14px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;background:#fff;border-radius:24px 24px 0 0;box-shadow:0 -10px 40px #291b2926;max-height:65dvh;overflow:auto}
+ .main-area .mobile-more-modules :is(button,a),.main-area .mobile-more-modules .pwa-only-link{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;min-height:78px;padding:10px;border:1px solid #eee3ed;background:#fcf9fc;border-radius:14px;color:#50205e;text-align:center;font-size:.85rem;white-space:normal;text-decoration:none}
+ .main-area .page-head{margin:12px 0 18px;gap:10px;align-items:flex-start}
+ .main-area .page-head h1{font-size:clamp(1.55rem,6vw,2rem);line-height:1.15;margin:5px 0}
+ .main-area .page-head p{font-size:.85rem;margin:6px 0}
+ .main-area .page-head .pill{font-size:.68rem;max-width:115px;text-align:center;white-space:normal}
+ .main-area .countdown{border-radius:22px;padding:22px 18px}
+ .main-area .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .main-area .stats article{border-radius:16px;padding:14px 11px;min-width:0}
+ .main-area .stats article strong{font-size:clamp(1rem,4.5vw,1.4rem);overflow-wrap:anywhere}
+ .main-area .panel{border-radius:18px;padding:17px 14px}
+ .main-area :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){font-size:16px;min-height:44px;max-width:100%;box-sizing:border-box}
+ .main-area .button{min-height:44px;touch-action:manipulation}
+ .main-area .dashboard-quick-actions{grid-template-columns:minmax(0,1fr)}
+ .main-area .list-row{gap:10px;overflow-wrap:anywhere}
+ .main-area .task-actions button{min-height:40px}
+ .main-area :is(button,a){-webkit-tap-highlight-color:transparent}
+}
+@media (display-mode:standalone) and (max-width:900px) and (prefers-reduced-motion:no-preference){
+ .main-area .mobile-more-modules{animation:wedly-sheet-in .18s ease-out}
+ @keyframes wedly-sheet-in{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+}
