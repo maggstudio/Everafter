@@ -21,7 +21,7 @@ declare secret text; state jsonb; begin
    and (m.role='owner' or coalesce((m.permissions->'guests'->>'write')::boolean,false))
  ) then raise exception 'Permission denied'; end if;
  perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(p_wedding::text||':'||p_guest_id::text,923));
- select to_jsonb(r) into state from public.rsvp_list(p_wedding) r where r.guest_id=p_guest_id limit 1;
+ select to_jsonb(r) into state from public.rsvp_list(p_wedding) r where r.guest_id::text=p_guest_id::text limit 1;
  if state is not null and state->>'responded_at' is not null then
    raise exception 'Invitatul a răspuns deja.';
  end if;
