@@ -1,5 +1,5 @@
 'use client';
-import {useState} from 'react';
+import {useEffect,useState} from 'react';
 import {useStore,type Vendor} from '../../lib/store';
 import {money} from '../../lib/demo';
 import VendorDocuments from './VendorDocuments';
@@ -18,11 +18,12 @@ function exportVendors(vendors:Vendor[]){
  const link=document.createElement('a');link.href=url;link.download='wedly-furnizori-'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
-export default function VendorsPanel(){
+export default function VendorsPanel({quickAdd=0}:{quickAdd?:number}){
  const {data,setData,can}=useStore();
  const [expanded,setExpanded]=useState<string|null>(null);
  const [expandedPayments,setExpandedPayments]=useState<string|null>(null);
  const [showForm,setShowForm]=useState(false);
+ useEffect(()=>{if(quickAdd){setShowForm(true);const t=setTimeout(()=>document.querySelector('.budget-form')?.scrollIntoView({block:'center',behavior:'smooth'}),100);return()=>clearTimeout(t)}},[quickAdd]);
 
  const [form,setForm]=useState<Form>(blank),[editing,setEditing]=useState<string|null>(null),[search,setSearch]=useState(''),[filter,setFilter]=useState('all');
  const readable=can('vendors','read'),writable=can('vendors','write');
