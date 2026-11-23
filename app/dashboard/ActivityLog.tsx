@@ -1,0 +1,15 @@
+'use client';
+import {useEffect,useState} from 'react';
+import {History,RefreshCw} from 'lucide-react';
+import {useStore} from '../../lib/store';
+import {supabase} from '../../lib/supabase';
+type Entry={id:number;actor_id:string|null;module:string;action:string;created_at:string};
+const labels:Record<string,string>={wedding:'Setări eveniment',tasks:'Checklist',expenses:'Buget',guests:'Invitați',calendar:'Calendar',vendors:'Furnizori',packages:'Pachete'};
+const actions:Record<string,string>={created:'Modul creat',updated:'Modul actualizat',deleted:'Modul șters'};
+export default function ActivityLog(){
+ const {weddingId,members,can}=useStore();const [rows,setRows]=useState<Entry[]>([]);const [error,setError]=useState('');const [busy,setBusy]=useState(true);const [filter,setFilter]=useState('all');const [reload,setReload]=useState(0);
+ useEffect(()=>{let active=true;setRows([]);setError('');setBusy(true);if(!supabase||!weddingId){setBusy(false);return}void supabase.from('wedly_activity').select('id,actor_id,module,action,created_at').eq('wedding_id',weddingId).order('created_at',{ascending:false}).order('id',{ascending:false}).limit(100).then(({data,error})=>{if(!active)return;setBusy(false);if(error)setError('Jurnalul nu este disponibil momentan. Verifică dacă migrarea activity_log.sql a fost aplicată.');else setRows((data||[]) as Entry[])});return()=>{active=false}},[weddingId,reload]);
+ const visible=rows.filter(r=>(filter==='all'||r.module===filter)&&Object.keys(labels).includes(r.module)&&can((r.module==='vendors'?'expenses':r.module) as Parameters<typeof can>[0],'read'));
+ const author=(id:string|null)=>{if(!id)return 'Sistem';const m=members.find(m=>m.user_id===id);return (m?.role==='owner'?'Organizator':m?.role==='partner'?'Partener':m?.role==='planner'?'Planner':'Utilizator')+' · '+id.slice(0,8)};
+ return <section className="panel activity-log"><header><h2><History size={22}/> Jurnal de activitate</h2><button type="button" className="button secondary" disabled={busy} onClick={()=>setReload(v=>v+1)}><RefreshCw size={16}/> Actualizează</button></header><p>Ultimele 100 de modificări ale modulelor, înregistrate după activarea jurnalului.</p><label>Filtrează după modul<select value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">Toate modulele</option>{Object.entries(labels).filter(([k])=>can((k==='vendors'?'expenses':k) as Parameters<typeof can>[0],'read')).map(([k,v])=><option key={k} value={k}>{v}</option>)}</select></label>{busy?<p role="status">Se încarcă jurnalul...</p>:error?<p role="alert">{error}</p>:!visible.length?<p>Nu există activitate înregistrată pentru această selecție.</p>:<div className="activity-timeline">{visible.map(r=><article key={r.id}><strong>{labels[r.module]} · {actions[r.action]||r.action}</strong><small>{author(r.actor_id)}</small><time dateTime={r.created_at}>{new Date(r.created_at).toLocaleString('ro-RO',{timeZone:'Europe/Bucharest'})}</time></article>)}</div>}</section>
+}
