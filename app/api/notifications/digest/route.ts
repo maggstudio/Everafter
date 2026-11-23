@@ -1,3 +1,4 @@
+import {brandedEmail} from '../../../../lib/brand-email';
 import {NextRequest,NextResponse} from 'next/server';
 import {createClient} from '@supabase/supabase-js';
 export const runtime='nodejs';
@@ -38,7 +39,7 @@ export async function GET(req:NextRequest){
    if(member.role==='owner'||member.permissions?.expenses?.read)lines.push('Furnizori înregistrați: '+vendors.length);
    lines.push('Deschide panoul: https://wedly.ro/dashboard');
    const body=lines.join('\n');
-   const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify({from,to:[userResult.user.email],subject:'Rezumat zilnic WEDLY – '+title,text:body,html:'<div style="font-family:Arial,sans-serif;line-height:1.7"><h2>'+esc(lines[0])+'</h2>'+lines.slice(1).map(l=>'<p>'+esc(l)+'</p>').join('')+'</div>'})});
+   const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify({from,to:[userResult.user.email],subject:'Rezumat zilnic WEDLY – '+title,text:body,html:brandedEmail(lines[0],lines.slice(1))})});
    const result=await response.json().catch(()=>({}));
    if(!response.ok||!result.id)throw Error('Email provider failed');
    await db.from('notification_delivery').update({status:'sent',provider_id:result.id,updated_at:new Date().toISOString()}).eq('wedding_id',pref.wedding_id).eq('user_id',pref.user_id).eq('kind','daily_digest').eq('delivery_date',day);
