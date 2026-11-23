@@ -17,8 +17,8 @@ export default function GuestsPanel(){
  const [refreshing,setRefreshing]=useState(false);
  async function refreshRsvp(){if(!supabase||!weddingId)return;setRefreshing(true);const {data:records,error}=await supabase.rpc('rsvp_list',{p_wedding:weddingId});setRefreshing(false);if(error){setRsvpError('Confirmările RSVP nu au putut fi actualizate.');return}setRsvpError('');setRsvpReplies(Object.fromEntries((records||[]).map((r:{guest_id:string;status:string;party_size:number;responded_at:string|null;revoked_at:string|null})=>[r.guest_id,r])))}
  useEffect(()=>{void refreshRsvp()},[weddingId]);
- const effectiveStatus=(g:Guest):Guest['status']=>{const r=rsvpReplies[g.id];return r?.responded_at&&!r.revoked_at&&(r.status==='confirmat'||r.status==='refuzat')?r.status as Guest['status']:g.status};
- const effectiveSize=(g:Guest)=>{const r=rsvpReplies[g.id];return r?.responded_at&&!r.revoked_at&&r.status==='confirmat'?r.party_size:Math.max(1,Number.isFinite(g.partySize)?g.partySize!:1)};
+ const effectiveStatus=(g:Guest):Guest['status']=>{const r=rsvpReplies[g.id];return r?.responded_at&&(r.status==='confirmat'||r.status==='refuzat')?r.status as Guest['status']:g.status};
+ const effectiveSize=(g:Guest)=>{const r=rsvpReplies[g.id];return r?.responded_at&&r.status==='confirmat'?r.party_size:Math.max(1,Number.isFinite(g.partySize)?g.partySize!:1)};
  const [form,setForm]=useState<Form>(empty);
  const [showForm,setShowForm]=useState(false);
  const [editing,setEditing]=useState<string|null>(null);
