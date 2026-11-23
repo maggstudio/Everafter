@@ -1,5 +1,5 @@
-import BrandLogo from '../components/BrandLogo';
 'use client';
+import BrandLogo from '../components/BrandLogo';
 import AuthLoading from '../components/AuthLoading';
 import Link from 'next/link';
 import {useState} from 'react';
