@@ -1,0 +1,54 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 720 260] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+6 0 obj
+<< /Length 465 >>
+stream
+q
+0.91 0.36 0.55 rg
+30 35 180 180 re f
+1 1 1 RG
+10 w 1 J 1 j
+60 143 m 78 162 84 144 87 126 c
+91 97 93 87 99 107 c
+110 130 117 144 123 125 c
+130 100 133 90 142 111 c
+153 133 164 150 181 151 c
+S
+1 1 1 RG 4 w
+151 166 m 161 184 176 181 183 170 c
+191 182 208 175 206 159 c
+203 149 194 143 181 132 c
+167 144 151 153 151 166 c S
+Q
+BT /F1 83 Tf 0.28 0.14 0.27 rg 235 112 Td (WEDLY) Tj ET
+BT /F2 20 Tf 0.55 0.38 0.49 rg 238 76 Td (Planifica. Organizeaza. Celebreaza.) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000000326 00000 n 
+0000000396 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+911
+%%EOF
