@@ -1024,3 +1024,7 @@ html[data-wedly-theme=dark] .wedly-splash{background:#17131c;color:#e2c4ec}
 html[data-wedly-theme=dark] .wedly-splash-progress{background:#ffffff18}
 html[data-wedly-theme=dark] .wedly-splash-progress span{background:#c49ad5}
 @media(prefers-reduced-motion:reduce){.wedly-splash-progress span{animation:none;width:100%;opacity:.6}}
+
+html[data-wedly-theme=dark] .app-layout .mobile-nav a{background:transparent;color:#e8deed;border-color:transparent;box-shadow:none}
+html[data-wedly-theme=dark] .app-layout .mobile-nav a[aria-current="page"]{background:#493653;color:#f2e5f7}
+.app-layout .main-area fieldset{min-width:0;border:0;padding:0;margin:0}
