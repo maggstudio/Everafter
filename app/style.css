@@ -838,3 +838,26 @@ html[data-wedly-theme=dark] .app-layout .panel>.task-filters :is(input,select){b
 html[data-wedly-theme=dark] .app-layout .main-area .mobile-more-modules :is(button,a){background:var(--module-raised);color:var(--dark);border-color:var(--line)}
 html[data-wedly-theme=dark] .app-layout .main-area .mobile-nav button.active{background:#47324f;color:#f3d8fa}
 }
+
+/* Global theme outside the dashboard; public invitation artwork remains light/original. */
+@media screen{
+html[data-wedly-theme=dark]:not(:has(.public-invitation-page,.public-rsvp-form)){
+ --cream:#17131c;--ivory:#302738;--sage:#b5c9ae;--dark:#f0eaf2;--muted:#bdb1c5;--gold:#e0bc88;--line:#45394d;--brand-primary:#d7b1e0;--brand-soft:#382b42;--focus-ring:#d4a1e5;--shadow-card:none;color-scheme:dark;background:var(--cream);color:var(--dark)
+}
+html[data-wedly-theme=dark] body:not(:has(.public-invitation-page,.public-rsvp-form)){background:var(--cream);color:var(--dark)}
+html[data-wedly-theme=dark] body:not(:has(.public-invitation-page,.public-rsvp-form)) :is(.panel,.feature,.stats article,.admin-package,.package,.christmas-price-card,.christmas-benefit-grid>div,.landing-power-card,.landing-teaser-preview,.demo-dashboard,.demo-stats article,.demo-two article,.contact-inbox-item,.contact-inbox-detail,.event-delete-dialog,.pwa-install){background:#241e2c;color:var(--dark);border-color:var(--line);box-shadow:none}
+html[data-wedly-theme=dark] body:not(:has(.public-invitation-page,.public-rsvp-form)) :is(.hero,.christmas-hero){background:radial-gradient(ellipse at top,#382b42,#241e2c 75%);border-color:var(--line)}
+html[data-wedly-theme=dark] body:not(:has(.public-invitation-page,.public-rsvp-form)) :is(.landing-power-primary,.christmas-price-featured,.package.selected,.contact-inbox-item.selected){background:#382b42;border-color:#93699e}
+html[data-wedly-theme=dark] body:not(:has(.public-invitation-page,.public-rsvp-form)) :is(.landing-power-cta,.landing-power-icon,.landing-hero-proof span,.landing-teaser-preview>div>span,.demo-sidebar,.demo-sidebar .demo-active,.contact-message-body,.contact-sent-reply,.christmas-offer,.promo-inline-prices span){background:#302738;color:var(--dark);border-color:var(--line)}
+html[data-wedly-theme=dark] body:not(:has(.public-invitation-page,.public-rsvp-form)) :is(.landing-power-card h3,.landing-power-cta strong,.christmas-benefit-grid b){color:var(--dark)}
+html[data-wedly-theme=dark] body:not(:has(.public-invitation-page,.public-rsvp-form)) :is(.landing-power-card p,.landing-power-cta p,.landing-power-number,.christmas-price-card>span,.christmas-price-card small,.christmas-price-card del,.christmas-disclosure,.christmas-benefit-grid p){color:var(--muted)}
+html[data-wedly-theme=dark] body:not(:has(.public-invitation-page,.public-rsvp-form)) :is(.christmas-hero h1 em,.hero em,.christmas-price-card strong,.christmas-trust,.landing-power-tag,.landing-superpowers-head em,.christmas-offer b,.promo-inline-prices b,.promo-price strong){color:#b5dfbf}
+html[data-wedly-theme=dark] body:not(:has(.public-invitation-page,.public-rsvp-form)) :is(.wedly-brand-name,.wedly-brand-motto,.text-button,.button.secondary,.pwa-install-close){color:#d7b1e0;border-color:#66516f}
+html[data-wedly-theme=dark] body:not(:has(.public-invitation-page,.public-rsvp-form)) .button:not(.secondary):not(.christmas-primary){background:#d7b1e0;color:#25182d;border-color:#d7b1e0}
+html[data-wedly-theme=dark] body:not(:has(.public-invitation-page,.public-rsvp-form)) .button.secondary:hover{background:#382b42;color:#f0eaf2}
+html[data-wedly-theme=dark] body:not(:has(.public-invitation-page,.public-rsvp-form)) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background:#1b1722;color:#f0eaf2;border-color:#55465e}
+html[data-wedly-theme=dark] .demo-invitation-card{color:#333c34;--muted:#59655d;--gold:#8c7048;--brand-primary:#3d5144;color-scheme:light}
+html[data-wedly-theme=dark] .invitation-preview{color-scheme:light;--dark:#333c34;--muted:#7e8279;--gold:#b59a70;--line:#e5e2d9}
+}
+.theme-public-control{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
+.theme-public-control select{width:auto;margin:0;padding:6px 8px;font-size:.8rem}
