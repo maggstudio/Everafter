@@ -1,5 +1,5 @@
-import BrandLogo from '../components/BrandLogo';
 'use client';
+import BrandLogo from '../components/BrandLogo';
 import Link from 'next/link';import AuthLoading from '../components/AuthLoading';import {useEffect,useState} from 'react';import {useStore,type Module,type Permissions,type Member} from '../../lib/store';import {supabase} from '../../lib/supabase';
 type Identity={user_id:string;display_name:string|null;email:string|null};
 const modules:Module[]=['wedding','tasks','expenses','guests','calendar','packages'];
