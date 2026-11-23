@@ -674,3 +674,15 @@ button,a,input,select,textarea{transition:background-color .18s ease,border-colo
  .shell:not(.landing){padding-inline:10px}
  .public-invitation-page .invitation-preview{padding:45px 15px}
 }
+
+/* WEDLY Digital W identity: applied to site chrome, not invitation artwork. */
+.wedly-brand{display:inline-flex;align-items:center;gap:10px;vertical-align:middle;max-width:100%;text-decoration:none}
+.wedly-brand-symbol{display:block;width:42px;height:42px;flex:0 0 42px;border-radius:10px}
+.wedly-brand-copy{display:flex;flex-direction:column;min-width:0;gap:2px}
+.wedly-brand-name{font:700 1.45rem/1 Arial,Helvetica,sans-serif;letter-spacing:.13em;color:#472443}
+.wedly-brand-motto{font:500 .63rem/1.35 Arial,Helvetica,sans-serif;letter-spacing:.02em;color:#8B617B;white-space:nowrap}
+.sidebar .wedly-brand-symbol{width:35px;height:35px;flex-basis:35px}
+.sidebar .wedly-brand-name{font-size:1.25rem}
+.mobile-head .wedly-brand-symbol{width:36px;height:36px;flex-basis:36px}
+.mobile-head .wedly-brand-name{font-size:1.25rem}
+@media(max-width:650px){.landing .top .wedly-brand-symbol{width:38px;height:38px;flex-basis:38px}.landing .top .wedly-brand-name{font-size:1.23rem}.landing .top .wedly-brand-motto{font-size:.55rem;white-space:normal}.wedly-brand{gap:8px}.mobile-head .wedly-brand-name{font-size:1.13rem}}
