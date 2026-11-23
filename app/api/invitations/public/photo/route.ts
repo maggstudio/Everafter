@@ -8,7 +8,11 @@ export async function GET(req:NextRequest){
  const details=verifyPublicInvitation(params.get('invite')||'',params.get('token')||'');
  const requested=params.get('kind')==='background'?details?.backgroundPhotoPath:details?.photoPath;
  if(!requested||!/^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(jpg|png|webp)$/i.test(requested))return new NextResponse(null,{status:404});
- const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;
+ const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY,anon=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY||process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+ if(!url||!anon)return new NextResponse(null,{status:503});
+ const client=createClient(url,anon,{auth:{persistSession:false}});
+ const {data:active,error:activeError}=await client.rpc('rsvp_view',{p_token:params.get('token')||''});
+ if(activeError||!active)return new NextResponse(null,{status:410});
  if(!url||!key)return new NextResponse(null,{status:503});
  const admin=createClient(url,key,{auth:{persistSession:false}});
  const {data,error}=await admin.storage.from('wedly-invitation-photos').download(requested);
