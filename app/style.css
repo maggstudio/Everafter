@@ -886,3 +886,19 @@ html[data-wedly-theme=dark] .notification-popover{background:#241e2c}
 .mobile-head .notification-popover{position:fixed;top:calc(70px + env(safe-area-inset-top,0px));left:12px;right:12px;width:auto}
 .main-area .mobile-head:has(.notification-popover){z-index:1200}
 }
+
+/* Distinct notification dropdown, anchored visually to the bell. */
+.notification-center:has(.notification-popover) .notification-bell{background:#f0e1f2;color:#50205e;border-color:#a96abb}
+.notification-center .notification-backdrop{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;margin:0;padding:0;border:0;border-radius:0;background:rgba(15,10,20,.62);backdrop-filter:blur(2px)}
+.notification-popover{background:#fff;border:2px solid #a96abb;box-shadow:0 18px 60px #10081966;isolation:isolate}
+.notification-popover:before{content:"";position:absolute;right:15px;top:-9px;width:14px;height:14px;transform:rotate(45deg);background:inherit;border-top:2px solid #a96abb;border-left:2px solid #a96abb}
+.notification-popover header{padding-bottom:12px;border-bottom:1px solid var(--line)}
+html[data-wedly-theme=dark] .notification-popover{background:#35283f;border-color:#b986cc;box-shadow:0 20px 65px #000a}
+html[data-wedly-theme=dark] .notification-popover:before{border-color:#b986cc}
+html[data-wedly-theme=dark] .notification-center:has(.notification-popover) .notification-bell{background:#573961;color:#f3d8fa;border-color:#b986cc}
+html[data-wedly-theme=dark] .notification-item.unread{background:#493653;border-color:#72547e}
+@media(max-width:900px){
+.main-area .mobile-head:has(.notification-popover){z-index:1200}
+.mobile-head .notification-popover{position:fixed;top:calc(70px + env(safe-area-inset-top,0px));left:12px;right:12px;width:auto;box-sizing:border-box}
+.mobile-head .notification-popover:before{right:66px}
+}
