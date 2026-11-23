@@ -2,6 +2,7 @@
 import {useEffect,useState} from 'react';
 import {supabase} from '../../lib/supabase';
 import {useStore} from '../../lib/store';
+import PushSettings from './PushSettings';
 import RemindersPanel from './RemindersPanel';
 type Key='daily_digest'|'task_reminders'|'appointment_reminders'|'payment_reminders';
 type Preferences=Record<Key,boolean>&{digest_hour:number};
@@ -28,7 +29,7 @@ export default function NotificationSettingsPanel(){
  const {data:{user}}=await supabase.auth.getUser();if(!user){setStatus('Sesiune expirată.');setSaving(false);return}
  const {error}=await supabase.from('notification_preferences').upsert({wedding_id:weddingId,user_id:user.id,...prefs,updated_at:new Date().toISOString()},{onConflict:'wedding_id,user_id'});
  setStatus(error?'Nu s-au salvat setările: '+error.message:'Preferințele au fost salvate pentru contul tău și acest eveniment.');setSaving(false)}
- return <><section className="panel"><h2>Preferințele mele de notificare</h2><p>Fiecare membru al echipei își alege separat ce mesaje dorește să primească. Setările se aplică numai contului tău și evenimentului curent.</p><p><strong>Destinatar:</strong> {email||'Se încarcă...'}</p>
+ return <><PushSettings/><section className="panel"><h2>Preferințele mele de notificare</h2><p>Fiecare membru al echipei își alege separat ce mesaje dorește să primească. Setările se aplică numai contului tău și evenimentului curent.</p><p><strong>Destinatar:</strong> {email||'Se încarcă...'}</p>
  <p className="hint">Rezumatele și reminderele pentru sarcini, programări și plăți pot fi trimise automat prin email după activarea programatoarelor Vercel și aplicarea migrărilor SQL. Reminderele se trimit cel mult o dată pe zi pentru fiecare categorie, când există elemente relevante.</p>
  {loading?<p>Se încarcă preferințele...</p>:<><div className="guest-unified-list">{options.map(o=><label key={o.key} className="list-row"><span><strong>{o.title}</strong><small>{o.description}{o.module&&!can(o.module==='vendors'?'vendors':o.module,'read')?' · Nu ai acces la modulul asociat':''}</small></span><input type="checkbox" checked={prefs[o.key]} disabled={Boolean(o.module&&!can(o.module,'read'))} onChange={e=>setPrefs(p=>({...p,[o.key]:e.target.checked}))}/></label>)}</div>
  {prefs.daily_digest&&<label>Ora preferată pentru rezumat (ora României) <select value={prefs.digest_hour} onChange={e=>setPrefs(p=>({...p,digest_hour:Number(e.target.value)}))}>{Array.from({length:24},(_,i)=><option key={i} value={i}>{String(i).padStart(2,'0')}:00</option>)}</select></label>}
