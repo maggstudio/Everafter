@@ -902,3 +902,12 @@ html[data-wedly-theme=dark] .notification-item.unread{background:#493653;border-
 .mobile-head .notification-popover{position:fixed;top:calc(70px + env(safe-area-inset-top,0px));left:12px;right:12px;width:auto;box-sizing:border-box}
 .mobile-head .notification-popover:before{right:66px}
 }
+
+@media(display-mode:standalone) and (max-width:900px){
+html:has(.app-layout),body:has(.app-layout){overscroll-behavior-y:none}
+.wedly-refresh-indicator{position:fixed;top:calc(65px + env(safe-area-inset-top,0px));left:50%;z-index:1050;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#50205e;border:1px solid var(--line);box-shadow:0 4px 18px #17131c55;pointer-events:none}
+html[data-wedly-theme=dark] .wedly-refresh-indicator{background:#382b42;color:#d7b1e0}
+.wedly-spinning{animation:wedly-refresh-spin .8s linear infinite}
+}
+@keyframes wedly-refresh-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.wedly-spinning{animation:none}}
