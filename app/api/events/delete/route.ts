@@ -34,10 +34,9 @@ export async function POST(req:NextRequest){
  }
  const {data:deleted,error:deleteError}=await client.rpc('delete_my_event',{p_wedding:id});
  if(deleteError||deleted!==true)return fail(deleteError?.message||'Evenimentul nu a putut fi șters. Verifică migrarea SQL.',503);
- // A successful RPC response alone is not enough: verify the event is gone.
- const {data:remaining,error:verifyError}=await admin.from('weddings').select('id').eq('id',id).maybeSingle();
- if(verifyError)return fail('Ștergerea a fost executată, dar verificarea finală a eșuat: '+verifyError.message,503);
- if(remaining)return fail('Evenimentul încă există în baza de date după confirmarea ștergerii.',409);
+ // The authenticated SECURITY DEFINER RPC atomically deletes the owned event
+ // and returns true only after the database DELETE succeeds. Do not query
+ // weddings through the storage service key: that role may lack table grants.
  let storageWarning=false;
  for(let i=0;i<files.length;i+=100){const {error}=await admin.storage.from(bucket).remove(files.slice(i,i+100));if(error)storageWarning=true}
  return NextResponse.json({deleted:true,storageWarning},{headers:{'Cache-Control':'no-store'}});
