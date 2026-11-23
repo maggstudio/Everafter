@@ -10,7 +10,7 @@ const groups=['Familie','Prieteni','Colegi','Nași / Părinți spirituali','Alte
 const statusLabels:Record<Guest['status'],string>={asteptare:'În așteptare',confirmat:'Confirmat',refuzat:'Refuzat'};
 type Form={name:string;status:Guest['status'];group:string;partySize:string;phone:string;notes:string};
 const empty:Form={name:'',status:'asteptare',group:'Altele',partySize:'1',phone:'',notes:''};
-export default function GuestsPanel(){
+export default function GuestsPanel({quickAdd=0}:{quickAdd?:number}){
  const {data,setData,can,weddingId}=useStore();
  const [rsvpReplies,setRsvpReplies]=useState<Record<string,{status:string;party_size:number;responded_at:string|null;revoked_at:string|null}>>({});
  const [rsvpError,setRsvpError]=useState('');
@@ -21,6 +21,7 @@ export default function GuestsPanel(){
  const effectiveSize=(g:Guest)=>{const r=rsvpReplies[g.id];return r?.responded_at&&r.status==='confirmat'?r.party_size:Math.max(1,Number.isFinite(g.partySize)?g.partySize!:1)};
  const [form,setForm]=useState<Form>(empty);
  const [showForm,setShowForm]=useState(false);
+ useEffect(()=>{if(quickAdd){setShowForm(true);const t=setTimeout(()=>document.querySelector('.guest-form')?.scrollIntoView({block:'center',behavior:'smooth'}),100);return()=>clearTimeout(t)}},[quickAdd]);
  const [editing,setEditing]=useState<string|null>(null);
  const [search,setSearch]=useState('');
  const [statusFilter,setStatusFilter]=useState('all');
