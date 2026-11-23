@@ -699,3 +699,25 @@ button,a,input,select,textarea{transition:background-color .18s ease,border-colo
 .invitation-preset-card small{font-size:.71rem;line-height:1.25;padding:0 2px 4px}
 .invitation-preset-art{width:100%;aspect-ratio:2/3;background-size:cover;background-position:center;border-radius:7px;display:flex;align-items:center;justify-content:center}
 .invitation-preset-art span{font:italic 1.3rem Georgia,serif;color:#66564c;text-shadow:0 1px 4px #fff}
+
+
+/* Invitation typography safety: decorations stay behind a readable, fluid content column.
+   Content grows vertically instead of being clipped or overlapping other text. */
+.invitation-preview{height:auto;overflow:visible;box-sizing:border-box;gap:clamp(9px,1.8vw,17px);line-height:1.45}
+.invitation-preview>:not(.invitation-ornament){position:relative;z-index:1;max-width:100%;min-width:0;overflow-wrap:anywhere;word-break:normal}
+.invitation-preview h2{font-size:clamp(1.6rem,5vw,2.75rem);line-height:1.17;text-wrap:balance;hyphens:auto}
+.invitation-preview h3,.invitation-preview p,.invitation-preview .invitation-family,.invitation-preview .invitation-details{max-width:min(100%,48ch);margin-left:auto;margin-right:auto;text-wrap:pretty}
+.invitation-preview .invitation-family strong,.invitation-preview .invitation-parents-columns strong{display:block;overflow-wrap:anywhere;line-height:1.35}
+.invitation-preview .invitation-parents-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.invitation-preview .invitation-family p{margin:8px auto}
+.invitation-preview .invitation-ornament{position:relative;z-index:1}
+@media(max-width:480px){
+ .invitation-preview .invitation-parents-columns{grid-template-columns:1fr;gap:8px}
+ .public-invitation-page .invitation-preview{padding:clamp(45px,9vw,72px) clamp(25px,7vw,40px);gap:12px}
+ .public-invitation-page .invitation-preview h2{font-size:clamp(1.65rem,8vw,2.5rem)}
+ .invitation-preview .invitation-photo-frame{width:min(100%,270px)}
+}
+@media print{
+ body.wedly-print-invitation .invitation-layout .invitation-preview{height:auto!important;min-height:0!important;overflow:visible!important;page-break-inside:auto!important;break-inside:auto!important}
+ body.wedly-print-invitation .invitation-layout .invitation-preview>*{break-inside:avoid}
+}
