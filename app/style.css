@@ -452,3 +452,5 @@ button,a,input,select,textarea{transition:background-color .18s ease,border-colo
  body.wedly-print-invitation .invitation-layout .invitation-preview .invitation-photo-frame{break-inside:avoid}
  body.wedly-print-invitation{background:white!important}
 }
+
+.event-delete-overlay{position:fixed;inset:0;z-index:1000;background:rgba(20,18,22,.76);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}.event-delete-dialog{background:#fff;color:#292329;border-radius:18px;padding:clamp(20px,4vw,32px);width:min(100%,570px);box-shadow:0 24px 80px #0005;max-height:90vh;overflow:auto}.event-delete-dialog h2{margin-top:0}.event-delete-dialog p{line-height:1.65}.event-delete-dialog label{display:block;margin:18px 0}.event-delete-dialog input{width:100%}.event-delete-dialog .row-controls{display:flex;gap:12px;flex-wrap:wrap}.event-delete-danger{background:#a31c29!important;border-color:#a31c29!important;color:white!important}.event-delete-danger:disabled{opacity:.45;cursor:not-allowed}
