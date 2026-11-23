@@ -930,3 +930,10 @@ html[data-wedly-theme=dark] .global-search-results button{background:#493653;bor
 .mobile-head-actions .notification-bell{width:38px;height:40px}
 }
 @media(display-mode:standalone) and (max-width:900px){.desktop-notification-actions .global-search{display:none}}
+
+.activity-log header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.activity-log header h2,.activity-log header button{display:flex;align-items:center;gap:8px;margin:0}
+.activity-timeline{display:grid;gap:12px;margin-top:16px;border-left:2px solid var(--line);padding-left:16px}
+.activity-timeline article{position:relative;display:grid;gap:6px;border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--dark);background:var(--cream)}
+.activity-timeline article:before{content:"";position:absolute;left:-23px;top:16px;width:10px;height:10px;border-radius:50%;background:#a96abb;border:2px solid var(--cream)}
+.activity-timeline time,.activity-timeline small{font-size:.8rem;color:var(--muted)}
