@@ -1,3 +1,4 @@
+import {brandedEmail} from '../../../../lib/brand-email';
 import {NextRequest,NextResponse} from 'next/server';
 import {createClient} from '@supabase/supabase-js';
 export const runtime='nodejs';
@@ -47,7 +48,7 @@ export async function GET(req:NextRequest){
     const heading=kind==='task_reminders'?'Sarcini și termene':kind==='appointment_reminders'?'Programări apropiate':'Plăți furnizori';
     const lines=alerts[kind].sort((a,b)=>a.date.localeCompare(b.date)).slice(0,30).map(a=>(a.date<today?'ÎNTÂRZIAT · ':'')+a.date+' · '+a.label);
     const text=['WEDLY – '+heading,eventName,'',...lines,'','Deschide WEDLY: https://wedly.ro/dashboard'].join('\n');
-    const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify({from,to:[user.user.email],subject:'WEDLY · '+heading+' · '+eventName,text})});
+    const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify({from,to:[user.user.email],subject:'WEDLY · '+heading+' · '+eventName,text,html:brandedEmail(heading+' · '+eventName,[...lines,'https://wedly.ro/dashboard'])})});
     const result=await response.json().catch(()=>({}));
     if(!response.ok||!result.id)throw Error('Resend rejected email: HTTP '+response.status);
     const {error:finishError}=await db.from('notification_delivery').update({status:'sent',provider_id:result.id,updated_at:new Date().toISOString()}).eq('wedding_id',pref.wedding_id).eq('user_id',pref.user_id).eq('kind',kind).eq('delivery_date',today);
