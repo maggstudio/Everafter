@@ -1,3 +1,4 @@
+import {PublicThemeControl} from './components/ThemeSettings';
 import SmartHomeLogo from './components/SmartHomeLogo';
 import AccountNavLink from './components/AccountNavLink';
 import Link from 'next/link';
@@ -10,7 +11,7 @@ const highlights=[
  {icon:'₾',number:'06',title:'Notezi darul primit de la fiecare invitat',description:'Înregistrezi în lei sau euro cât a oferit fiecare invitat ori familie și poți consulta ulterior registrul darurilor.',tag:'Evidența darului'}
 ];
 export default function Home(){
- return <main className="landing"><header className="top"><SmartHomeLogo showMotto/><nav aria-label="Navigare principală"><AccountNavLink/></nav></header>
+ return <main className="landing"><header className="top"><SmartHomeLogo showMotto/><nav aria-label="Navigare principală"><PublicThemeControl/><AccountNavLink/></nav></header>
  <section className="hero christmas-hero">
  <div className="christmas-ribbon">🎄 OFERTĂ SPECIALĂ DE CRĂCIUN · WEDLY 2027</div>
  <span className="eyebrow">PENTRU VIITORII MIRI · ROMÂNIA</span>
