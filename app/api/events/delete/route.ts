@@ -18,10 +18,12 @@ export async function POST(req:NextRequest){
  const client=createClient(url,anon,{global:{headers:{Authorization:bearer}},auth:{persistSession:false,autoRefreshToken:false}});
  const {data:{user},error:authError}=await client.auth.getUser(bearer.slice(7));
  if(authError||!user)return fail('Sesiune invalidă.',401);
+ // Verify ownership with the signed-in user's session, not a privileged key.
+ // The event-membership table is already used by the dashboard under RLS.
+ const {data:membership,error:ownerError}=await client.from('wedding_members').select('role,status').eq('wedding_id',id).eq('user_id',user.id).maybeSingle();
+ if(ownerError)return fail('Nu am putut verifica proprietarul evenimentului: '+ownerError.message,503);
+ if(!membership||membership.role!=='owner'||membership.status!=='active')return fail('Doar proprietarul poate șterge evenimentul.',403);
  const admin=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
- const {data:owned,error:ownerError}=await admin.from('weddings').select('id').eq('id',id).eq('owner_id',user.id).maybeSingle();
- if(ownerError)return fail('Nu am putut verifica proprietarul evenimentului.',503);
- if(!owned)return fail('Doar proprietarul poate șterge evenimentul.',403);
  // Collect all invitation assets before deleting the relational event.
  const bucket='wedly-invitation-photos',files:string[]=[];
  for(let offset=0;offset<10000;offset+=100){
