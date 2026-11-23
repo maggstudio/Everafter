@@ -21,7 +21,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  const [events,setEvents]=useState<EventSummary[]>([]);
  const [weddingId,setWeddingId]=useState<string|null>(null),[members,setMembers]=useState<Member[]>([]),[pending,setPending]=useState<Member[]>([]),[userId,setUserId]=useState<string|null>(null);
  const saved=useRef<Data>(initial),loaded=useRef(false),version=useRef(0),isSaving=useRef(false);
- const dataRef=useRef(data),polling=useRef(false);dataRef.current=data;
+ const dataRef=useRef(data),polling=useRef(false),authUser=useRef<string|null>(null),booting=useRef(false);dataRef.current=data;
  const current=members.find(m=>m.user_id===userId&&m.wedding_id===weddingId&&m.status==='active');
  const isOwner=current?.role==='owner';
  const can=(module:Module,action:'read'|'write')=>Boolean(isOwner||current?.permissions?.[module==='vendors'?'expenses':module]?.[action]);
@@ -57,7 +57,7 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  async function refreshInPlace(){if(!loaded.current||polling.current||isSaving.current||JSON.stringify(dataRef.current)!==JSON.stringify(saved.current))return;polling.current=true;try{await refresh(true)}finally{polling.current=false}}
  async function refresh(background=false){if(!supabase)return;const client=supabase;const v=++version.current;if(!background){loaded.current=false;setReady(false);setSaveStatus('Se încarcă...');}
  const {data:{user},error:authError}=await client.auth.getUser();if(v!==version.current)return;
- if(authError||!user){if(!user&&!authError||authError?.status===401||authError?.status===403){loaded.current=false;setReady(false);setUserId(null);setWeddingId(null);setMembers([]);setData(initial)}setSaveStatus('Autentificare necesară');return}setUserId(user.id);
+ if(authError||!user){if(!user&&!authError||authError?.status===401||authError?.status===403){loaded.current=false;setReady(false);setUserId(null);setWeddingId(null);setMembers([]);setData(initial)}setSaveStatus('Autentificare necesară');return}authUser.current=user.id;setUserId(user.id);
  // Never bootstrap a new event on refresh: an account may intentionally have zero events.
  const {data:allMembers,error:memberError}=await client.from('wedding_members').select('*').eq('user_id',user.id);
  if(v!==version.current)return;if(memberError){setSaveStatus(memberError.message);return}
@@ -93,15 +93,15 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  saved.current=next;setData(next);loaded.current=true;setReady(true);if(!background)setSaveStatus('Date sincronizate');
  }
  useEffect(()=>{
-  void refresh();if(!supabase)return;
+  booting.current=true;void refresh().finally(()=>{booting.current=false});if(!supabase)return;
   const {data:{subscription}}=supabase.auth.onAuthStateChange((event,session)=>{
    if(event==='SIGNED_OUT'){
-    version.current++;loaded.current=false;setReady(false);setSaveStatus('Autentificare necesară');
+    version.current++;authUser.current=null;loaded.current=false;setReady(false);setSaveStatus('Autentificare necesară');
     setUserId(null);setWeddingId(null);setMembers([]);setEvents([]);setData(initial);
    }else if(event==='SIGNED_IN'&&session){
     // Auth state may become available after the initial getUser call.
     // Defer Supabase queries until the auth callback has completed.
-    setTimeout(()=>{void refresh()},0);
+    setTimeout(()=>{if(authUser.current===session.user.id&&loaded.current){void refreshInPlace();return}if(booting.current&&(!authUser.current||authUser.current===session.user.id))return;booting.current=true;void refresh().finally(()=>{booting.current=false})},0);
    }
   });return()=>subscription.unsubscribe()
  },[]);
