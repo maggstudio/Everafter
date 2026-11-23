@@ -91,7 +91,19 @@ export function StoreProvider({children}:{children:React.ReactNode}){
  if(background&&(isSaving.current||JSON.stringify(dataRef.current)!==JSON.stringify(saved.current)))return;
  saved.current=next;setData(next);loaded.current=true;setReady(true);if(!background)setSaveStatus('Date sincronizate');
  }
- useEffect(()=>{void refresh();if(!supabase)return;const {data:{subscription}}=supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){version.current++;loaded.current=false;setReady(false);setUserId(null);setWeddingId(null);setEvents([]);setData(initial)} });return()=>subscription.unsubscribe()},[]);
+ useEffect(()=>{
+  void refresh();if(!supabase)return;
+  const {data:{subscription}}=supabase.auth.onAuthStateChange((event,session)=>{
+   if(event==='SIGNED_OUT'){
+    version.current++;loaded.current=false;setReady(false);setSaveStatus('Autentificare necesară');
+    setUserId(null);setWeddingId(null);setMembers([]);setEvents([]);setData(initial);
+   }else if(event==='SIGNED_IN'&&session){
+    // Auth state may become available after the initial getUser call.
+    // Defer Supabase queries until the auth callback has completed.
+    setTimeout(()=>{void refresh()},0);
+   }
+  });return()=>subscription.unsubscribe()
+ },[]);
  useEffect(()=>{if(!ready||!loaded.current||!weddingId||!supabase||isSaving.current)return;
  const changed=modules.filter(m=>JSON.stringify(data[field[m]])!==JSON.stringify(saved.current[field[m]]));if(!changed.length)return;
  const denied=changed.filter(m=>!can(m,'write'));if(denied.length){setSaveStatus('Nu ai drept de modificare: '+denied.join(', '));return}
