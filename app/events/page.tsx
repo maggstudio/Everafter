@@ -11,7 +11,7 @@ export default function EventsPage(){
  const [deleting,setDeleting]=useState<string|null>(null),[deleteConfirm,setDeleteConfirm]=useState(''),[deleteBusy,setDeleteBusy]=useState(false);
  const [type,setType]=useState<'wedding'|'baptism'>('wedding');const [createOpen,setCreateOpen]=useState(false);
  const [first,setFirst]=useState(''),[second,setSecond]=useState(''),[date,setDate]=useState(''),[city,setCity]=useState('');
- const [child,setChild]=useState(''),[godparents,setGodparents]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[opening,setOpening]=useState<string|null>(null);
+ const [child,setChild]=useState(''),[godparents,setGodparents]=useState(''),[elders,setElders]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[opening,setOpening]=useState<string|null>(null);
  async function openEvent(id:string){
   if(opening)return;
   setOpening(id);setError('');
@@ -33,8 +33,8 @@ export default function EventsPage(){
   }catch(e){setError(e instanceof Error?e.message:'Eroare la ștergere.');}finally{setDeleteBusy(false)}
  }
  async function create(e:React.FormEvent){e.preventDefault();if(!supabase||busy)return;setBusy(true);setError('');
-  const {data,error:rpcError}=await supabase.rpc('create_my_event',{p_type:type,p_first:first.trim(),p_second:second.trim(),p_date:date,p_city:city.trim(),p_child_name:type==='baptism'?child.trim():'',p_godparents:type==='baptism'?godparents.trim():''});
-  if(rpcError||!data){setError(rpcError?.message||'Nu am putut crea evenimentul. Verifică migrarea v08.sql.');setBusy(false);return}
+  const {data,error:rpcError}=await supabase.rpc('create_my_event_with_elders',{p_type:type,p_first:first.trim(),p_second:second.trim(),p_date:date,p_city:city.trim(),p_child_name:type==='baptism'?child.trim():'',p_godparents:type==='baptism'?godparents.trim():'',p_elders:type==='baptism'?elders.trim():''});
+  if(rpcError||!data){setError(rpcError?.message||'Nu am putut crea evenimentul. Verifică migrarea baptism_family.sql.');setBusy(false);return}
   window.location.href='/dashboard?wedding='+encodeURIComponent(data);
  }
  if(!ready)return <AuthLoading message={saveStatus}/>;
@@ -46,7 +46,7 @@ export default function EventsPage(){
  <form onSubmit={create}><label>Tip eveniment<select value={type} onChange={e=>setType(e.target.value as 'wedding'|'baptism')}><option value="wedding">Nuntă</option><option value="baptism">Botez</option></select></label>
  <div className="two"><label>{type==='baptism'?'Primul părinte':'Primul partener'}<input required maxLength={100} value={first} onChange={e=>setFirst(e.target.value)}/></label>
  <label>{type==='baptism'?'Al doilea părinte':'Al doilea partener'}<input required maxLength={100} value={second} onChange={e=>setSecond(e.target.value)}/></label>
- {type==='baptism'&&<><label>Numele copilului<input required maxLength={100} value={child} onChange={e=>setChild(e.target.value)}/></label><label>Nașii copilului<input maxLength={200} value={godparents} onChange={e=>setGodparents(e.target.value)}/></label></>}
+ {type==='baptism'&&<><label>Numele copilului<input required maxLength={100} value={child} onChange={e=>setChild(e.target.value)}/></label><label>Nașii copilului<input maxLength={200} value={godparents} onChange={e=>setGodparents(e.target.value)}/></label><label>Moșii copilului (opțional)<input maxLength={240} value={elders} onChange={e=>setElders(e.target.value)}/></label></>}
  <label>Data evenimentului<input type="date" required value={date} onChange={e=>setDate(e.target.value)}/></label><label>Oraș<input required maxLength={120} value={city} onChange={e=>setCity(e.target.value)}/></label></div>
 
  <button className="button full" disabled={busy}>{busy?'Se creează...':'Creează eveniment'}</button></form><button type="button" className="text-button" onClick={()=>setCreateOpen(false)}>Anulează</button></>}</div></main>
