@@ -1,5 +1,5 @@
-import BrandLogo from '../components/BrandLogo';
 'use client';
+import BrandLogo from '../components/BrandLogo';
 import Link from 'next/link';import {useEffect,useState} from 'react';import {supabase} from '../../lib/supabase';
 export default function Invite(){const [message,setMessage]=useState('Verificăm invitația...'),[busy,setBusy]=useState(false),[token,setToken]=useState('');
  useEffect(()=>{const t=new URLSearchParams(window.location.hash.slice(1)).get('token')||'';setToken(t);setMessage(t?'Autentifică-te cu adresa de email invitată, apoi acceptă invitația.':'Linkul nu conține un token valid.');},[]);
