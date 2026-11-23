@@ -551,3 +551,126 @@ button,a,input,select,textarea{transition:background-color .18s ease,border-colo
  .landing .christmas-price-card small{font-size:.61rem}
  .landing .landing-power-card{padding:19px 17px}
 }
+
+/* WEDLY mobile UX pass across app modules and public pages.
+   Scoped to phone/tablet widths: desktop presentation is untouched. */
+@media(max-width:750px){
+ .app-layout,.main-area,.shell,.narrow{min-width:0}
+ .app-layout{width:100%;max-width:100%}
+ .main-area{min-width:0}
+ .main-area :is(.panel,.list-row,.module-head,.stats,.two,.package-grid,.seating-grid,.invitation-layout){min-width:0}
+ .main-area :is(h1,h2,h3,p,strong,small),.shell :is(h1,h2,h3,p,strong,small){overflow-wrap:break-word}
+ .main-area :is(input,select,textarea),.shell :is(input,select,textarea){max-width:100%;min-width:0}
+ .main-area textarea,.shell textarea{width:100%}
+ .main-area .row-controls,.shell .row-controls{flex-wrap:wrap;min-width:0}
+ .main-area .row-controls>*{max-width:100%}
+ .main-area .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .main-area .stats article{min-width:0}
+ .main-area .package-grid,.main-area .admin-grid,.shell .package-grid,.shell .admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .main-area .invitation-layout{grid-template-columns:minmax(0,1fr)}
+ .main-area .invitation-editor,.main-area .invitation-preview{min-width:0;max-width:100%}
+ .main-area .invitation-preview{padding:clamp(17px,4vw,32px) 16px}
+ .main-area .seating-grid{grid-template-columns:minmax(0,1fr)}
+ .main-area .seating-table .list-row{flex-wrap:wrap}
+ .main-area .room-plan{max-width:100%}
+ .main-area .calendar-toolbar{gap:10px}
+ .main-area .calendar-toolbar .row-controls{gap:8px}
+ .main-area .guest-rsvp-link,.main-area .guest-rsvp-detail{min-width:0;overflow-wrap:anywhere}
+ .main-area .guest-rsvp-link input{width:100%}
+ .main-area .task-actions{flex-wrap:wrap}
+ .main-area .budget-entry-actions{min-width:0}
+ .main-area .budget-form,.main-area .calendar-form,.main-area .guest-form{max-width:100%}
+ .shell .panel{min-width:0}
+ .shell .two{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .shell .package-grid{gap:9px}
+ .shell .package{min-width:0}
+ .shell .total{gap:12px;flex-wrap:wrap}
+ .shell .total>div{min-width:0}
+ .public-invitation-page .invitation-preview{max-width:100%}
+ .public-rsvp-form{max-width:100%}
+}
+@media(max-width:650px){
+ .main-area{width:100%;padding:14px 13px 70px}
+ .main-area .mobile-head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:45px}
+ .main-area .mobile-head a{min-height:40px;display:inline-flex;align-items:center}
+ .main-area .mobile-nav{display:flex;align-items:stretch;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;padding:3px 0 12px;margin:12px 0 18px;max-width:100%}
+ .main-area .mobile-nav :is(button,a){display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;white-space:nowrap;min-height:44px;padding:10px 13px;border:1px solid #dfe7dd;background:#fff;border-radius:11px;color:var(--dark);font-size:.83rem;font-weight:650}
+ .main-area .mobile-nav :is(button.active,a[aria-current="page"]){background:#dce7d9;border-color:#b6cdb5}
+ .main-area .mobile-more-modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px;margin:-6px 0 18px;background:#edf1ea;border:1px solid var(--line);border-radius:13px}
+ .main-area .mobile-more-modules a{display:flex;align-items:center;min-height:44px;padding:10px;background:white;border-radius:9px;font-size:.84rem;overflow-wrap:anywhere}
+ .main-area .page-head{display:flex;flex-wrap:wrap;gap:9px;padding-bottom:13px}
+ .main-area .page-head>div{min-width:0;flex:1 1 190px}
+ .main-area .page-head h1{font-size:clamp(1.55rem,7vw,2.05rem);line-height:1.16}
+ .main-area .page-head .pill{max-width:100%;white-space:normal;line-height:1.4}
+ .main-area .panel{padding:17px 14px;border-radius:15px}
+ .main-area .module-head{display:flex;flex-wrap:wrap;gap:12px}
+ .main-area .module-head .button{width:100%;white-space:normal;min-height:44px}
+ .main-area .stats{gap:9px}
+ .main-area .stats article{padding:14px 11px;min-height:0}
+ .main-area .stats strong{font-size:clamp(1rem,4.5vw,1.3rem);overflow-wrap:anywhere}
+ .main-area .list-row{align-items:stretch;gap:10px}
+ .main-area .list-row>span,.main-area .list-row>div{min-width:0}
+ .main-area .list-row>.row-controls{width:100%;justify-content:flex-start}
+ .main-area .list-row .row-controls .button{min-height:42px}
+ .main-area .inline-form{display:flex;flex-wrap:wrap;align-items:stretch}
+ .main-area .inline-form label,.main-area .inline-form input{min-width:0;flex-basis:100%}
+ .main-area .inline-form .button{width:100%}
+ .main-area .task-filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .main-area .task-edit{grid-template-columns:minmax(0,1fr)}
+ .main-area .task-edit .task-actions{grid-column:1}
+ .main-area .guest-page-title{gap:12px}
+ .main-area .guest-page-title .row-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+ .main-area .guest-page-title .row-controls .button{white-space:normal;min-width:0}
+ .main-area .guest-unified-item .guest-actions{width:100%;align-items:stretch;justify-content:flex-start}
+ .main-area .guest-unified-item .guest-actions .row-controls{flex-wrap:wrap;justify-content:flex-start}
+ .main-area .guest-unified-item .guest-actions select{max-width:100%}
+ .main-area .guest-rsvp-actions{align-items:stretch;gap:8px}
+ .main-area .guest-rsvp-actions .button{white-space:normal;min-height:42px}
+ .main-area .guest-rsvp-detail{padding:12px}
+ .main-area .seating-table{padding:13px}
+ .main-area .seating-table select{max-width:100%}
+ .main-area .room-plan{padding:11px}
+ .main-area .room-plan-heading{flex-wrap:wrap}
+ .main-area .room-controls{gap:9px}
+ .main-area .calendar-grid{gap:3px;padding:4px}
+ .main-area .calendar-weekday{font-size:.64rem}
+ .main-area .calendar-day{min-width:0;min-height:53px;padding:5px 2px;font-size:.74rem}
+ .main-area .calendar-day small{font-size:.57rem}
+ .main-area .invitation-layout{gap:16px}
+ .main-area .invitation-theme-grid,.main-area .invitation-background-options{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .main-area .invitation-preview{min-height:0;padding:30px 16px}
+ .main-area .invitation-preview .invitation-photo-frame{max-width:100%}
+ .main-area .invitation-export-actions{align-items:stretch}
+ .main-area .invitation-export-actions .button{flex:1 1 100%;white-space:normal}
+ .main-area .gift-counting .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .shell:not(.landing){padding:18px 13px 48px}
+ .shell:not(.landing) .panel{padding:19px 15px}
+ .shell:not(.landing) .two,.shell:not(.landing) .package-grid,.shell:not(.landing) .admin-grid{grid-template-columns:minmax(0,1fr)}
+ .shell:not(.landing) .list-row{flex-wrap:wrap;align-items:stretch}
+ .shell:not(.landing) .list-row>.row-controls{width:100%;justify-content:flex-start}
+ .shell:not(.landing) .row-controls{flex-wrap:wrap}
+ .shell:not(.landing) .actions .button{min-height:44px}
+ .shell:not(.landing) .total{flex-wrap:wrap}
+ .shell:not(.landing) .check-row{align-items:flex-start}
+ .shell:not(.landing) .check-row input[type=checkbox]{flex-shrink:0}
+ .event-delete-overlay{padding:12px;align-items:center}
+ .event-delete-dialog{width:100%;max-height:calc(100dvh - 24px);padding:20px 16px;border-radius:16px}
+ .event-delete-dialog .row-controls{flex-direction:column;align-items:stretch}
+ .event-delete-dialog .row-controls .button{width:100%;white-space:normal}
+ .public-invitation-page .invitation-preview{min-height:0;padding:55px 21px;gap:15px}
+ .public-invitation-page .invitation-preview h2{font-size:clamp(1.85rem,9vw,2.7rem)}
+ .public-invitation-page .invitation-preview>p{font-size:.96rem;line-height:1.65}
+ .public-rsvp-form{padding:20px 15px}
+ .public-rsvp-form .button{min-height:46px}
+}
+@media(max-width:370px){
+ .main-area{padding-inline:10px}
+ .main-area .panel{padding:15px 11px}
+ .main-area .stats{gap:6px}
+ .main-area .stats article{padding:11px 9px}
+ .main-area .task-filters{grid-template-columns:minmax(0,1fr)}
+ .main-area .guest-page-title .row-controls{grid-template-columns:minmax(0,1fr)}
+ .main-area .mobile-more-modules{grid-template-columns:minmax(0,1fr)}
+ .shell:not(.landing){padding-inline:10px}
+ .public-invitation-page .invitation-preview{padding:45px 15px}
+}
