@@ -3,7 +3,6 @@ import {useState} from 'react';
 import {useStore,type Vendor} from '../../lib/store';
 import {money} from '../../lib/demo';
 import VendorDocuments from './VendorDocuments';
-import VendorDiscovery from './VendorDiscovery';
 import VendorPayments,{paidTotal} from './VendorPayments';
 
 const categories=['Restaurant / locație','Muzică / DJ','Foto / Video','Flori / decor','Catering / tort','Ținute / beauty','Transport','Ceremonie','Altele'];
@@ -24,7 +23,6 @@ export default function VendorsPanel(){
  const [expanded,setExpanded]=useState<string|null>(null);
  const [expandedPayments,setExpandedPayments]=useState<string|null>(null);
  const [showForm,setShowForm]=useState(false);
- const [showDiscovery,setShowDiscovery]=useState(false);
 
  const [form,setForm]=useState<Form>(blank),[editing,setEditing]=useState<string|null>(null),[search,setSearch]=useState(''),[filter,setFilter]=useState('all');
  const readable=can('vendors','read'),writable=can('vendors','write');
@@ -39,8 +37,7 @@ export default function VendorsPanel(){
  const item:Vendor={id:editing||crypto.randomUUID(),name:form.name.trim().slice(0,160),category:form.category,contact:form.contact.trim().slice(0,250),contractAmount:amount,paidAmount:paid,dueDate:form.dueDate,notes:form.notes.trim().slice(0,500),payments:editing?(vendors.find(v=>v.id===editing)?.payments||[]):[]};
  setData(d=>({...d,vendors:editing?d.vendors.map(v=>v.id===editing?item:v):[...d.vendors,item]}));reset()};
  const filtered=vendors.filter(v=>(filter==='all'||v.category===filter)&&[v.name,v.contact,v.notes].some(x=>x.toLocaleLowerCase('ro').includes(search.toLocaleLowerCase('ro')))).sort((a,b)=>(a.dueDate||'9999').localeCompare(b.dueDate||'9999'));
- return <section className="panel"><div className="module-head"><h2>Furnizori și contracte</h2><div className="row-controls"><button type="button" className="button secondary" onClick={()=>setShowDiscovery(v=>!v)}>{showDiscovery?"Închide căutarea":"🔎 Descoperă furnizori"}</button><button type="button" className="button secondary" disabled={!vendors.length} onClick={()=>exportVendors(filtered)}>Exportă CSV</button>{writable&&<button type="button" className="button" onClick={()=>{reset();setShowForm(true)}}>+ Adaugă furnizor</button>}</div></div><p>Ține evidența colaboratorilor, valorilor contractate, avansurilor și scadențelor. Plățile noi introduse în istoricul fiecărui furnizor se înregistrează automat și în Buget. Soldul inițial declarat rămâne separat.</p>
- {showDiscovery&&<VendorDiscovery/>}
+ return <section className="panel"><div className="module-head"><h2>Furnizori și contracte</h2><div className="row-controls"><button type="button" className="button secondary" disabled={!vendors.length} onClick={()=>exportVendors(filtered)}>Exportă CSV</button>{writable&&<button type="button" className="button" onClick={()=>{reset();setShowForm(true)}}>+ Adaugă furnizor</button>}</div></div><p>Ține evidența colaboratorilor, valorilor contractate, avansurilor și scadențelor. Plățile noi introduse în istoricul fiecărui furnizor se înregistrează automat și în Buget. Soldul inițial declarat rămâne separat.</p>
  <div className="stats"><article><span>Furnizori</span><strong>{vendors.length}</strong></article><article><span>Contractat</span><strong>{money(contracted)}</strong></article><article><span>Plătit declarat</span><strong>{money(paid)}</strong></article><article><span>De achitat</span><strong>{money(contracted-paid)}</strong></article></div>
  {due.length>0&&<p role="status" className="v09-warning">⚠ {due.length} {due.length===1?'furnizor cu scadență depășită':'furnizori cu scadențe depășite'} și sold restant.</p>}
  <div className="task-filters"><label>Caută<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Nume, contact, observații"/></label><label>Categorie<select value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">Toate</option>{categories.map(c=><option key={c}>{c}</option>)}</select></label></div>
