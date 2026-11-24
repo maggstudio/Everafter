@@ -14,21 +14,49 @@ export async function GET(req:Request){
  webpush.setVapidDetails('mailto:contact@wedly.ro',pub,priv);
  const now=new Date(),today=date(now),hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Bucharest',hour:'2-digit',hourCycle:'h23'}).format(now));
  let sent=0,failed=0;
- const {data:subs,error:se}=await db.from('push_subscriptions').select('user_id,endpoint,subscription,updated_at').limit(1000);
+ const started=Date.now();
+ const {data:jobs,error:claimError}=await db.rpc('wedly_push_claim',{p_limit:40});
+ if(claimError)return Response.json({error:'Queue migration required'},{status:503});
+ await Promise.all((jobs||[]).map(async (j:any)=>{
+ const finish=async(state:string)=>{await db.from('wedly_push_queue').update({state}).eq('id',j.id).eq('attempts',j.attempts)};
+ const defer=async(minutes:number)=>{await db.from('wedly_push_queue').update({available_at:new Date(Date.now()+minutes*60000).toISOString()}).eq('id',j.id).eq('attempts',j.attempts)};
+ try{
+ const [member,device,prefs]=await Promise.all([
+ db.from('wedding_members').select('role,permissions').eq('wedding_id',j.wedding_id).eq('user_id',j.user_id).eq('status','active').maybeSingle(),
+ db.from('push_subscriptions').select('subscription,updated_at').eq('endpoint',j.endpoint).eq('user_id',j.user_id).maybeSingle(),
+ db.from('wedly_push_preferences').select('*').eq('wedding_id',j.wedding_id).eq('user_id',j.user_id).maybeSingle()]);
+ if(member.error||device.error||prefs.error)throw Error('Lookup failed');
+ const mod=j.view_name==='vendors'?'expenses':j.view_name==='overview'?'wedding':j.view_name==='calendar'?'calendar':j.view_name;
+ const category=({task:'tasks',assignment:'assignments',appointment:'appointments',payment:'payments',rsvp:'rsvp',countdown:'countdown',digest:'digest'} as Record<string,string>)[j.event_key.split(':')[0]];
+ const p={...defaults,...prefs.data};
+ if(!member.data||!device.data||!category||!p[category]||(member.data.role!=='owner'&&member.data.permissions?.[mod]?.read!==true)){await finish('cancelled');return}
+ const a=p.quiet_start,b=p.quiet_end;if(a!==b&&(a<b?hour>=a&&hour<b:hour>=a||hour<b)){await defer(15);return}
+ await webpush.sendNotification(device.data.subscription,JSON.stringify({title:'WEDLY',body:j.body,url:'/dashboard?wedding='+encodeURIComponent(j.wedding_id)+'&view='+j.view_name}),{TTL:86400,timeout:5000});
+ await finish('sent');sent++;
+ }catch(e){failed++;const code=(e as {statusCode?:number})?.statusCode;if(code===404||code===410){await finish('cancelled')}else await defer(Math.min(360,15*Math.pow(2,Math.min(j.attempts-1,5))))}
+ }));
+ const lease=new Date(Date.now()+90000).toISOString();
+ const {data:cursor,error:ce}=await db.from('wedly_push_cursor').update({lease_until:lease}).eq('id',1).lt('lease_until',new Date().toISOString()).select('endpoint').maybeSingle();
+ if(ce||!cursor)return Response.json({sent,failed,scan:false});
+ let last=cursor.endpoint;
+ try{
+ const {data:subs,error:se}=await db.from('push_subscriptions').select('user_id,endpoint,subscription,updated_at').gt('endpoint',last).order('endpoint').limit(100);
  if(se)return Response.json({error:'Subscriptions unavailable'},{status:500});
- for(const uid of Array.from(new Set((subs||[]).map(s=>s.user_id)))){
- const devices=(subs||[]).filter(s=>s.user_id===uid);
+ for(const device of subs||[]){
+ if(Date.now()-started>40000)break;
+ const uid=device.user_id,devices=[device];
+ let scanOk=true;
  const {data:members,error:me}=await db.from('wedding_members').select('wedding_id,role,permissions').eq('user_id',uid).eq('status','active');
- if(me){failed++;continue}
+ if(me){failed++;break}
  for(const m of members||[]){
  const {data:p,error:pe}=await db.from('wedly_push_preferences').select('*').eq('wedding_id',m.wedding_id).eq('user_id',uid).maybeSingle();
- if(pe){failed++;continue}
+ if(pe){failed++;scanOk=false;continue}
  const pref={...defaults,...p};
  const a=pref.quiet_start,b=pref.quiet_end;
  if(a!==b&&(a<b?hour>=a&&hour<b:hour>=a||hour<b))continue;
  const can=(mod:string)=>m.role==='owner'||m.permissions?.[mod]?.read===true;
  const {data:rows,error:re}=await db.from('wedding_modules').select('module,content').eq('wedding_id',m.wedding_id);
- if(re){failed++;continue}
+ if(re){failed++;scanOk=false;continue}
  const get=(mod:string)=>rows?.find(r=>r.module===mod)?.content;
  const arr=(mod:string):any[]=>Array.isArray(get(mod))?get(mod):[];
  const w=get('wedding')||{},tasks=can('tasks')?arr('tasks'):[],appointments=can('calendar')?arr('calendar'):[],vendors=can('expenses')?arr('vendors'):[],guests=can('guests')?arr('guests'):[];
@@ -52,13 +80,18 @@ export async function GET(req:Request){
  if(pref.countdown&&can('wedding')&&[1,7,14,30,60,90].includes(days))add('countdown:'+w.date+':'+days,'Mai '+(days===1?'este o zi':'sunt '+days+' zile')+' până la eveniment!','overview');
  if(pref.digest&&can('wedding')&&hour===pref.digest_hour){const lines:string[]=[];if(can('tasks'))lines.push(tasks.filter(t=>!t.done).length+' sarcini deschise');if(can('guests'))lines.push(guests.filter(g=>g.status==='confirmat').length+' invitați confirmați');if(can('calendar'))lines.push(appointments.filter(t=>distance(t.date,today)===0).length+' programări astăzi');if(lines.length)add('digest:'+today,lines.join(' · '),'overview')}
  for(const alert of alerts){
- const {error:reserve}=await db.from('wedly_push_delivery').insert({wedding_id:m.wedding_id,user_id:uid,event_key:alert.id});
- if(reserve){if(reserve.code!=='23505')failed++;continue}
- let delivered=false;
- for(const device of devices){try{await webpush.sendNotification(device.subscription,JSON.stringify({title:'WEDLY',body:alert.body.slice(0,220),url:'/dashboard?wedding='+encodeURIComponent(m.wedding_id)+'&view='+alert.view}),{TTL:3600,timeout:5000});delivered=true;sent++}catch(e){failed++;const code=(e as {statusCode?:number})?.statusCode;if(code===404||code===410)await db.from('push_subscriptions').delete().eq('endpoint',device.endpoint).eq('user_id',uid).eq('updated_at',device.updated_at)}}
- if(!delivered)await db.from('wedly_push_delivery').delete().eq('wedding_id',m.wedding_id).eq('user_id',uid).eq('event_key',alert.id);
+ const {data:legacy,error:le}=await db.from('wedly_push_delivery').select('event_key').eq('wedding_id',m.wedding_id).eq('user_id',uid).eq('event_key',alert.id).maybeSingle();
+ if(le){failed++;scanOk=false;continue}
+ if(legacy)continue;
+ const {error:qe}=await db.from('wedly_push_queue').upsert(devices.map(d=>({wedding_id:m.wedding_id,user_id:uid,event_key:alert.id,endpoint:d.endpoint,body:alert.body.slice(0,220),view_name:alert.view})),{onConflict:'wedding_id,user_id,event_key,endpoint',ignoreDuplicates:true});
+ if(qe){failed++;scanOk=false}
  }
  }
+ if(!scanOk)break;
+ last=device.endpoint;
  }
+ if(!subs?.length)last='';
+ }finally{await db.from('wedly_push_cursor').update({endpoint:last,lease_until:new Date().toISOString()}).eq('id',1).eq('lease_until',lease)}
+
  return Response.json({sent,failed});
 }
