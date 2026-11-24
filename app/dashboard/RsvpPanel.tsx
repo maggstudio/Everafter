@@ -1,5 +1,5 @@
 'use client';
-import {useEffect,useState} from 'react';
+import {useEffect,useState,useRef} from 'react';
 import {useStore} from '../../lib/store';
 import {supabase} from '../../lib/supabase';
 import type {Guest} from '../../lib/demo';
@@ -8,6 +8,11 @@ export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effect
  const {data,ready,weddingId,can}=useStore();
  const [rows,setRows]=useState<RecordRow[]>([]),[links,setLinks]=useState<Record<string,string>>({});
  const [expanded,setExpanded]=useState<string|null>(null),[message,setMessage]=useState(''),[busy,setBusy]=useState(false);
+ const dialogRef=useRef<HTMLDialogElement>(null);
+ const opener=useRef<HTMLButtonElement|null>(null);
+ const selected=guests.find(g=>g.id===expanded);
+ useEffect(()=>{const dialog=dialogRef.current;if(selected&&dialog&&!dialog.open)dialog.showModal();else if(!selected&&dialog?.open)dialog.close()},[selected,expanded]);
+ function closeDetail(){setExpanded(null);setMessage('');requestAnimationFrame(()=>opener.current?.focus())}
  const writable=can('guests','write');
  async function load(){if(!supabase||!weddingId)return;const {data:result,error}=await supabase.rpc('rsvp_list',{p_wedding:weddingId});if(error)setMessage(error.message);else setRows((result||[]) as RecordRow[])}
  useEffect(()=>{setLinks({});setRows([]);setExpanded(null);void load();},[weddingId,ready]);
@@ -57,14 +62,16 @@ export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effect
  <td data-label="Persoane" className="guest-table-count">{effectiveSize(g)}</td>
  <td data-label="Invitație"><span className="guest-status-chip guest-status-muted">{r?.responded_at?'Răspuns primit':r?.revoked_at?'Anulată':r?'Pregătită':'Neinvitat'}</span></td>
  <td data-label="Răspuns"><span className={'guest-status-chip '+(effectiveStatus(g)==='confirmat'?'guest-status-ok':effectiveStatus(g)==='refuzat'?'guest-status-error':'guest-status-muted')}>{responseLabel(g,r)}</span></td>
- <td data-label="Acțiuni"><div className="guest-table-actions">{writable&&<button type="button" className="text-button" onClick={()=>onEdit(g)}>Editează</button>}{writable&&<button type="button" className="text-button" onClick={()=>onDelete(g)}>Șterge invitatul</button>}<button type="button" className="text-button" aria-expanded={open} aria-controls={'guest-detail-'+g.id} onClick={()=>setExpanded(open?null:g.id)}>{open?'Închide':'Invită'}</button></div></td>
+ <td data-label="Acțiuni"><div className="guest-table-actions">{writable&&<button type="button" className="text-button" onClick={()=>onEdit(g)}>Editează</button>}{writable&&<button type="button" className="text-button" onClick={()=>onDelete(g)}>Șterge invitatul</button>}<button type="button" className="text-button" aria-haspopup="dialog" aria-expanded={open} aria-controls="guest-invite-dialog" onClick={e=>{opener.current=e.currentTarget;setMessage('');setExpanded(g.id)}}>Invită</button></div></td>
  </tr>})}</tbody></table></div>
- {expanded&&guests.some(g=>g.id===expanded)&&(()=>{const g=guests.find(x=>x.id===expanded)!;const r=rows.find(x=>x.guest_id===g.id);return <div className="guest-rsvp-detail guest-table-detail" id={'guest-detail-'+g.id}><div className="guest-detail-header"><h3>{g.name}</h3><button type="button" className="text-button" onClick={()=>setExpanded(null)}>Închide ×</button></div><p className="hint">{[g.phone].filter(Boolean).join(' · ')||'Fără date de contact'} · {r?(r.responded_at?'Link utilizat · RSVP primit':r.revoked_at?'Invitație anulată':'Invitație pregătită'):'Invitație nepregătită'}</p>
- {g.notes&&<p className="hint">Note: {g.notes}</p>}
+ <dialog ref={dialogRef} id="guest-invite-dialog" aria-labelledby="guest-invite-title" onCancel={e=>{e.preventDefault();closeDetail()}} onClick={e=>{if(e.target===e.currentTarget)closeDetail()}} style={{width:'min(560px, calc(100% - 24px))',maxHeight:'85dvh',overflowY:'auto',padding:0,border:'1px solid currentColor',borderRadius:18,background:'var(--panel, Canvas)',color:'var(--text, CanvasText)',boxShadow:'0 0 0 100vmax rgba(0,0,0,.55)'}}>
+ {expanded&&guests.some(g=>g.id===expanded)&&(()=>{const g=guests.find(x=>x.id===expanded)!;const r=rows.find(x=>x.guest_id===g.id);return <div className="guest-rsvp-detail guest-table-detail" id={'guest-detail-'+g.id}><div className="guest-detail-header"><h3 id="guest-invite-title">Invitație · {g.name}</h3><button type="button" className="text-button" onClick={closeDetail}>Închide ×</button></div><p className="hint">{[g.phone].filter(Boolean).join(' · ')||'Fără date de contact'} · {r?(r.responded_at?'Link utilizat · RSVP primit':r.revoked_at?'Invitație anulată':'Invitație pregătită'):'Invitație nepregătită'}</p>
+ {message&&<p role="status" className="hint">{message}</p>}{g.notes&&<p className="hint">Note: {g.notes}</p>}
  {r&&<p className="hint">Răspuns: {r.status} · {r.party_size} persoane{r.dietary_notes?' · '+r.dietary_notes:''}</p>}
- {writable&&<div className="row-controls"><button type="button" className="button" disabled={busy||!!r?.responded_at} onClick={()=>void issue(g)}>Invită</button>{r&&!r.revoked_at&&!r.responded_at&&<button type="button" className="text-button" disabled={busy} onClick={()=>void revoke(g.id)}>Anulează invitația</button>}</div>}
+ {writable&&<div className="row-controls"><button type="button" className="button" disabled={busy||!!r?.responded_at} onClick={()=>void issue(g)}>{busy?'Se pregătește…':r&&!r.revoked_at?'Pregătește linkul existent':'Pregătește invitația'}</button>{r&&!r.revoked_at&&!r.responded_at&&<button type="button" className="text-button" disabled={busy} onClick={()=>void revoke(g.id)}>Anulează invitația</button>}</div>}
  {links[g.id]&&<div className="guest-rsvp-link"><input readOnly aria-label={'Link RSVP '+g.name} value={links[g.id]}/><div className="row-controls"><button type="button" className="text-button" onClick={()=>void navigator.clipboard.writeText(links[g.id])}>Copiază adresa invitației</button><button type="button" className="text-button" onClick={()=>void navigator.clipboard.writeText(invitationMessage(g.name,links[g.id]))}>Copiază invitația</button></div><div className="row-controls"><button type="button" className="button secondary" onClick={async()=>{const text=invitationMessage(g.name,links[g.id]);try{if(navigator.share)await navigator.share({title:'Invitație WEDLY',text});else{await navigator.clipboard.writeText(text);setMessage('Invitația a fost copiată.')}}catch(e){if(!(e instanceof Error&&e.name==='AbortError'))setMessage('Partajarea nu a reușit. Folosește Copiază invitația.')}}}>Partajează</button><button type="button" className="button secondary" onClick={()=>share(g,'whatsapp')}>WhatsApp</button><button type="button" className="button secondary" onClick={()=>share(g,'instagram')}>Instagram</button><button type="button" className="button secondary" onClick={()=>share(g,'messenger')}>Messenger</button><button type="button" className="button secondary" onClick={()=>share(g,'email')}>Email personal</button></div><p className="hint">WhatsApp pregătește mesajul. Instagram și Messenger copiază mesajul și deschid aplicația, unde îl lipești manual. Email deschide aplicația ta de email.</p></div>}
  
  </div>})()}
+ </dialog>
  </div>
 }
