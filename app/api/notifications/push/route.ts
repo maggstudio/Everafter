@@ -13,12 +13,14 @@ export async function GET(req:Request){
  const db=createClient(url,key,{auth:{persistSession:false}});
  webpush.setVapidDetails('mailto:contact@wedly.ro',pub,priv);
  const now=new Date(),today=date(now),hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Bucharest',hour:'2-digit',hourCycle:'h23'}).format(now));
- let sent=0,failed=0;
+ let sent=0,failed=0,claimed=0;
  const started=Date.now();
+ for(let batch=0;batch<3 && Date.now()-started<12000;batch++){
  const {data:jobs,error:claimError}=await db.rpc('wedly_push_claim',{p_limit:40});
  if(claimError)return Response.json({error:'Queue migration required'},{status:503});
+ claimed+=(jobs||[]).length;
  await Promise.all((jobs||[]).map(async (j:any)=>{
- const finish=async(state:string)=>{await db.from('wedly_push_queue').update({state}).eq('id',j.id).eq('attempts',j.attempts)};
+ const finish=async(state:string)=>{const {error}=await db.from('wedly_push_queue').update({state}).eq('id',j.id).eq('attempts',j.attempts);if(error)throw Error('Queue state update failed')};
  const defer=async(minutes:number)=>{await db.from('wedly_push_queue').update({available_at:new Date(Date.now()+minutes*60000).toISOString()}).eq('id',j.id).eq('attempts',j.attempts)};
  try{
  const [member,device,prefs]=await Promise.all([
@@ -35,6 +37,8 @@ export async function GET(req:Request){
  await finish('sent');sent++;
  }catch(e){failed++;const code=(e as {statusCode?:number})?.statusCode;if(code===404||code===410){await finish('cancelled')}else await defer(Math.min(360,15*Math.pow(2,Math.min(j.attempts-1,5))))}
  }));
+ if((jobs||[]).length<40)break;
+ }
  const lease=new Date(Date.now()+90000).toISOString();
  const {data:cursor,error:ce}=await db.from('wedly_push_cursor').update({lease_until:lease}).eq('id',1).lt('lease_until',new Date().toISOString()).select('endpoint').maybeSingle();
  if(ce||!cursor)return Response.json({sent,failed,scan:false});
@@ -47,13 +51,12 @@ export async function GET(req:Request){
  const uid=device.user_id,devices=[device];
  let scanOk=true;
  const {data:members,error:me}=await db.from('wedding_members').select('wedding_id,role,permissions').eq('user_id',uid).eq('status','active');
- if(me){failed++;break}
+ if(me){failed++;last=device.endpoint;continue}
  for(const m of members||[]){
  const {data:p,error:pe}=await db.from('wedly_push_preferences').select('*').eq('wedding_id',m.wedding_id).eq('user_id',uid).maybeSingle();
  if(pe){failed++;scanOk=false;continue}
  const pref={...defaults,...p};
- const a=pref.quiet_start,b=pref.quiet_end;
- if(a!==b&&(a<b?hour>=a&&hour<b:hour>=a||hour<b))continue;
+ // Queue discovery continues during quiet hours; delivery enforces preferences.
  const can=(mod:string)=>m.role==='owner'||m.permissions?.[mod]?.read===true;
  const {data:rows,error:re}=await db.from('wedding_modules').select('module,content').eq('wedding_id',m.wedding_id);
  if(re){failed++;scanOk=false;continue}
@@ -87,11 +90,11 @@ export async function GET(req:Request){
  if(qe){failed++;scanOk=false}
  }
  }
- if(!scanOk)break;
+ if(!scanOk)failed++;
  last=device.endpoint;
  }
  if(!subs?.length)last='';
  }finally{await db.from('wedly_push_cursor').update({endpoint:last,lease_until:new Date().toISOString()}).eq('id',1).eq('lease_until',lease)}
 
- return Response.json({sent,failed});
+ return Response.json({sent,failed,claimed});
 }
