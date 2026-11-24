@@ -37,7 +37,7 @@ export async function GET(req:Request){
  const category=({task:'tasks',assignment:'assignments',appointment:'appointments',payment:'payments',rsvp:'rsvp',countdown:'countdown',digest:'digest'} as Record<string,string>)[j.event_key.split(':')[0]];
  const p={...defaults,...prefs.data};
  if(!member.data||!device.data||!category||!p[category]||(member.data.role!=='owner'&&member.data.permissions?.[mod]?.read!==true)){await finish('cancelled');return}
- const a=p.quiet_start,b=p.quiet_end;if(a!==b&&(a<b?hour>=a&&hour<b:hour>=a||hour<b)){await defer(15);return}
+ const a=p.quiet_start,b=p.quiet_end;if(a!==b&&(a<b?hour>=a&&hour<b:hour>=a||hour<b)){await defer(60);return}
  const {data:current,error:currentError}=await db.from('wedding_modules').select('module,content').eq('wedding_id',j.wedding_id).in('module',['wedding',mod==='expenses'?'vendors':mod]);
  if(currentError)throw Error('Relevance lookup failed');
  const event=current?.find(r=>r.module==='wedding')?.content;
@@ -99,11 +99,14 @@ export async function GET(req:Request){
  const days=distance(w.date,today);
  if(pref.countdown&&can('wedding')&&[1,7,14,30,60,90].includes(days))add('countdown:'+w.date+':'+days,'Mai '+(days===1?'este o zi':'sunt '+days+' zile')+' până la eveniment!','overview');
  if(pref.digest&&can('wedding')&&hour===pref.digest_hour){const lines:string[]=[];if(can('tasks'))lines.push(tasks.filter(t=>!t.done).length+' sarcini deschise');if(can('guests'))lines.push(guests.filter(g=>g.status==='confirmat').length+' invitați confirmați');if(can('calendar'))lines.push(appointments.filter(t=>distance(t.date,today)===0).length+' programări astăzi');if(lines.length)add('digest:'+today,lines.join(' · '),'overview')}
- for(const alert of alerts){
- const {data:legacy,error:le}=await db.from('wedly_push_delivery').select('event_key').eq('wedding_id',m.wedding_id).eq('user_id',uid).eq('event_key',alert.id).maybeSingle();
+ for(let offset=0;offset<alerts.length;offset+=25){
+ const batch=alerts.slice(offset,offset+25);
+ const {data:legacy,error:le}=await db.from('wedly_push_delivery').select('event_key').eq('wedding_id',m.wedding_id).eq('user_id',uid).in('event_key',batch.map(a=>a.id));
  if(le){failed++;scanOk=false;continue}
- if(legacy)continue;
- const {error:qe}=await db.from('wedly_push_queue').upsert(devices.map(d=>({wedding_id:m.wedding_id,user_id:uid,event_key:alert.id,endpoint:d.endpoint,body:alert.body.slice(0,220),view_name:alert.view})),{onConflict:'wedding_id,user_id,event_key,endpoint',ignoreDuplicates:true});
+ const seen=new Set((legacy||[]).map(x=>x.event_key));
+ const inserts=batch.filter(a=>!seen.has(a.id)).flatMap(alert=>devices.map(d=>({wedding_id:m.wedding_id,user_id:uid,event_key:alert.id,endpoint:d.endpoint,body:alert.body.slice(0,220),view_name:alert.view})));
+ if(!inserts.length)continue;
+ const {error:qe}=await db.from('wedly_push_queue').upsert(inserts,{onConflict:'wedding_id,user_id,event_key,endpoint',ignoreDuplicates:true});
  if(qe){failed++;scanOk=false}
  }
  }
