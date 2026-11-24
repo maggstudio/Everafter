@@ -25,7 +25,7 @@ export default function Login(){
    }
    if(mode==='signup'){
     if(!accepted){setMessage('Acceptă termenii pentru a crea contul.');return;}
-    const {data,error}=await supabase.auth.signUp({email:email.trim(),password,options:{emailRedirectTo:window.location.origin+'/events',data:{terms_version:'2026-11-24-v1',terms_accepted_at:new Date().toISOString()}}});
+    const {data,error}=await supabase.auth.signUp({email:email.trim(),password,options:{emailRedirectTo:window.location.origin+'/events',data:{terms_version:'2026-11-24-v1.1',terms_accepted_at:new Date().toISOString()}}});
     if(error)throw error;
     if(data.session){router.replace('/events');return}
     setMessage('Verifică emailul pentru confirmarea contului. Dacă ai deja un cont, folosește Autentificare sau Ai uitat parola.');
