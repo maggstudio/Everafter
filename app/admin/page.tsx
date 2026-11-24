@@ -8,6 +8,7 @@ import PushMonitor from './PushMonitor';
 import OperationsMonitor from './OperationsMonitor';
 import SecurityMonitor from './SecurityMonitor';
 import OrganizerMonitor from './OrganizerMonitor';
+import PrivacyMonitor from './PrivacyMonitor';
 type Plan={code:string;label:string;price_ron:number;enabled:boolean;features:Record<string,boolean>};
 type Stats={generated_at:string;users_total:number;users_active_30d:number;users_active_7d:number;events_total:number;events_created_30d:number;guests_total:number;database_bytes:number;plans:Plan[]};
 export default function Admin(){
@@ -36,6 +37,7 @@ export default function Admin(){
   <OperationsMonitor/>
   <SecurityMonitor/>
   <OrganizerMonitor/>
+  <PrivacyMonitor/>
   <PushMonitor/>
   <ContactInbox/>
   <section className="panel"><h2>Capacitate bază de date</h2><p>Raportare orientativă la 500 MB (Supabase Free). Dacă folosești Pro, limita trebuie actualizată.</p><strong>{(data.database_bytes/1048576).toFixed(1)} MB · {pct}%</strong><div className="progress" role="progressbar" aria-label="Capacitate bază de date" aria-valuenow={Math.min(pct,100)} aria-valuemin={0} aria-valuemax={100}><span style={{width:Math.min(pct,100)+'%'}}/></div><p>{pct>=85?'Prag critic: evaluează upgrade-ul.':pct>=70?'Avertizare: pregătește upgrade-ul.':'Sub pragul de avertizare de 70%.'}</p></section>
