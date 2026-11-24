@@ -38,7 +38,7 @@ export default function Admin(){
   <ContactInbox/>
   <section className="panel"><h2>Capacitate bază de date</h2><p>Raportare orientativă la 500 MB (Supabase Free). Dacă folosești Pro, limita trebuie actualizată.</p><strong>{(data.database_bytes/1048576).toFixed(1)} MB · {pct}%</strong><div className="progress" role="progressbar" aria-label="Capacitate bază de date" aria-valuenow={Math.min(pct,100)} aria-valuemin={0} aria-valuemax={100}><span style={{width:Math.min(pct,100)+'%'}}/></div><p>{pct>=85?'Prag critic: evaluează upgrade-ul.':pct>=70?'Avertizare: pregătește upgrade-ul.':'Sub pragul de avertizare de 70%.'}</p></section>
   <PlanEditor plans={data.plans} reload={load}/>
-  <section className="panel"><h2>Monitorizare de integrat</h2><p>Trafic Vercel, Supabase Storage, consum Resend, apeluri RSVP, erori și latență: necesită integrarea API-urilor sau instrumentare. Nu afișăm valori estimate ca fiind măsurate.</p><p>Revizuim infrastructura la 500, 1.000 și 2.000 de utilizatori activi sau la 70–85% din limitele reale.</p></section>
+  <section className="panel"><h2>Monitorizare de integrat</h2><p>Monitorizarea bazei de date, a volumului de fișiere din Storage și a cozii push este disponibilă mai sus. Traficul Vercel, consumul Resend, apelurile RSVP și erorile generale ale aplicației necesită instrumentare suplimentară.</p><p>Revizuim infrastructura la 500, 1.000 și 2.000 de utilizatori activi sau la 70–85% din limitele reale.</p></section>
   <p className="hint">Date actualizate: {new Date(data.generated_at).toLocaleString('ro-RO')}</p>
  </main>;
 }
