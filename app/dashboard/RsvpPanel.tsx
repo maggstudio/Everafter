@@ -40,7 +40,7 @@ export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effect
   }finally{setBusy(false)}
  }
  function invitationMessage(name:string,url:string){const w=data.wedding,d=w.invitationDesign;const event=w.eventType==='baptism'?(w.childName?.trim()?'Botezul lui '+w.childName.trim():'Botezul copilului'):[w.first,w.second].filter(Boolean).join(' & ');const family:string[]=[];const add=(label:string,value?:string)=>{if(value?.trim())family.push(label+': '+value.trim())};if(w.eventType==='baptism'){if(d?.showParents!==false)add('Părinții copilului',[w.first,w.second].filter(Boolean).join(' și '));if(d?.showGodparents!==false)add('Nașii copilului',w.godparents);if(d?.showGrandparents!==false)add('Moșii copilului',w.childGrandparents)}else{if(d?.showParents!==false){add('Părinții miresei',w.brideParents);add('Părinții mirelui',w.groomParents)}if(d?.showGodparents!==false)add('Nașii de cununie',w.weddingGodparents)}return ['Dragă '+name+',',d?.headline||'Te invităm să sărbătorim împreună!',event,d?.message||'Te așteptăm cu drag!',...family,w.date?new Date(w.date+'T12:00:00').toLocaleDateString('ro-RO'):'Data urmează să fie confirmată',d?.time?'Ora '+d.time:'',d?.location||'',w.city||'','Confirmă participarea aici: '+url].filter(Boolean).join('\n\n')}
- function share(g:Guest,channel:'whatsapp'|'instagram'|'messenger'|'email'){
+ async function share(g:Guest,channel:'whatsapp'|'instagram'|'messenger'|'email'){
   const link=links[g.id];if(!link){setMessage('Apasă «Invită» pentru a pregăti invitația.');return}
   const text=invitationMessage(g.name,link);
   if(channel==='email'){window.location.href='mailto:?subject='+encodeURIComponent('Invitație – '+g.name)+'&body='+encodeURIComponent(text);return}
@@ -48,10 +48,9 @@ export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effect
    const phone=(g.phone||'').replace(/\D/g,'');const normalized=phone.startsWith('0')?'40'+phone.slice(1):phone;
    window.open('https://wa.me/'+(normalized||'')+'?text='+encodeURIComponent(text),'_blank','noopener,noreferrer');return
   }
-  // Instagram and Messenger do not offer a reliable web API for prefilled private messages.
-  // Copy the personalized invitation and open the official inbox for manual sending.
-  void navigator.clipboard.writeText(text).then(()=>setMessage('Invitația a fost copiată. Lipește mesajul în conversația deschisă.')).catch(()=>setMessage('Copiază invitația manual folosind butonul de mai jos.'));
-  window.open(channel==='instagram'?'https://www.instagram.com/direct/inbox/':'https://www.messenger.com/','_blank','noopener,noreferrer');
+  if(navigator.share){try{await navigator.share({text});return}catch(e){if(e instanceof Error&&e.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(text);setMessage('Mesaj copiat. Deschide '+(channel==='messenger'?'Messenger':'Instagram')+' și lipește invitația în conversație.')}catch{setMessage('Partajarea nu este disponibilă. Încearcă să copiezi linkul.')}
+
  }
  const responseLabel=(g:Guest,r?:RecordRow)=>{if(r?.responded_at)return r.status==='confirmat'?'Confirmat online':r.status==='refuzat'?'Refuzat online':'Răspuns primit';const status=effectiveStatus(g);return status==='confirmat'?'Confirmat manual':status==='refuzat'?'Refuzat manual':'În așteptare'};
  return <div className="guest-unified-list">
@@ -78,12 +77,12 @@ export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effect
  <button type="button" className="button" style={{display:'flex',justifyContent:'center',alignItems:'center',gap:8,width:'100%'}} onClick={async()=>{try{const text=invitationMessage(g.name,links[g.id]);if(navigator.share)await navigator.share({title:'Invitație WEDLY',text});else await copy(true)}catch(e){if(!(e instanceof Error&&e.name==='AbortError'))setMessage('Partajarea nu a reușit.')}}}><Share2 size={19}/> Partajează invitația</button>
  <div style={{display:'grid',gridTemplateColumns:'repeat(2,minmax(0,1fr))',gap:8}}>
  <button type="button" className="button secondary" style={tile} onClick={()=>share(g,'whatsapp')}><svg width="28" height="28" viewBox="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 15L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/><path fill="white" d="M8 6.5c-.7 0-1.5 1-1.5 2.2 0 3.6 4.4 7.7 8 8.1 1.3.1 2.8-.8 2.8-2l-.1-.5-2.6-1.3c-.4-.2-.7 0-1.2.8-.2.3-.5.4-.9.2-1.8-.8-3-2-3.7-3.5-.2-.4.1-.6.4-1 .3-.3.3-.6.1-1l-1-2z"/></svg>WhatsApp</button>
- <button type="button" className="button secondary" style={tile} onClick={()=>share(g,'messenger')}><svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path fill="#0866FF" d="M12 2C6.4 2 2 6.1 2 11.5c0 3 1.4 5.6 3.7 7.3V22l3.3-1.8c1 .3 2 .5 3 .5 5.6 0 10-4 10-9.2S17.6 2 12 2Z"/><path fill="white" d="m5.8 14.4 4.1-5.2 3.4 2.6 4.8-2.6-4.2 5.3-3.4-2.6z"/></svg>Messenger</button>
- <button type="button" className="button secondary" style={tile} onClick={()=>share(g,'instagram')}><Instagram size={28} color="#D62976"/>Instagram</button>
+ <button type="button" className="button secondary" style={tile} onClick={()=>void share(g,'messenger')}><svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path fill="#0866FF" d="M12 2C6.4 2 2 6.1 2 11.5c0 3 1.4 5.6 3.7 7.3V22l3.3-1.8c1 .3 2 .5 3 .5 5.6 0 10-4 10-9.2S17.6 2 12 2Z"/><path fill="white" d="m5.8 14.4 4.1-5.2 3.4 2.6 4.8-2.6-4.2 5.3-3.4-2.6z"/></svg>Messenger</button>
+ <button type="button" className="button secondary" style={tile} onClick={()=>void share(g,'instagram')}><Instagram size={28} color="#D62976"/>Instagram</button>
  <button type="button" className="button secondary" style={tile} onClick={()=>share(g,'email')}><Mail size={28}/>Email</button>
  <button type="button" className="button secondary" style={tile} onClick={()=>void copy(false)}><Link2 size={24}/>Copiază linkul</button>
  <button type="button" className="button secondary" style={tile} onClick={()=>void copy(true)}><Copy size={24}/>Copiază mesajul</button>
- </div><small className="hint" style={{lineHeight:1.45}}>Pentru Instagram și Messenger, lipește mesajul copiat în conversație.</small>
+ </div><small className="hint" style={{lineHeight:1.45}}>Pentru Messenger și Instagram, alege aplicația din meniul de partajare al telefonului. Dacă nu este disponibilă, copiază mesajul.</small>
  <button type="button" className="button secondary" style={{width:'100%',color:'#b45353',marginTop:4}} onClick={()=>void revoke(g.id)}>Anulează invitația</button>
  </div>}
  </section>})()}
