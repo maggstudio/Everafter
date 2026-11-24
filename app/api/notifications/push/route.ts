@@ -28,11 +28,13 @@ export async function GET(req:Request){
  await Promise.allSettled((jobs||[]).map(async (j:any)=>{
  const finish=async(state:string)=>{const {error}=await db.from('wedly_push_queue').update({state}).eq('id',j.id).eq('attempts',j.attempts);if(error)throw Error('Queue state update failed')};
  const defer=async(minutes:number)=>{const {error}=await db.from('wedly_push_queue').update({available_at:new Date(Date.now()+minutes*60000).toISOString()}).eq('id',j.id).eq('attempts',j.attempts);if(error)throw Error('Queue defer failed')};
+ let deviceSnapshot:string|null=null;
  try{
  const [member,device,prefs]=await Promise.all([
  db.from('wedding_members').select('role,permissions').eq('wedding_id',j.wedding_id).eq('user_id',j.user_id).eq('status','active').maybeSingle(),
  db.from('push_subscriptions').select('subscription,updated_at').eq('endpoint',j.endpoint).eq('user_id',j.user_id).maybeSingle(),
  db.from('wedly_push_preferences').select('*').eq('wedding_id',j.wedding_id).eq('user_id',j.user_id).maybeSingle()]);
+ deviceSnapshot=device.data?.updated_at||null;
  if(member.error||device.error||prefs.error)throw Error('Lookup failed');
  const mod=j.view_name==='vendors'?'expenses':j.view_name==='overview'?'wedding':j.view_name==='calendar'?'calendar':j.view_name;
  const category=({task:'tasks',assignment:'assignments',appointment:'appointments',payment:'payments',rsvp:'rsvp',countdown:'countdown',digest:'digest'} as Record<string,string>)[j.event_key.split(':')[0]];
@@ -53,7 +55,7 @@ export async function GET(req:Request){
  if(category==='digest'&&parts[1]!==today){await finish('cancelled');return}
  await webpush.sendNotification(device.data.subscription,JSON.stringify({title:'WEDLY',body:j.body,url:'/dashboard?wedding='+encodeURIComponent(j.wedding_id)+'&view='+j.view_name}),{TTL:86400,timeout:5000});
  await finish('sent');sent++;
- }catch(e){failed++;const code=(e as {statusCode?:number})?.statusCode;if(eventMode){const count=Number(j.failure_count||0)+1;const terminal=code===404||code===410||count>=8;const {error}=await db.from('wedly_push_queue').update({failure_count:count,failure_reason:code?'push_'+code:'processing_error',...(terminal?{state:'cancelled'}:{available_at:new Date(Date.now()+Math.min(360,15*Math.pow(2,Math.min(count-1,5)))*60000).toISOString()})}).eq('id',j.id).eq('attempts',j.attempts);if(error)console.warn('Push failure state unavailable',error.code)}else if(code===404||code===410){await finish('cancelled')}else await defer(Math.min(360,15*Math.pow(2,Math.min(j.attempts-1,5))))}
+ }catch(e){failed++;const code=(e as {statusCode?:number})?.statusCode;if(eventMode){const count=Number(j.failure_count||0)+1;const terminal=code===404||code===410||count>=8;const {error}=await db.from('wedly_push_queue').update({failure_count:count,failure_reason:code?'push_'+code:'processing_error',...(terminal?{state:'cancelled'}:{available_at:new Date(Date.now()+Math.min(360,15*Math.pow(2,Math.min(count-1,5)))*60000).toISOString()})}).eq('id',j.id).eq('attempts',j.attempts);if(error)console.warn('Push failure state unavailable',error.code);if((code===404||code===410)&&deviceSnapshot){const removal=await db.from('push_subscriptions').delete().eq('endpoint',j.endpoint).eq('user_id',j.user_id).eq('updated_at',deviceSnapshot);if(removal.error)console.warn('Expired push cleanup failed',removal.error.code)}}else if(code===404||code===410){await finish('cancelled')}else await defer(Math.min(360,15*Math.pow(2,Math.min(j.attempts-1,5))))}
  }));
  if((jobs||[]).length<40)break;
  }
