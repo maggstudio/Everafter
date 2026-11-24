@@ -16,7 +16,10 @@ export async function GET(req:Request){
  let sent=0,failed=0,claimed=0;
  const started=Date.now();
  let outcome='completed';
+ const mode=await db.rpc('wedly_push_event_mode');
+ const eventMode=!mode.error&&mode.data===true;
  try {
+ if(eventMode){const maintenance=await db.rpc('wedly_push_maintenance');if(maintenance.error)failed++;}
  for(let batch=0;batch<3 && Date.now()-started<12000;batch++){
  const {data:jobs,error:claimError}=await db.rpc('wedly_push_claim',{p_limit:40});
  if(claimError){outcome='claim_error';return Response.json({error:'Queue migration required'},{status:503})}
@@ -43,13 +46,13 @@ export async function GET(req:Request){
  const list:any[]=Array.isArray(entries)?entries:[];
  const parts=String(j.event_key).split(':');
  if(category==='tasks'||category==='assignments'){const t=list.find(x=>String(x.id)===parts[1]);if(!t||t.done||(category==='tasks'&&t.deadline!==parts[2])||(category==='assignments'&&t.assigneeId!==j.user_id)){await finish('cancelled');return}}
- if(category==='payments'){const v=list.find(x=>String(x.id)===parts[1]);if(!v||v.dueDate!==parts[2]){await finish('cancelled');return}}
+ if(category==='payments'){const v=list.find(x=>String(x.id)===parts[1]);if(!v||v.dueDate!==parts[2]||Number(v.contractAmount)<=Number(v.paidAmount||0)+(Array.isArray(v.payments)?v.payments.reduce((n:number,p:any)=>n+Number(p.amount||0),0):0)){await finish('cancelled');return}}
  if(category==='appointments'){const [id,day,time]=JSON.parse(String(j.event_key).slice('appointment:'.length));if(!list.some(x=>String(x.id||x.name)===String(id)&&x.date===day&&(x.time??null)===(time??null))||distance(day,today)<0){await finish('cancelled');return}}
  if(category==='countdown'&&event?.date!==parts[1]){await finish('cancelled');return}
  if(category==='digest'&&parts[1]!==today){await finish('cancelled');return}
  await webpush.sendNotification(device.data.subscription,JSON.stringify({title:'WEDLY',body:j.body,url:'/dashboard?wedding='+encodeURIComponent(j.wedding_id)+'&view='+j.view_name}),{TTL:86400,timeout:5000});
  await finish('sent');sent++;
- }catch(e){failed++;const code=(e as {statusCode?:number})?.statusCode;if(code===404||code===410){await finish('cancelled')}else await defer(Math.min(360,15*Math.pow(2,Math.min(j.attempts-1,5))))}
+ }catch(e){failed++;const code=(e as {statusCode?:number})?.statusCode;if(eventMode){const count=Number(j.failure_count||0)+1;const terminal=code===404||code===410||count>=8;const {error}=await db.from('wedly_push_queue').update({failure_count:count,failure_reason:code?'push_'+code:'processing_error',...(terminal?{state:'cancelled'}:{available_at:new Date(Date.now()+Math.min(360,15*Math.pow(2,Math.min(count-1,5)))*60000).toISOString()})}).eq('id',j.id).eq('attempts',j.attempts);if(error)console.warn('Push failure state unavailable',error.code)}else if(code===404||code===410){await finish('cancelled')}else await defer(Math.min(360,15*Math.pow(2,Math.min(j.attempts-1,5))))}
  }));
  if((jobs||[]).length<40)break;
  }
@@ -83,12 +86,12 @@ export async function GET(req:Request){
  if(pref.tasks)for(const t of tasks){const d=distance(t.deadline,today);if(!t.done&&[0,1,3].includes(d))add('task:'+t.id+':'+t.deadline+':'+d,'Termen '+(d===0?'astăzi':d===1?'mâine':'peste 3 zile')+': '+t.title,'tasks')}
  if(pref.appointments)for(const t of appointments){const d=distance(t.date,today);if(d===1||d===0&&(!t.time||hour===Math.max(0,Number(String(t.time).split(':')[0])-1)))add('appointment:'+JSON.stringify([t.id||t.name,t.date,t.time,d]),(d===1?'Mâine: ':'Astăzi: ')+t.name+(t.time?' · '+t.time:''),'calendar')}
  if(pref.payments)for(const v of vendors){const d=distance(v.dueDate,today),paid=Number(v.paidAmount||0)+(Array.isArray(v.payments)?v.payments.reduce((n:number,p:any)=>n+Number(p.amount||0),0):0);if([0,1,3,7].includes(d)&&Number(v.contractAmount)>paid)add('payment:'+v.id+':'+v.dueDate+':'+d,'Plată apropiată: '+v.name+' · '+v.dueDate,'vendors')}
- if(pref.assignments&&can('tasks'))for(const t of tasks){if(!t.done&&t.assigneeId===uid&&t.id)add('assignment:'+t.id,'Ai o sarcină atribuită: '+t.title,'tasks')}
+ if(!eventMode&&pref.assignments&&can('tasks'))for(const t of tasks){if(!t.done&&t.assigneeId===uid&&t.id)add('assignment:'+t.id,'Ai o sarcină atribuită: '+t.title,'tasks')}
  if(pref.rsvp&&can('guests')){
  const {data:responses,error}=await db.rpc('wedly_push_rsvp',{p_wedding:m.wedding_id});
  if(error)failed++;else for(const response of responses||[]){
  const timestamp=Date.parse(response.responded_at);
- if(!Number.isFinite(timestamp)||timestamp<Date.parse('2026-11-24T00:00:00Z')||timestamp<now.getTime()-86400000)continue;
+ if(!Number.isFinite(timestamp)||timestamp<Date.parse('2026-11-24T00:00:00Z')||timestamp<now.getTime()-7*86400000)continue;
  const guest=guests.find(g=>String(g.id)===String(response.guest_id));if(!guest)continue;
  add('rsvp:'+response.guest_id+':'+response.responded_at,guest.name+(response.status==='confirmat'?' a confirmat participarea pentru '+response.party_size+' persoane.':' nu va participa la eveniment.'),'guests');
  }
