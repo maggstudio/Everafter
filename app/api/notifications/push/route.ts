@@ -39,6 +39,15 @@ export async function GET(req:Request){
  if(pref.appointments)for(const t of appointments){const d=distance(t.date,today);if(d===1||d===0&&(!t.time||hour===Math.max(0,Number(String(t.time).split(':')[0])-1)))add('appointment:'+JSON.stringify([t.id||t.name,t.date,t.time,d]),(d===1?'Mâine: ':'Astăzi: ')+t.name+(t.time?' · '+t.time:''),'calendar')}
  if(pref.payments)for(const v of vendors){const d=distance(v.dueDate,today),paid=Number(v.paidAmount||0)+(Array.isArray(v.payments)?v.payments.reduce((n:number,p:any)=>n+Number(p.amount||0),0):0);if([0,1,3,7].includes(d)&&Number(v.contractAmount)>paid)add('payment:'+v.id+':'+v.dueDate+':'+d,'Plată apropiată: '+v.name+' · '+v.dueDate,'vendors')}
  if(pref.assignments&&can('tasks'))for(const t of tasks){if(!t.done&&t.assigneeId===uid&&t.id)add('assignment:'+t.id,'Ai o sarcină atribuită: '+t.title,'tasks')}
+ if(pref.rsvp&&can('guests')){
+ const {data:responses,error}=await db.rpc('wedly_push_rsvp',{p_wedding:m.wedding_id});
+ if(error)failed++;else for(const response of responses||[]){
+ const timestamp=Date.parse(response.responded_at);
+ if(!Number.isFinite(timestamp)||timestamp<Date.parse('2026-11-24T00:00:00Z')||timestamp<now.getTime()-86400000)continue;
+ const guest=guests.find(g=>String(g.id)===String(response.guest_id));if(!guest)continue;
+ add('rsvp:'+response.guest_id+':'+response.responded_at,guest.name+(response.status==='confirmat'?' a confirmat participarea pentru '+response.party_size+' persoane.':' nu va participa la eveniment.'),'guests');
+ }
+ }
  const days=distance(w.date,today);
  if(pref.countdown&&can('wedding')&&[1,7,14,30,60,90].includes(days))add('countdown:'+w.date+':'+days,'Mai '+(days===1?'este o zi':'sunt '+days+' zile')+' până la eveniment!','overview');
  if(pref.digest&&can('wedding')&&hour===pref.digest_hour){const lines:string[]=[];if(can('tasks'))lines.push(tasks.filter(t=>!t.done).length+' sarcini deschise');if(can('guests'))lines.push(guests.filter(g=>g.status==='confirmat').length+' invitați confirmați');if(can('calendar'))lines.push(appointments.filter(t=>distance(t.date,today)===0).length+' programări astăzi');if(lines.length)add('digest:'+today,lines.join(' · '),'overview')}
