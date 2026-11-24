@@ -19,6 +19,7 @@ export async function GET(req:Request){
  const mode=await db.rpc('wedly_push_event_mode');
  const eventMode=!mode.error&&mode.data===true;
  try {
+ const cleanup=await db.rpc('wedly_api_limit_cleanup');if(cleanup.error&&cleanup.error.code!=='PGRST202')console.warn('Rate limit cleanup failed',cleanup.error.code);
  if(eventMode){const maintenance=await db.rpc('wedly_push_maintenance');if(maintenance.error)failed++;}
  for(let batch=0;batch<3 && Date.now()-started<12000;batch++){
  const {data:jobs,error:claimError}=await db.rpc('wedly_push_claim',{p_limit:40});
