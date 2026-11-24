@@ -1,6 +1,7 @@
 'use client';
-import {X, Link2, Copy, Share2, Mail, Instagram, LoaderCircle} from 'lucide-react';
+import {MoreVertical, Users, Send, Pencil, Trash2, X, Link2, Copy, Share2, Mail, Instagram, LoaderCircle} from 'lucide-react';
 import {useEffect,useState,useRef} from 'react';
+import FormModal from '../components/FormModal';
 import {useStore} from '../../lib/store';
 import {supabase} from '../../lib/supabase';
 import type {Guest} from '../../lib/demo';
@@ -9,6 +10,7 @@ export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effect
  const {data,ready,weddingId,can}=useStore();
  const [rows,setRows]=useState<RecordRow[]>([]),[links,setLinks]=useState<Record<string,string>>({});
  const [expanded,setExpanded]=useState<string|null>(null),[message,setMessage]=useState(''),[busy,setBusy]=useState(false);
+ const [actions,setActions]=useState<Guest|null>(null);
  const dialogRef=useRef<HTMLDialogElement>(null);
  const opener=useRef<HTMLButtonElement|null>(null);
  const selected=guests.find(g=>g.id===expanded);
@@ -52,18 +54,19 @@ export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effect
   try{await navigator.clipboard.writeText(text);setMessage('Mesaj copiat. Deschide '+(channel==='messenger'?'Messenger':'Instagram')+' și lipește invitația în conversație.')}catch{setMessage('Partajarea nu este disponibilă. Încearcă să copiezi linkul.')}
 
  }
+ const rowMap=new Map(rows.map(r=>[r.guest_id,r]));
  const responseLabel=(g:Guest,r?:RecordRow)=>{if(r?.responded_at)return r.status==='confirmat'?'Confirmat online':r.status==='refuzat'?'Refuzat online':'Răspuns primit';const status=effectiveStatus(g);return status==='confirmat'?'Confirmat manual':status==='refuzat'?'Refuzat manual':'În așteptare'};
  return <div className="guest-unified-list">
- <div className="guest-list-toolbar"><span className="hint">{guests.length} invitați afișați · Apasă „Invită” și distribuie aceeași invitație pe canalele preferate.</span><button type="button" className="text-button" onClick={()=>{void load()}}>Actualizează RSVP</button></div>
- {message&&<p role="status" className="hint">{message}</p>}
- <div className="guest-table-scroll"><table className="guest-data-table"><thead><tr><th scope="col">Nume / familie</th><th scope="col">Persoane</th><th scope="col">Invitație</th><th scope="col">Răspuns</th><th scope="col">Acțiuni</th></tr></thead><tbody>
- {guests.map(g=>{const r=rows.find(x=>x.guest_id===g.id);const open=expanded===g.id;const active=!!r&&!r.revoked_at&&!r.responded_at&&new Date(r.expires_at).getTime()>Date.now();return <tr key={g.id} className={open?'guest-table-expanded':''}>
- <td data-label="Invitat"><strong>{g.name}</strong><small>{g.group||'Altele'}</small></td>
- <td data-label="Persoane" className="guest-table-count">{effectiveSize(g)}</td>
- <td data-label="Invitație"><span className="guest-status-chip guest-status-muted">{r?.responded_at?'Răspuns primit':r?.revoked_at?'Anulată':active?'Pregătită':r?'Expirată':'Neinvitat'}</span></td>
- <td data-label="Răspuns"><span className={'guest-status-chip '+(effectiveStatus(g)==='confirmat'?'guest-status-ok':effectiveStatus(g)==='refuzat'?'guest-status-error':'guest-status-muted')}>{responseLabel(g,r)}</span></td>
- <td data-label="Acțiuni"><div className="guest-table-actions">{writable&&<button type="button" className="text-button" onClick={()=>onEdit(g)}>Editează</button>}{writable&&<button type="button" className="text-button" onClick={()=>onDelete(g)}>Șterge invitatul</button>}{writable&&!r?.responded_at&&<button type="button" className="text-button" disabled={busy} aria-haspopup="dialog" aria-expanded={open} aria-controls="guest-invite-dialog" onClick={e=>{opener.current=e.currentTarget;setMessage('');setExpanded(g.id);void issue(g)}}>{active?'Distribuie din nou':r?'Invită din nou':'Invită'}</button>}</div></td>
- </tr>})}</tbody></table></div>
+ <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8,margin:'12px 0'}}><strong>{guests.length} invitați / grupuri</strong><button type="button" className="text-button" onClick={()=>void load()}>Actualizează RSVP</button></div>
+ {message&&!expanded&&<p role="status" className="hint">{message}</p>}
+ <div style={{border:'1px solid var(--border, #aaa6)',borderRadius:12,overflow:'hidden'}}>
+ {guests.map(g=>{const r=rowMap.get(g.id);const active=!!r&&!r.revoked_at&&!r.responded_at&&new Date(r.expires_at).getTime()>Date.now();const status=effectiveStatus(g);return <div key={g.id} style={{display:'grid',gridTemplateColumns:'minmax(0,1fr) 38px 36px',alignItems:'center',gap:6,padding:'7px 9px',minHeight:52,borderBottom:'1px solid var(--border, #aaa4)'}}>
+ <div style={{minWidth:0}}><strong style={{display:'block',fontSize:14,lineHeight:1.25,overflowWrap:'anywhere'}}>{g.name}</strong><div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap',fontSize:11,lineHeight:1.3}}><span className={'guest-status-chip '+(status==='confirmat'?'guest-status-ok':status==='refuzat'?'guest-status-error':'guest-status-muted')} style={{padding:'1px 5px',fontSize:11}}>{status==='confirmat'?'Confirmat':status==='refuzat'?'Refuzat':'În așteptare'}</span><span className="hint">{r?.responded_at?'Online':r?.revoked_at?'Anulată':active?'Pregătită':r?'Expirată':'Neinvitat'}</span></div></div>
+ <span title="Număr persoane" style={{display:'flex',alignItems:'center',justifyContent:'center',gap:3,fontSize:12}}><Users size={14}/>{effectiveSize(g)}</span>
+ {writable&&<button type="button" aria-label={'Acțiuni pentru '+g.name} className="text-button" style={{display:'grid',placeItems:'center',width:36,height:40,padding:0}} onClick={e=>{opener.current=e.currentTarget;setActions(g)}}><MoreVertical size={20}/></button>}
+ </div>})}
+ </div>
+ {actions&&<FormModal title={actions.name} onClose={()=>setActions(null)}><div style={{display:'grid',gap:10}}>{!rowMap.get(actions.id)?.responded_at&&<button type="button" className="button" disabled={busy} onClick={()=>{const g=actions;setActions(null);setMessage('');setExpanded(g.id);void issue(g)}}><Send size={17}/> {rowMap.get(actions.id)&&!rowMap.get(actions.id)?.revoked_at?'Distribuie invitația':'Invită'}</button>}<button type="button" className="button secondary" onClick={()=>{const g=actions;setActions(null);onEdit(g)}}><Pencil size={17}/> Editează</button><button type="button" className="button secondary" onClick={()=>{const g=actions;setActions(null);onDelete(g)}}><Trash2 size={17}/> Șterge invitatul</button></div></FormModal>}
  <dialog ref={dialogRef} id="guest-invite-dialog" aria-labelledby="guest-invite-title" onCancel={e=>{e.preventDefault();closeDetail()}} style={{width:'min(440px, calc(100% - 32px))',maxHeight:'85dvh',overflowY:'auto',padding:0,border:0,borderRadius:24,background:'transparent',boxShadow:'0 0 0 100vmax rgba(0,0,0,.55)'}}>
  {selected&&(()=>{const g=selected;const r=rows.find(x=>x.guest_id===g.id);const count=effectiveSize(g);const available=writable&&!busy&&!r?.responded_at&&!r?.revoked_at&&!!links[g.id];
  const copy=async(full:boolean)=>{try{await navigator.clipboard.writeText(full?invitationMessage(g.name,links[g.id]):links[g.id]);setMessage(full?'Invitație copiată.':'Link copiat.')}catch{setMessage('Copierea nu a reușit. Încearcă din nou.')}};
