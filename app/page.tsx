@@ -2,8 +2,9 @@ import {PublicThemeControl} from './components/ThemeSettings';
 import SmartHomeLogo from './components/SmartHomeLogo';
 import AccountNavLink from './components/AccountNavLink';
 import Link from 'next/link';
+export const metadata={alternates:{canonical:'https://www.wedly.ro/'}};
 const highlights=[
- {icon:'✉',number:'01',title:'Creezi și trimiți invitațiile pe email',description:'Personalizezi invitația digitală, o trimiți invitaților și le oferi un link pentru confirmarea participării.',tag:'Invitații digitale + email'},
+ {icon:'✉',number:'01',title:'Creezi și distribui invitațiile digitale',description:'Personalizezi invitația digitală, o distribui invitaților și le oferi un link pentru confirmarea participării.',tag:'Invitații digitale + distribuire'},
  {icon:'♡',number:'02',title:'Știi exact cine vine la eveniment',description:'Centralizezi lista de invitați, confirmările și refuzurile RSVP, inclusiv numărul de persoane.',tag:'Listă invitați + RSVP'},
  {icon:'▦',number:'03',title:'Așezi invitații la mese, fără haos',description:'Creezi mesele și repartizezi invitații, astfel încât să ai planul de așezare într-un singur loc.',tag:'Planul meselor'},
  {icon:'✦',number:'04',title:'Controlezi furnizorii și bugetul',description:'Urmărești furnizorii, cheltuielile, avansurile și plățile, fără să pierzi evidența costurilor.',tag:'Furnizori + buget'},
