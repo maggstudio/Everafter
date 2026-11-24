@@ -35,7 +35,7 @@ grant select,insert,delete on public.wedly_push_delivery to service_role;
 -- Resolve the existing RSVP storage from the deployed RPC, without exposing invitation tokens.
 create or replace function public.wedly_push_rsvp(p_wedding uuid)
 returns table(guest_id text,status text,party_size integer,responded_at timestamptz)
-language plpgsql security definer set search_path='' as $
+language plpgsql security definer set search_path='' as $wedly$
 declare rel record;
 begin
  for rel in select c.table_name from information_schema.columns c
@@ -44,7 +44,7 @@ begin
  loop
  return query execute format('select guest_id::text,status::text,party_size::integer,responded_at::timestamptz from public.%I where wedding_id=$1 and responded_at is not null and status::text in (''confirmat'',''refuzat'')',rel.table_name) using p_wedding;
  end loop;
-end $;
+end $wedly$;
 revoke all on function public.wedly_push_rsvp(uuid) from public,anon,authenticated;
 grant execute on function public.wedly_push_rsvp(uuid) to service_role;
 commit;
