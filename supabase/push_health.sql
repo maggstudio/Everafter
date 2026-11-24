@@ -26,7 +26,7 @@ begin
  return jsonb_build_object(
  'oldest_pending_seconds',(select extract(epoch from now()-min(created_at))::bigint from public.wedly_push_queue where state='pending'),
  'last_run',(select to_jsonb(r) from public.wedly_push_runs r order by started_at desc limit 1),
- 'daily',(select coalesce(jsonb_agg(to_jsonb(d) order by d.day),'[]'::jsonb) from (select (finished_at at time zone 'Europe/Bucharest')::date day,count(*) filter(where state='sent') sent,count(*) filter(where state='cancelled') cancelled from public.wedly_push_queue where finished_at>=now()-interval '30 days' group by 1) d),
+ 'daily',(select coalesce(jsonb_agg(to_jsonb(d) order by d."day"),'[]'::jsonb) from (select (finished_at at time zone 'Europe/Bucharest')::date AS "day",count(*) filter(where state='sent') AS sent,count(*) filter(where state='cancelled') AS cancelled from public.wedly_push_queue where finished_at>=now()-interval '30 days' group by 1) d),
  'average_latency_seconds',(select round(avg(extract(epoch from finished_at-created_at))) from public.wedly_push_queue where state='sent' and finished_at>=now()-interval '7 days')
  );
 end;
