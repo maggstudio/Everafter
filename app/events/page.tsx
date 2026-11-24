@@ -9,6 +9,7 @@ import {supabase} from '../../lib/supabase';
 export default function EventsPage(){
  const {events,ready,saveStatus,selectEvent,refresh}=useStore();const router=useRouter();
  const [deleting,setDeleting]=useState<string|null>(null),[deleteConfirm,setDeleteConfirm]=useState(''),[deleteBusy,setDeleteBusy]=useState(false);
+ const [accepted,setAccepted]=useState(false);
  const [type,setType]=useState<'wedding'|'baptism'>('wedding');const [createOpen,setCreateOpen]=useState(false);
  const [first,setFirst]=useState(''),[second,setSecond]=useState(''),[date,setDate]=useState(''),[city,setCity]=useState('');
  const [child,setChild]=useState(''),[godparents,setGodparents]=useState(''),[elders,setElders]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[opening,setOpening]=useState<string|null>(null);
@@ -32,9 +33,9 @@ export default function EventsPage(){
    if(result.storageWarning)setError('Evenimentul a fost șters, dar unele fotografii nu au putut fi eliminate din stocare. Contactează suportul.');
   }catch(e){setError(e instanceof Error?e.message:'Eroare la ștergere.');}finally{setDeleteBusy(false)}
  }
- async function create(e:React.FormEvent){e.preventDefault();if(!supabase||busy)return;setBusy(true);setError('');
-  const {data,error:rpcError}=await supabase.rpc('create_my_event_with_elders',{p_type:type,p_first:first.trim(),p_second:second.trim(),p_date:date,p_city:city.trim(),p_child_name:type==='baptism'?child.trim():'',p_godparents:type==='baptism'?godparents.trim():'',p_elders:type==='baptism'?elders.trim():''});
-  if(rpcError||!data){setError(rpcError?.message||'Nu am putut crea evenimentul. Verifică migrarea baptism_family.sql.');setBusy(false);return}
+ async function create(e:React.FormEvent){e.preventDefault();if(!supabase||busy||!accepted)return;setBusy(true);setError('');
+  const {data,error:rpcError}=await supabase.rpc('wedly_create_event_accepted',{p_accepted:accepted,p_type:type,p_first:first.trim(),p_second:second.trim(),p_date:date,p_city:city.trim(),p_child_name:type==='baptism'?child.trim():'',p_godparents:type==='baptism'?godparents.trim():'',p_elders:type==='baptism'?elders.trim():''});
+  if(rpcError||!data){setError(rpcError?.message||'Nu am putut crea evenimentul. Contactează suportul dacă problema persistă.');setBusy(false);return}
   window.location.href='/dashboard?wedding='+encodeURIComponent(data);
  }
  if(!ready)return <AuthLoading message={saveStatus}/>;
@@ -49,5 +50,5 @@ export default function EventsPage(){
  {type==='baptism'&&<><label>Numele copilului<input required maxLength={100} value={child} onChange={e=>setChild(e.target.value)}/></label><label>Nașii copilului<input maxLength={200} value={godparents} onChange={e=>setGodparents(e.target.value)}/></label><label>Moșii copilului (opțional)<input maxLength={240} value={elders} onChange={e=>setElders(e.target.value)}/></label></>}
  <label>Data evenimentului<input type="date" required value={date} onChange={e=>setDate(e.target.value)}/></label><label>Oraș<input required maxLength={120} value={city} onChange={e=>setCity(e.target.value)}/></label></div>
 
- <button className="button full" disabled={busy}>{busy?'Se creează...':'Creează eveniment'}</button></form><button type="button" className="text-button" onClick={()=>setCreateOpen(false)}>Anulează</button></>}</div></main>
+ <p className="hint">Tu alegi datele invitaților, furnizorilor și colaboratorilor. WEDLY oferă infrastructura tehnică și răspunde pentru propriile obligații legale.</p><label className="check-row"><input type="checkbox" required checked={accepted} onChange={e=>setAccepted(e.target.checked)}/> Confirm că sunt responsabil pentru legalitatea și corectitudinea datelor și materialelor pe care le introduc, precum și pentru distribuirea lor. Am consultat <Link href="/termeni" target="_blank" rel="noopener noreferrer">termenii</Link>.</label><button className="button full" disabled={busy||!accepted}>{busy?'Se creează...':'Creează eveniment'}</button></form><button type="button" className="text-button" onClick={()=>setCreateOpen(false)}>Anulează</button></>}</div></main>
 }
