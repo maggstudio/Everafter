@@ -5,11 +5,13 @@ export async function GET(){return Response.json({key:process.env.VAPID_PUBLIC_K
 export async function POST(req:Request){
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,anon=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,secret=process.env.SUPABASE_SERVICE_ROLE_KEY;
  const pub=process.env.VAPID_PUBLIC_KEY,priv=process.env.VAPID_PRIVATE_KEY;
- if(!url||!anon||!secret||!pub||!priv)return Response.json({error:'Notificările nu sunt configurate încă.'},{status:503});
+ if(!url||!anon)return Response.json({error:'Configurarea autentificării push este incompletă.'},{status:503});
  const token=req.headers.get('authorization')?.match(/^Bearer (.+)$/i)?.[1];
  if(!token)return Response.json({error:'Autentificare necesară.'},{status:401});
  const {data:{user}}=await createClient(url,anon,{auth:{persistSession:false}}).auth.getUser(token);
  if(!user)return Response.json({error:'Sesiune expirată.'},{status:401});
+ const missing=[!secret?'SUPABASE_SERVICE_ROLE_KEY':null,!pub?'VAPID_PUBLIC_KEY':null,!priv?'VAPID_PRIVATE_KEY':null].filter(Boolean);
+ if(missing.length)return Response.json({error:'Configurare push incompletă: '+missing.join(', ')},{status:503});
  const db=createClient(url,secret,{auth:{persistSession:false}});
  let body;try{body=await req.json()}catch{return Response.json({error:'Date invalide.'},{status:400})}
  const sub=body?.subscription,endpoint=sub?.endpoint;
