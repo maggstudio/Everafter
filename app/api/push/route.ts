@@ -3,7 +3,7 @@ import webpush from 'web-push';
 export const runtime='nodejs';
 export async function GET(){return Response.json({key:process.env.VAPID_PUBLIC_KEY||null})}
 export async function POST(req:Request){
- const url=process.env.NEXT_PUBLIC_SUPABASE_URL,anon=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,secret=process.env.SUPABASE_SERVICE_ROLE_KEY;
+ const url=process.env.NEXT_PUBLIC_SUPABASE_URL,anon=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY||process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,secret=process.env.SUPABASE_SERVICE_ROLE_KEY;
  const pub=process.env.VAPID_PUBLIC_KEY,priv=process.env.VAPID_PRIVATE_KEY;
  if(!url||!anon)return Response.json({error:'Configurarea autentificării push este incompletă.'},{status:503});
  const token=req.headers.get('authorization')?.match(/^Bearer (.+)$/i)?.[1];
