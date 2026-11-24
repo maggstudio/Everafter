@@ -15,13 +15,15 @@ export async function GET(req:Request){
  const now=new Date(),today=date(now),hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Bucharest',hour:'2-digit',hourCycle:'h23'}).format(now));
  let sent=0,failed=0,claimed=0;
  const started=Date.now();
+ let outcome='completed';
+ try {
  for(let batch=0;batch<3 && Date.now()-started<12000;batch++){
  const {data:jobs,error:claimError}=await db.rpc('wedly_push_claim',{p_limit:40});
- if(claimError)return Response.json({error:'Queue migration required'},{status:503});
+ if(claimError){outcome='claim_error';return Response.json({error:'Queue migration required'},{status:503})}
  claimed+=(jobs||[]).length;
- await Promise.all((jobs||[]).map(async (j:any)=>{
+ await Promise.allSettled((jobs||[]).map(async (j:any)=>{
  const finish=async(state:string)=>{const {error}=await db.from('wedly_push_queue').update({state}).eq('id',j.id).eq('attempts',j.attempts);if(error)throw Error('Queue state update failed')};
- const defer=async(minutes:number)=>{await db.from('wedly_push_queue').update({available_at:new Date(Date.now()+minutes*60000).toISOString()}).eq('id',j.id).eq('attempts',j.attempts)};
+ const defer=async(minutes:number)=>{const {error}=await db.from('wedly_push_queue').update({available_at:new Date(Date.now()+minutes*60000).toISOString()}).eq('id',j.id).eq('attempts',j.attempts);if(error)throw Error('Queue defer failed')};
  try{
  const [member,device,prefs]=await Promise.all([
  db.from('wedding_members').select('role,permissions').eq('wedding_id',j.wedding_id).eq('user_id',j.user_id).eq('status','active').maybeSingle(),
@@ -33,6 +35,18 @@ export async function GET(req:Request){
  const p={...defaults,...prefs.data};
  if(!member.data||!device.data||!category||!p[category]||(member.data.role!=='owner'&&member.data.permissions?.[mod]?.read!==true)){await finish('cancelled');return}
  const a=p.quiet_start,b=p.quiet_end;if(a!==b&&(a<b?hour>=a&&hour<b:hour>=a||hour<b)){await defer(15);return}
+ const {data:current,error:currentError}=await db.from('wedding_modules').select('module,content').eq('wedding_id',j.wedding_id).in('module',['wedding',mod==='expenses'?'vendors':mod]);
+ if(currentError)throw Error('Relevance lookup failed');
+ const event=current?.find(r=>r.module==='wedding')?.content;
+ if(distance(event?.date,today)<0){await finish('cancelled');return}
+ const entries=current?.find(r=>r.module===(mod==='expenses'?'vendors':mod))?.content;
+ const list:any[]=Array.isArray(entries)?entries:[];
+ const parts=String(j.event_key).split(':');
+ if(category==='tasks'||category==='assignments'){const t=list.find(x=>String(x.id)===parts[1]);if(!t||t.done||(category==='tasks'&&t.deadline!==parts[2])||(category==='assignments'&&t.assigneeId!==j.user_id)){await finish('cancelled');return}}
+ if(category==='payments'){const v=list.find(x=>String(x.id)===parts[1]);if(!v||v.dueDate!==parts[2]){await finish('cancelled');return}}
+ if(category==='appointments'){const [id,day,time]=JSON.parse(String(j.event_key).slice('appointment:'.length));if(!list.some(x=>String(x.id||x.name)===String(id)&&x.date===day&&(x.time??null)===(time??null))||distance(day,today)<0){await finish('cancelled');return}}
+ if(category==='countdown'&&event?.date!==parts[1]){await finish('cancelled');return}
+ if(category==='digest'&&parts[1]!==today){await finish('cancelled');return}
  await webpush.sendNotification(device.data.subscription,JSON.stringify({title:'WEDLY',body:j.body,url:'/dashboard?wedding='+encodeURIComponent(j.wedding_id)+'&view='+j.view_name}),{TTL:86400,timeout:5000});
  await finish('sent');sent++;
  }catch(e){failed++;const code=(e as {statusCode?:number})?.statusCode;if(code===404||code===410){await finish('cancelled')}else await defer(Math.min(360,15*Math.pow(2,Math.min(j.attempts-1,5))))}
@@ -41,11 +55,11 @@ export async function GET(req:Request){
  }
  const lease=new Date(Date.now()+90000).toISOString();
  const {data:cursor,error:ce}=await db.from('wedly_push_cursor').update({lease_until:lease}).eq('id',1).lt('lease_until',new Date().toISOString()).select('endpoint').maybeSingle();
- if(ce||!cursor)return Response.json({sent,failed,scan:false});
+ if(ce||!cursor){outcome=ce?'cursor_error':'scan_busy';return Response.json({sent,failed,scan:false})}
  let last=cursor.endpoint;
  try{
  const {data:subs,error:se}=await db.from('push_subscriptions').select('user_id,endpoint,subscription,updated_at').gt('endpoint',last).order('endpoint').limit(100);
- if(se)return Response.json({error:'Subscriptions unavailable'},{status:500});
+ if(se){outcome='scan_error';return Response.json({error:'Subscriptions unavailable'},{status:500})}
  for(const device of subs||[]){
  if(Date.now()-started>40000)break;
  const uid=device.user_id,devices=[device];
@@ -97,4 +111,7 @@ export async function GET(req:Request){
  }finally{await db.from('wedly_push_cursor').update({endpoint:last,lease_until:new Date().toISOString()}).eq('id',1).eq('lease_until',lease)}
 
  return Response.json({sent,failed,claimed});
+ }catch(e){outcome='error';throw e}finally{
+ const {error}=await db.from('wedly_push_runs').insert({started_at:new Date(started).toISOString(),claimed,sent,failed,outcome});if(error)console.warn('Push run metrics unavailable',error.code);
+ }
 }
