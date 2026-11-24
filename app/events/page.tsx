@@ -1,4 +1,5 @@
 'use client';
+import LegalGate from '../components/LegalGate';
 import SmartHomeLogo from '../components/SmartHomeLogo';
 import AuthLoading from '../components/AuthLoading';
 import Link from 'next/link';
@@ -6,7 +7,7 @@ import {useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {useStore} from '../../lib/store';
 import {supabase} from '../../lib/supabase';
-export default function EventsPage(){
+function EventsPageContent(){
  const {events,ready,saveStatus,selectEvent,refresh}=useStore();const router=useRouter();
  const [deleting,setDeleting]=useState<string|null>(null),[deleteConfirm,setDeleteConfirm]=useState(''),[deleteBusy,setDeleteBusy]=useState(false);
  const [pendingDeclaration,setPendingDeclaration]=useState<string|null>(null),[declarationChecked,setDeclarationChecked]=useState(false);
@@ -65,3 +66,5 @@ export default function EventsPage(){
 
  <p className="hint">Tu alegi datele invitaților, furnizorilor și colaboratorilor. WEDLY oferă infrastructura tehnică și răspunde pentru propriile obligații legale.</p><label className="check-row"><input type="checkbox" required checked={accepted} onChange={e=>setAccepted(e.target.checked)}/> Confirm că sunt responsabil pentru legalitatea și corectitudinea datelor și materialelor pe care le introduc, precum și pentru distribuirea lor. Am consultat <Link href="/termeni" target="_blank" rel="noopener noreferrer">termenii</Link>.</label><button className="button full" disabled={busy||!accepted}>{busy?'Se creează...':'Creează eveniment'}</button></form><button type="button" className="text-button" onClick={()=>setCreateOpen(false)}>Anulează</button></>}</div></main>
 }
+
+export default function EventsPage(){return <LegalGate><EventsPageContent/></LegalGate>}
