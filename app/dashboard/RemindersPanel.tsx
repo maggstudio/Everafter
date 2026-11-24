@@ -23,7 +23,7 @@ export default function RemindersPanel(){
  const visible=alerts.filter(a=>!dismissed[key(a)]);
  const displayed=showAll?visible:visible.slice(0,6);
  return <section className="panel"><div className="module-head"><h2>Centru de notificări</h2><label>Interval <select aria-label="Interval notificări" value={days} onChange={e=>setDays(Number(e.target.value))}><option value={3}>3 zile</option><option value={7}>7 zile</option><option value={14}>14 zile</option><option value={30}>30 zile</option></select></label></div>
- <p>Termene și programări calculate automat din datele evenimentului. Alertele sunt afișate aici când deschizi panoul. Dacă activezi preferințele corespunzătoare, poți primi și un rezumat prin email pentru termenele relevante; notificările push nu sunt disponibile.</p>
+ <p>Termene și programări calculate automat din datele evenimentului. Alertele sunt afișate aici când deschizi panoul. Notificările pe telefon se configurează în preferințele push.</p>
  <div className="stats two-stats"><article><span>Necesită atenție</span><strong>{visible.filter(a=>a.overdue).length}</strong></article><article><span>În intervalul ales</span><strong>{visible.length}</strong></article></div>
  {visible.length===0&&<p>Nu ai notificări pentru intervalul selectat.</p>}
  {displayed.map(a=><div className="list-row" key={a.id}><div><strong>{a.overdue?'⚠ Întârziat · ':''}{a.title}</strong><small>{a.detail} · {new Date(a.date+'T12:00:00').toLocaleDateString('ro-RO')}</small></div><button type="button" className="text-button" onClick={()=>setDismissed(old=>({...old,[key(a)]:true}))}>Ascunde</button></div>)}
