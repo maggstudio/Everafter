@@ -32,5 +32,20 @@ create table if not exists public.wedly_push_delivery (
 alter table public.wedly_push_delivery enable row level security;
 revoke all on public.wedly_push_delivery from public,anon,authenticated;
 grant select,insert,delete on public.wedly_push_delivery to service_role;
+-- Resolve the existing RSVP storage from the deployed RPC, without exposing invitation tokens.
+create or replace function public.wedly_push_rsvp(p_wedding uuid)
+returns table(guest_id text,status text,party_size integer,responded_at timestamptz)
+language plpgsql security definer set search_path='' as $
+declare rel record;
+begin
+ for rel in select c.table_name from information_schema.columns c
+ where c.table_schema='public' and c.column_name in ('wedding_id','guest_id','status','party_size','responded_at')
+ group by c.table_name having count(distinct c.column_name)=5
+ loop
+ return query execute format('select guest_id::text,status::text,party_size::integer,responded_at::timestamptz from public.%I where wedding_id=$1 and responded_at is not null and status::text in (''confirmat'',''refuzat'')',rel.table_name) using p_wedding;
+ end loop;
+end $;
+revoke all on function public.wedly_push_rsvp(uuid) from public,anon,authenticated;
+grant execute on function public.wedly_push_rsvp(uuid) to service_role;
 commit;
 notify pgrst,'reload schema';
