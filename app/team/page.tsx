@@ -1,4 +1,5 @@
 'use client';
+import LegalGate from '../components/LegalGate';
 import BrandLogo from '../components/BrandLogo';
 import Link from 'next/link';import AuthLoading from '../components/AuthLoading';import {useEffect,useState} from 'react';import {useStore,type Module,type Permissions,type Member} from '../../lib/store';import {supabase} from '../../lib/supabase';
 type Identity={user_id:string;display_name:string|null;email:string|null};
@@ -6,7 +7,7 @@ const modules:Module[]=['wedding','tasks','expenses','guests','calendar','packag
 const labels:Record<Module,string>={wedding:'Detalii eveniment',tasks:'Sarcini',expenses:'Buget și furnizori',guests:'Invitați',calendar:'Calendar',packages:'Pachete',vendors:'Furnizori'};
 type Invitation={id:string;email:string;role:string;status:string;expires_at:string};
 const preset=(role:'partner'|'planner'):Permissions=>Object.fromEntries(modules.map(m=>[m,{read:role==='partner'||m!=='expenses',write:role==='partner'?m!=='packages':m==='tasks'||m==='guests'||m==='calendar'}]));
-export default function Team(){const {weddingId,members,pending,isOwner,refresh,ready,data,saveStatus,can}=useStore();const [email,setEmail]=useState(''),[role,setRole]=useState<'partner'|'planner'>('planner'),[message,setMessage]=useState(''),[busy,setBusy]=useState(false),[invites,setInvites]=useState<Invitation[]>([]);
+function TeamContent(){const {weddingId,members,pending,isOwner,refresh,ready,data,saveStatus,can}=useStore();const [email,setEmail]=useState(''),[role,setRole]=useState<'partner'|'planner'>('planner'),[message,setMessage]=useState(''),[busy,setBusy]=useState(false),[invites,setInvites]=useState<Invitation[]>([]);
  const [identities,setIdentities]=useState<Record<string,Identity>>({});
  const [historyOpen,setHistoryOpen]=useState(false);
  const [mobileMore,setMobileMore]=useState(false);
@@ -50,3 +51,5 @@ function Audit({weddingId,identities}:{weddingId:string|null;identities:Record<s
 }
 function MemberEditor({member,identity,owner,onSave,onRevoke}:{member:Member;identity:string;owner:boolean;onSave:(p:Permissions)=>void;onRevoke:()=>void}){
  const [p,setP]=useState<Permissions>(member.permissions||{});useEffect(()=>{setP(member.permissions||{})},[member.user_id,member.permissions]);return <section className="panel"><b>{identity}</b><div><small>{member.role==='owner'?'Proprietar':member.role==='partner'?'Partener':'Planner'} · {member.status}</small></div>{owner&&member.role!=='owner'&&<>{modules.map(m=><div className="list-row" key={m}><span>{labels[m]}</span><div className="row-controls"><label>Vezi <input type="checkbox" checked={!!p[m]?.read} onChange={e=>setP(v=>({...v,[m]:{...v[m],read:e.target.checked,write:e.target.checked?v[m]?.write||false:false}}))}/></label><label>Editezi <input type="checkbox" checked={!!p[m]?.write} onChange={e=>setP(v=>({...v,[m]:{...v[m],write:e.target.checked,read:e.target.checked?true:v[m]?.read||false}}))}/></label></div></div>)}<button className="button" onClick={()=>onSave(p)}>Salvează permisiunile</button> <button onClick={onRevoke}>Revocă accesul</button></>}</section>}
+
+export default function Team(){const {ready,weddingId,isOwner,saveStatus}=useStore();if(!ready)return <AuthLoading message={saveStatus}/>;return <LegalGate weddingId={weddingId} owner={isOwner}><TeamContent/></LegalGate>}
