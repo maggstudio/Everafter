@@ -4,6 +4,7 @@ import {useEffect,useState} from 'react';
 import {supabase} from '../../lib/supabase';
 import PlanEditor from './PlanEditor';
 import ContactInbox from './ContactInbox';
+import PushMonitor from './PushMonitor';
 type Plan={code:string;label:string;price_ron:number;enabled:boolean;features:Record<string,boolean>};
 type Stats={generated_at:string;users_total:number;users_active_30d:number;users_active_7d:number;events_total:number;events_created_30d:number;guests_total:number;database_bytes:number;plans:Plan[]};
 export default function Admin(){
@@ -29,6 +30,7 @@ export default function Admin(){
  return <main className="shell" style={{paddingTop:32}}>
   <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:16}}><div><span className="eyebrow">WEDLY · ADMINISTRATOR</span><h1>Monitorizare platformă</h1><p>Creștere, capacitate și pregătirea monetizării.</p></div><div className="row-controls"><button className="button secondary" onClick={()=>{setState('loading');void load()}}>Actualizează</button><Link className="button secondary" href="/dashboard">Dashboard</Link></div></div>
   <div className="stats" style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:12,margin:'24px 0'}}>{items.map(([label,n,desc])=><article key={label}><span>{label}</span><strong>{n.toLocaleString('ro-RO')}</strong><small>{desc}</small></article>)}</div>
+  <PushMonitor/>
   <ContactInbox/>
   <section className="panel"><h2>Capacitate bază de date</h2><p>Raportare orientativă la 500 MB (Supabase Free). Dacă folosești Pro, limita trebuie actualizată.</p><strong>{(data.database_bytes/1048576).toFixed(1)} MB · {pct}%</strong><div className="progress" role="progressbar" aria-label="Capacitate bază de date" aria-valuenow={Math.min(pct,100)} aria-valuemin={0} aria-valuemax={100}><span style={{width:Math.min(pct,100)+'%'}}/></div><p>{pct>=85?'Prag critic: evaluează upgrade-ul.':pct>=70?'Avertizare: pregătește upgrade-ul.':'Sub pragul de avertizare de 70%.'}</p></section>
   <PlanEditor plans={data.plans} reload={load}/>
