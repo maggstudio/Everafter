@@ -20,6 +20,11 @@ export async function POST(req:Request){
  let u:URL;try{u=new URL(endpoint)}catch{return Response.json({error:'Adresă invalidă.'},{status:400})}
  if(u.protocol!=='https:'||u.username||u.password||u.port||!['fcm.googleapis.com','updates.push.services.mozilla.com','web.push.apple.com'].some(h=>u.hostname===h||u.hostname.endsWith('.'+h)))return Response.json({error:'Serviciu push neacceptat.'},{status:400});
  if(body.action==='remove'){const {error}=await db.from('push_subscriptions').delete().eq('endpoint',endpoint).eq('user_id',user.id);return Response.json({ok:!error},{status:error?500:200})}
+ if(body.action==='test'||body.action==='subscribe'){
+ const limit=await db.rpc('wedly_consume_push_limit',{p_user:user.id,p_action:body.action});
+ if(limit.error&&limit.error.code!=='PGRST202')return Response.json({error:'Serviciu temporar indisponibil.'},{status:503});
+ if(!limit.error&&limit.data!==true)return Response.json({error:'Prea multe cereri. Încearcă mai târziu.'},{status:429,headers:{'Retry-After':'3600'}});
+ }
  if(body.action==='test'){
  const {data,error}=await db.from('push_subscriptions').select('subscription').eq('endpoint',endpoint).eq('user_id',user.id).maybeSingle();
  if(error||!data)return Response.json({error:'Activează mai întâi notificările.'},{status:400});
