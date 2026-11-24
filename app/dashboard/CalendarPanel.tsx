@@ -1,4 +1,5 @@
 'use client';
+import FormModal from '../components/FormModal';
 import {useEffect,useState} from 'react';
 import {useStore,type Appointment} from '../../lib/store';
 import {paidTotal} from './VendorPayments';
@@ -23,7 +24,7 @@ export default function CalendarPanel({quickAdd=0}:{quickAdd?:number}){
  const [month,setMonth]=useState(()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),1)});
  const [form,setForm]=useState<Form>(blank);
  const [showForm,setShowForm]=useState(false);
- useEffect(()=>{if(quickAdd){setShowForm(true);const t=setTimeout(()=>document.querySelector('.calendar-form')?.scrollIntoView({block:'center',behavior:'smooth'}),100);return()=>clearTimeout(t)}},[quickAdd]);
+ useEffect(()=>{if(quickAdd)setShowForm(true)},[quickAdd]);
 
  const [editing,setEditing]=useState<number|null>(null);
  const [categoryFilter,setCategoryFilter]=useState('all');
@@ -66,6 +67,6 @@ export default function CalendarPanel({quickAdd=0}:{quickAdd?:number}){
  {visibleAppointments.length===0&&visibleTasks.length===0&&<p>Nu există activități pentru selecția curentă.</p>}
  {visibleAppointments.map(({a,index})=><div className="list-row" key={a.id||'legacy-'+index}><div><strong>{a.name}</strong><small>{formatDate(a.date)}{a.time?' · '+a.time:''} · {a.category||'Altele'}</small>{a.notes&&<p className="hint">{a.notes}</p>}</div>{canWrite&&<div className="row-controls"><button type="button" className="text-button" onClick={()=>edit(a,index)}>Editează</button><button type="button" className="remove" aria-label={'Șterge '+a.name} onClick={()=>{if(window.confirm('Ștergi programarea „'+a.name+'”?')){setData(prev=>({...prev,appointments:prev.appointments.filter((_,i)=>i!==index)}));if(editing===index)reset()}}}>×</button></div>}</div>)}
  {visibleTasks.map(t=><div className="list-row" key={'task-'+t.id}><span>{t.title}<small>Termen checklist · {formatDate(t.deadline!)} · {t.done?'Finalizată':'În lucru'}</small></span></div>)}
- {canWrite&&showForm&&<form className="calendar-form" onSubmit={save}><h3>{editing===null?'Adaugă programare':'Editează programarea'}</h3><div className="two"><label>Denumire<input required maxLength={160} value={form.name} onChange={e=>change('name',e.target.value)}/></label><label>Data<input required type="date" value={form.date} onChange={e=>change('date',e.target.value)}/></label><label>Ora (opțional)<input type="time" value={form.time} onChange={e=>change('time',e.target.value)}/></label><label>Categorie<select value={form.category} onChange={e=>change('category',e.target.value)}>{categories.map(c=><option key={c}>{c}</option>)}</select></label></div><label>Note (opțional)<input maxLength={500} value={form.notes} onChange={e=>change('notes',e.target.value)}/></label><div className="actions"><button type="submit" className="button">{editing===null?'Adaugă programare':'Salvează modificările'}</button><button type="button" className="button secondary" onClick={reset}>Anulează</button></div></form>}
+ {canWrite&&showForm&&<FormModal title={editing===null?'Adaugă programare':'Editează programarea'} onClose={reset}><form className="calendar-form" onSubmit={save}><div className="two"><label>Denumire<input required maxLength={160} value={form.name} onChange={e=>change('name',e.target.value)}/></label><label>Data<input required type="date" value={form.date} onChange={e=>change('date',e.target.value)}/></label><label>Ora (opțional)<input type="time" value={form.time} onChange={e=>change('time',e.target.value)}/></label><label>Categorie<select value={form.category} onChange={e=>change('category',e.target.value)}>{categories.map(c=><option key={c}>{c}</option>)}</select></label></div><label>Note (opțional)<input maxLength={500} value={form.notes} onChange={e=>change('notes',e.target.value)}/></label><div className="actions"><button type="submit" className="button">{editing===null?'Adaugă programare':'Salvează modificările'}</button><button type="button" className="button secondary" onClick={reset}>Anulează</button></div></form></FormModal>}
  </section>;
 }
