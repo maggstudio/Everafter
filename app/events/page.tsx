@@ -9,6 +9,7 @@ import {supabase} from '../../lib/supabase';
 export default function EventsPage(){
  const {events,ready,saveStatus,selectEvent,refresh}=useStore();const router=useRouter();
  const [deleting,setDeleting]=useState<string|null>(null),[deleteConfirm,setDeleteConfirm]=useState(''),[deleteBusy,setDeleteBusy]=useState(false);
+ const [pendingDeclaration,setPendingDeclaration]=useState<string|null>(null),[declarationChecked,setDeclarationChecked]=useState(false);
  const [accepted,setAccepted]=useState(false);
  const [type,setType]=useState<'wedding'|'baptism'>('wedding');const [createOpen,setCreateOpen]=useState(false);
  const [first,setFirst]=useState(''),[second,setSecond]=useState(''),[date,setDate]=useState(''),[city,setCity]=useState('');
@@ -17,11 +18,22 @@ export default function EventsPage(){
   if(opening)return;
   setOpening(id);setError('');
   try{
+   if(events.find(e=>e.id===id)?.role==='owner'){
+    if(!supabase)throw Error('Serviciu indisponibil.');
+    const {data,error}=await supabase.rpc('wedly_organizer_status',{p_wedding:id});
+    if(error)throw Error('Nu am putut verifica declarația. Reîncearcă.');
+    if(data!==true){setPendingDeclaration(id);setDeclarationChecked(false);return;}
+   }
    const ok=await selectEvent(id);
    if(ok)router.push('/dashboard?wedding='+encodeURIComponent(id));
    else setError('Nu am putut schimba evenimentul. Verifică mesajul de sincronizare și încearcă din nou.');
   }catch{setError('A apărut o eroare la încărcarea evenimentului.');}
   finally{setOpening(null)}
+ }
+ async function acceptExisting(){
+  if(!supabase||!pendingDeclaration||!declarationChecked||opening)return;
+  const id=pendingDeclaration;setOpening(id);setError('');
+  try{const {error}=await supabase.rpc('wedly_accept_organizer',{p_wedding:id});if(error)throw Error('Declarația nu a putut fi salvată.');setPendingDeclaration(null);if(await selectEvent(id))router.push('/dashboard?wedding='+encodeURIComponent(id));else setError('Declarația a fost salvată. Redeschide evenimentul.');}catch(e){setError(e instanceof Error?e.message:'Eroare.')}finally{setOpening(null)}
  }
  async function deleteEvent(){if(!supabase||!deleting||deleteConfirm!=='STERGE DEFINITIV'||deleteBusy)return;
   const event=events.find(x=>x.id===deleting);if(!event||event.role!=='owner')return;
@@ -42,6 +54,7 @@ export default function EventsPage(){
  return <main className="shell narrow"><SmartHomeLogo/>
  <div className="panel"><span className="eyebrow">SPAȚIILE TALE</span><h1>Evenimentele mele</h1>{error&&<p role="alert" style={{color:"crimson"}}>{error}</p>}
  {events.length===0?<p>Nu ai încă evenimente accesibile.</p>:<div>{events.map(event=><div className="list-row" key={event.id}><div><b>{event.name}</b><div><small>{event.type==='baptism'?'Botez':'Nuntă'} · {event.city||'Oraș nespecificat'} · {event.date||'Fără dată'} · {event.role==='owner'?'Organizator':'Colaborator'}</small></div></div><div className="row-controls"><button type="button" className="button" disabled={Boolean(opening)||deleteBusy} onClick={()=>void openEvent(event.id)}>{opening===event.id?'Se deschide...':'Deschide'}</button>{event.role==='owner'&&<button type="button" className="button secondary" disabled={deleteBusy||Boolean(opening)} onClick={()=>{setDeleting(event.id);setDeleteConfirm('');setError('')}}>Șterge</button>}</div></div>)}</div>}
+ {pendingDeclaration&&<section className="panel"><h2>Declarație pentru evenimentul existent</h2><p>{events.find(e=>e.id===pendingDeclaration)?.name}</p><p>Tu alegi datele invitaților, furnizorilor și colaboratorilor. WEDLY oferă infrastructura tehnică și răspunde pentru propriile obligații legale.</p><label className="check-row"><input type="checkbox" checked={declarationChecked} onChange={e=>setDeclarationChecked(e.target.checked)}/> Confirm că sunt responsabil pentru legalitatea și corectitudinea datelor și materialelor pe care le introduc, precum și pentru distribuirea lor. Am consultat <Link href="/termeni" target="_blank" rel="noopener noreferrer">termenii</Link>.</label><button className="button" disabled={!declarationChecked||Boolean(opening)} onClick={()=>void acceptExisting()}>Confirmă și deschide</button><button className="button secondary" disabled={Boolean(opening)} onClick={()=>setPendingDeclaration(null)}>Anulează</button></section>}
  {deleting&&<div className="event-delete-overlay" role="presentation"><section className="event-delete-dialog" role="dialog" aria-modal="true" aria-labelledby="event-delete-title"><h2 id="event-delete-title">Ștergi definitiv evenimentul?</h2><p><strong>{events.find(e=>e.id===deleting)?.name}</strong></p><p><strong>Atenție: această acțiune este ireversibilă.</strong> Vor fi șterse definitiv toate datele asociate evenimentului: invitați, răspunsuri RSVP, invitații digitale, fotografii, bugete, cheltuieli, sarcini, furnizori, programări, echipă și celelalte informații salvate. Linkurile invitaților nu vor mai funcționa.</p><p>Confirmă că înțelegi pierderea definitivă a datelor introducând <strong>STERGE DEFINITIV</strong>:</p><label>Confirmare ștergere<input autoFocus autoComplete="off" value={deleteConfirm} onChange={e=>setDeleteConfirm(e.target.value)} placeholder="STERGE DEFINITIV" disabled={deleteBusy}/></label><div className="row-controls"><button type="button" className="button secondary" disabled={deleteBusy} onClick={()=>{setDeleting(null);setDeleteConfirm('')}}>Anulează, păstrează evenimentul</button><button type="button" className="button event-delete-danger" disabled={deleteBusy||deleteConfirm!=='STERGE DEFINITIV'} onClick={()=>void deleteEvent()}>{deleteBusy?'Se șterge...':'Da, șterge definitiv toate datele'}</button></div></section></div>}
  </div><div className="panel"><div className="christmas-offer"><strong>🎁 Promoție de lansare</strong><p>Funcționalitățile disponibile sunt gratuite în perioada de lansare. Nu ai nevoie de card bancar.</p></div><h2>Începe un eveniment nou</h2><p>Completează câteva detalii de bază. Restul le poți adăuga ulterior.</p>{!createOpen&&<button type="button" className="button" onClick={()=>setCreateOpen(true)}>+ Creează eveniment</button>}{createOpen&&<>
  <form onSubmit={create}><label>Tip eveniment<select value={type} onChange={e=>setType(e.target.value as 'wedding'|'baptism')}><option value="wedding">Nuntă</option><option value="baptism">Botez</option></select></label>
