@@ -4,35 +4,27 @@ import {supabase} from '../../lib/supabase';
 import {useStore} from '../../lib/store';
 import PushSettings from './PushSettings';
 import RemindersPanel from './RemindersPanel';
-type Key='daily_digest'|'task_reminders'|'appointment_reminders'|'payment_reminders';
-type Preferences=Record<Key,boolean>&{digest_hour:number};
-const defaults:Preferences={daily_digest:false,task_reminders:false,appointment_reminders:false,payment_reminders:false,digest_hour:9};
-const options:{key:Key;title:string;description:string;module:'guests'|'tasks'|'calendar'|'vendors'|null}[]=[
- {key:'daily_digest',title:'Rezumat zilnic',description:'Un email cu situația evenimentului la ora aleasă, după activarea programatorului.',module:null},
- {key:'task_reminders',title:'Termene checklist',description:'Alerte pentru sarcinile cu termen apropiat sau depășit.',module:'tasks'},
- {key:'appointment_reminders',title:'Programări',description:'Alerte pentru programările viitoare.',module:'calendar'},
- {key:'payment_reminders',title:'Scadențe furnizori',description:'Alerte pentru plățile scadente sau întârziate.',module:'vendors'}
-];
+const defaults={rsvp:true,tasks:true,appointments:true,payments:true,assignments:true,countdown:true,digest:false,digest_hour:9,quiet_start:22,quiet_end:8};
+type Prefs=typeof defaults;
+const options=[['rsvp','Răspunsuri RSVP','guests'],['tasks','Termene sarcini','tasks'],['appointments','Programări','calendar'],['payments','Scadențe plăți','vendors'],['assignments','Sarcini atribuite','tasks'],['countdown','Numărătoare inversă','wedding'],['digest','Rezumat zilnic','wedding']] as const;
 export default function NotificationSettingsPanel(){
  const {weddingId,can}=useStore();
- const [prefs,setPrefs]=useState<Preferences>(defaults),[loading,setLoading]=useState(true),[saving,setSaving]=useState(false),[status,setStatus]=useState('');
- const [email,setEmail]=useState('');
- useEffect(()=>{let active=true;setLoading(true);setStatus('');setPrefs(defaults);
- (async()=>{if(!supabase||!weddingId){if(active){setStatus('Conexiunea nu este disponibilă.');setLoading(false)}return}
- const {data:{user}}=await supabase.auth.getUser();if(!active)return;if(!user){setStatus('Autentificare necesară.');setLoading(false);return}
- setEmail(user.email||'');
- const {data,error}=await supabase.from('notification_preferences').select('daily_digest,task_reminders,appointment_reminders,payment_reminders,digest_hour').eq('wedding_id',weddingId).eq('user_id',user.id).maybeSingle();
- if(!active)return;if(error)setStatus('Nu se pot încărca preferințele. Aplică migrarea SQL pentru notificări. '+error.message);
- else if(data)setPrefs({...defaults,...data});setLoading(false);
- })();return()=>{active=false}},[weddingId]);
+ const [prefs,setPrefs]=useState<Prefs>(defaults),[loading,setLoading]=useState(true),[saving,setSaving]=useState(false),[status,setStatus]=useState('');
+ useEffect(()=>{let active=true;setLoading(true);setPrefs(defaults);setStatus('');
+ (async()=>{try{if(!supabase||!weddingId)throw Error('Eveniment indisponibil.');
+ const {data:{user}}=await supabase.auth.getUser();if(!user)throw Error('Autentificare necesară.');
+ const {data,error}=await supabase.from('wedly_push_preferences').select('rsvp,tasks,appointments,payments,assignments,countdown,digest,digest_hour,quiet_start,quiet_end').eq('wedding_id',weddingId).eq('user_id',user.id).maybeSingle();
+ if(error)throw Error('Preferințele push nu sunt încă disponibile.');
+ if(active&&data)setPrefs({...defaults,...data});
+ }catch(e){if(active)setStatus(e instanceof Error?e.message:'Eroare de încărcare.')}finally{if(active)setLoading(false)}})();return()=>{active=false}},[weddingId]);
  async function save(){if(!supabase||!weddingId||saving)return;setSaving(true);setStatus('');
- const {data:{user}}=await supabase.auth.getUser();if(!user){setStatus('Sesiune expirată.');setSaving(false);return}
- const {error}=await supabase.from('notification_preferences').upsert({wedding_id:weddingId,user_id:user.id,...prefs,updated_at:new Date().toISOString()},{onConflict:'wedding_id,user_id'});
- setStatus(error?'Nu s-au salvat setările: '+error.message:'Preferințele au fost salvate pentru contul tău și acest eveniment.');setSaving(false)}
- return <><PushSettings/><section className="panel"><h2>Preferințele mele de notificare</h2><p>Fiecare membru al echipei își alege separat ce mesaje dorește să primească. Setările se aplică numai contului tău și evenimentului curent.</p><p><strong>Destinatar:</strong> {email||'Se încarcă...'}</p>
- <p className="hint">Rezumatele și reminderele pentru sarcini, programări și plăți pot fi trimise automat prin email după activarea programatoarelor Vercel și aplicarea migrărilor SQL. Reminderele se trimit cel mult o dată pe zi pentru fiecare categorie, când există elemente relevante.</p>
- {loading?<p>Se încarcă preferințele...</p>:<><div className="guest-unified-list">{options.map(o=><label key={o.key} className="list-row"><span><strong>{o.title}</strong><small>{o.description}{o.module&&!can(o.module==='vendors'?'vendors':o.module,'read')?' · Nu ai acces la modulul asociat':''}</small></span><input type="checkbox" checked={prefs[o.key]} disabled={Boolean(o.module&&!can(o.module,'read'))} onChange={e=>setPrefs(p=>({...p,[o.key]:e.target.checked}))}/></label>)}</div>
- {prefs.daily_digest&&<label>Ora preferată pentru rezumat (ora României) <select value={prefs.digest_hour} onChange={e=>setPrefs(p=>({...p,digest_hour:Number(e.target.value)}))}>{Array.from({length:24},(_,i)=><option key={i} value={i}>{String(i).padStart(2,'0')}:00</option>)}</select></label>}
- <div className="actions"><button type="button" className="button" disabled={saving} onClick={save}>{saving?'Se salvează...':'Salvează preferințele'}</button></div></>}
+ try{const {data:{user}}=await supabase.auth.getUser();if(!user)throw Error('Sesiune expirată.');
+ const {error}=await supabase.from('wedly_push_preferences').upsert({wedding_id:weddingId,user_id:user.id,...prefs},{onConflict:'wedding_id,user_id'});
+ if(error)throw Error('Preferințele nu au putut fi salvate.');setStatus('Preferințele push au fost salvate.');
+ }catch(e){setStatus(e instanceof Error?e.message:'Eroare de salvare.')}finally{setSaving(false)}}
+ return <><PushSettings/><section className="panel"><h2>Preferințele mele de notificare push</h2><p>Setări individuale pentru contul tău și evenimentul curent. Notificările automate necesită activarea serviciului pe dispozitiv.</p>
+ {loading?<p>Se încarcă...</p>:<><div className="guest-unified-list">{options.map(([key,title,module])=><label className="list-row" key={key}><span>{title}</span><input type="checkbox" checked={prefs[key]} disabled={saving||!can(module,'read')} onChange={e=>setPrefs(p=>({...p,[key]:e.target.checked}))}/></label>)}</div>
+ {([['digest_hour','Ora rezumatului'],['quiet_start','Început interval de liniște'],['quiet_end','Sfârșit interval de liniște']] as const).filter(([key])=>key!=='digest_hour'||prefs.digest).map(([key,title])=><label key={key}>{title} (ora României)<select disabled={saving} value={prefs[key]} onChange={e=>setPrefs(p=>({...p,[key]:Number(e.target.value)}))}>{Array.from({length:24},(_,i)=><option key={i} value={i}>{String(i).padStart(2,'0')}:00</option>)}</select></label>)}
+ <p className="hint">Ore identice dezactivează intervalul de liniște.</p><button type="button" className="button" disabled={saving} onClick={save}>{saving?'Se salvează...':'Salvează preferințele'}</button></>}
  {status&&<p role="status">{status}</p>}</section><RemindersPanel/></>;
 }
