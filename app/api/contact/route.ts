@@ -9,7 +9,7 @@ const validEmail=(s:string)=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)&&s.length<=254
 export async function POST(req:NextRequest){
  const admin=db();if(!admin)return fail('Serviciul de contact nu este configurat.',503);
  const len=Number(req.headers.get('content-length')||0);if(len>12000)return fail('Mesaj prea lung.',413);
- let body:Record<string,unknown>;try{body=await req.json();if(!body||typeof body!=='object'||Array.isArray(body))throw Error()}catch{return fail('Date invalide.',400)}
+ let body:Record<string,unknown>;try{const reader=req.body?.getReader();if(!reader)throw Error();const chunks:Uint8Array[]=[];let size=0;while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>12000){await reader.cancel();return fail('Mesaj prea lung.',413)}chunks.push(value)}body=JSON.parse(Buffer.concat(chunks).toString('utf8'));if(!body||typeof body!=='object'||Array.isArray(body))throw Error()}catch{return fail('Date invalide.',400)}
  if(body.website)return NextResponse.json({ok:true});
  const get=(k:string)=>typeof body[k]==='string'?(body[k] as string).trim():'';
  const name=get('name'),email=get('email').toLowerCase(),category=get('category'),subject=get('subject'),message=get('message');
@@ -25,7 +25,7 @@ export async function POST(req:NextRequest){
  if(bearer.startsWith('Bearer ')){const {data:{user}}=await admin.auth.getUser(bearer.slice(7));if(user&&user.email?.toLowerCase()===email)userId=user.id}
  const {error}=await admin.from('contact_messages').insert({sender_name:name,sender_email:email,category,subject,message,user_id:userId});
  if(error){
-  console.error('WEDLY contact insert failed',{code:error.code,message:error.message,details:error.details,hint:error.hint});
+  console.error('WEDLY contact insert failed',{code:error.code,});
   if(error.code==='42P01'||error.code==='PGRST205')return fail('Formularul nu este configurat complet. Administratorul trebuie să aplice migrarea contact_support.sql.',503);
   if(error.code==='42703'||error.code==='PGRST204')return fail('Structura tabelului de contact este incompletă. Administratorul trebuie să verifice migrarea contact_support.sql.',503);
   if(error.code==='42501')return fail('Salvarea este blocată de permisiunile bazei de date. Contactează administratorul.',503);
