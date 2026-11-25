@@ -5,10 +5,10 @@ import FormModal from '../components/FormModal';
 import {useStore} from '../../lib/store';
 import {supabase} from '../../lib/supabase';
 import type {Guest} from '../../lib/demo';
-type RecordRow={id:string;guest_id:string;status:string;party_size:number;dietary_notes:string;expires_at:string;revoked_at:string|null;responded_at:string|null};
-export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effectiveSize}:{guests:Guest[];onEdit:(g:Guest)=>void;onDelete:(g:Guest)=>void;effectiveStatus:(g:Guest)=>Guest['status'];effectiveSize:(g:Guest)=>number}){
+import type {RecordRow} from './useRsvpSync';
+export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effectiveSize,rows,refreshRsvp}:{rows:RecordRow[];refreshRsvp:()=>Promise<void>;guests:Guest[];onEdit:(g:Guest)=>void;onDelete:(g:Guest)=>void;effectiveStatus:(g:Guest)=>Guest['status'];effectiveSize:(g:Guest)=>number}){
  const {data,ready,weddingId,can}=useStore();
- const [rows,setRows]=useState<RecordRow[]>([]),[links,setLinks]=useState<Record<string,string>>({});
+ const [links,setLinks]=useState<Record<string,string>>({});
  const [expanded,setExpanded]=useState<string|null>(null),[message,setMessage]=useState(''),[busy,setBusy]=useState(false);
  const [actions,setActions]=useState<Guest|null>(null);
  const dialogRef=useRef<HTMLDialogElement>(null);
@@ -17,8 +17,8 @@ export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effect
  useEffect(()=>{const dialog=dialogRef.current;if(selected&&dialog&&!dialog.open)dialog.showModal();else if(!selected&&dialog?.open)dialog.close()},[selected,expanded]);
  function closeDetail(){if(busy)return;setExpanded(null);setMessage('');requestAnimationFrame(()=>opener.current?.focus())}
  const writable=can('guests','write');
- async function load(){if(!supabase||!weddingId)return;const {data:result,error}=await supabase.rpc('rsvp_list',{p_wedding:weddingId});if(error)setMessage(error.message);else setRows((result||[]) as RecordRow[])}
- useEffect(()=>{setLinks({});setRows([]);setExpanded(null);void load();},[weddingId,ready]);
+
+ useEffect(()=>{setLinks({});setExpanded(null);},[weddingId,ready]);
  async function issue(g:Guest){
   if(!supabase||!weddingId||!writable)return;
   setBusy(true);setMessage('');setLinks(p=>{const next={...p};delete next[g.id];return next});
@@ -28,7 +28,7 @@ export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effect
    const url=window.location.origin+'/rsvp?token='+encodeURIComponent(token as string);
    setLinks(p=>({...p,[g.id]:url}));
    setMessage('');
-   await load();
+   await refreshRsvp();
   }catch{setMessage('Invitația nu a putut fi pregătită. Încearcă din nou.')}finally{setBusy(false)}
  }
  async function revoke(id:string){
@@ -38,7 +38,7 @@ export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effect
    const {error}=await supabase.rpc('rsvp_cancel_shared_link',{p_wedding:weddingId,p_guest_id:id});
    setMessage(error?error.message:'Invitația a fost anulată.');
    if(!error){setLinks(p=>{const next={...p};delete next[id];return next});setExpanded(null)}
-   await load();
+   await refreshRsvp();
   }finally{setBusy(false)}
  }
  function invitationMessage(name:string,url:string){const w=data.wedding,d=w.invitationDesign;const event=w.eventType==='baptism'?(w.childName?.trim()?'Botezul lui '+w.childName.trim():'Botezul copilului'):[w.first,w.second].filter(Boolean).join(' & ');const family:string[]=[];const add=(label:string,value?:string)=>{if(value?.trim())family.push(label+': '+value.trim())};if(w.eventType==='baptism'){if(d?.showParents!==false)add('Părinții copilului',[w.first,w.second].filter(Boolean).join(' și '));if(d?.showGodparents!==false)add('Nașii copilului',w.godparents);if(d?.showGrandparents!==false)add('Moșii copilului',w.childGrandparents)}else{if(d?.showParents!==false){add('Părinții miresei',w.brideParents);add('Părinții mirelui',w.groomParents)}if(d?.showGodparents!==false)add('Nașii de cununie',w.weddingGodparents)}return ['Dragă '+name+',',d?.headline||'Te invităm să sărbătorim împreună!',event,d?.message||'Te așteptăm cu drag!',...family,w.date?new Date(w.date+'T12:00:00').toLocaleDateString('ro-RO'):'Data urmează să fie confirmată',d?.time?'Ora '+d.time:'',d?.location||'',w.city||'','Confirmă participarea aici: '+url].filter(Boolean).join('\n\n')}
@@ -57,7 +57,7 @@ export default function RsvpPanel({guests,onEdit,onDelete,effectiveStatus,effect
  const rowMap=new Map(rows.map(r=>[r.guest_id,r]));
  const responseLabel=(g:Guest,r?:RecordRow)=>{if(r?.responded_at)return r.status==='confirmat'?'Confirmat online':r.status==='refuzat'?'Refuzat online':'Răspuns primit';const status=effectiveStatus(g);return status==='confirmat'?'Confirmat manual':status==='refuzat'?'Refuzat manual':'În așteptare'};
  return <div className="guest-unified-list">
- <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8,margin:'12px 0'}}><strong>{guests.length} invitați / grupuri</strong><button type="button" className="text-button" onClick={()=>void load()}>Actualizează RSVP</button></div>
+ <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8,margin:'12px 0'}}><strong>{guests.length} invitați / grupuri</strong></div>
  {message&&!expanded&&<p role="status" className="hint">{message}</p>}
  <div style={{border:'1px solid var(--border, #aaa6)',borderRadius:12,overflow:'hidden'}}>
  {guests.map(g=>{const r=rowMap.get(g.id);const active=!!r&&!r.revoked_at&&!r.responded_at&&new Date(r.expires_at).getTime()>Date.now();const status=effectiveStatus(g);return <div key={g.id} style={{display:'grid',gridTemplateColumns:'minmax(0,1fr) 38px 36px',alignItems:'center',gap:6,padding:'7px 9px',minHeight:52,borderBottom:'1px solid var(--border, #aaa4)'}}>
