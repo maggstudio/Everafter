@@ -1,3 +1,4 @@
+import {liveInvitation} from '../../../../lib/live-invitation';
 import {createClient} from '@supabase/supabase-js';
 import {NextRequest,NextResponse} from 'next/server';
 import {verifyPublicInvitation} from '../../../../lib/public-invitation';
@@ -5,6 +6,7 @@ export const runtime='nodejs';
 export const dynamic='force-dynamic';
 export async function GET(req:NextRequest){
  const url=new URL(req.url),token=url.searchParams.get('token')||'',invite=url.searchParams.get('invite')||'';
+ if(!invite){const live=await liveInvitation(token);return live?NextResponse.json(live,{headers:{'Cache-Control':'no-store','Referrer-Policy':'no-referrer'}}):NextResponse.json({error:'Invitația nu este disponibilă.'},{status:404,headers:{'Cache-Control':'no-store'}})}
  const details=verifyPublicInvitation(invite,token);
  if(!details)return NextResponse.json({error:'Invitația nu este validă sau a expirat.'},{status:404,headers:{'Cache-Control':'no-store'}});
  const dbUrl=process.env.NEXT_PUBLIC_SUPABASE_URL,anon=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY||process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
