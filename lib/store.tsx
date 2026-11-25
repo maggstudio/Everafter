@@ -4,7 +4,7 @@ import {defaultWedding,initialPackages,type Wedding,type Task,type Expense,type 
 import {supabase} from './supabase';
 export type Module='wedding'|'tasks'|'expenses'|'guests'|'calendar'|'packages'|'vendors';
 export type Permissions=Record<string,{read:boolean;write:boolean}>;
-export type Member={wedding_id:string;user_id:string;role:'owner'|'partner'|'planner';status:'active'|'pending';permissions:Permissions};
+export type Member={wedding_id:string;user_id:string;role:'owner'|'partner'|'planner'|'collaborator';status:'active'|'pending';permissions:Permissions};
 type Package={id:string;name:string;price:number;features:string[]};
 export type VendorPayment={id:string;amount:number;date:string;notes:string;expenseId:string};
 export type Vendor={id:string;name:string;category:string;contact:string;contractAmount:number;paidAmount:number;dueDate:string;notes:string;payments?:VendorPayment[]};
