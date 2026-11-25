@@ -16,7 +16,7 @@ export async function POST(request:NextRequest){
   if(authError||!user)return NextResponse.json({error:'Sesiune invalidă'},{status:401});
   const payload=await request.json();
   const {weddingId,email,role,permissions}=payload||{};
-  if(typeof weddingId!=='string'||typeof email!=='string'||email.length>254||!['partner','planner'].includes(role)||!permissions||typeof permissions!=='object'||Array.isArray(permissions))return NextResponse.json({error:'Date invalide'},{status:400});
+  if(typeof weddingId!=='string'||typeof email!=='string'||email.length>254||!['partner','planner','collaborator'].includes(role)||!permissions||typeof permissions!=='object'||Array.isArray(permissions))return NextResponse.json({error:'Date invalide'},{status:400});
   const {data:token,error}=await client.rpc('create_email_invitation',{p_wedding:weddingId,p_email:email,p_role:role,p_permissions:permissions});
   if(error||!token)return NextResponse.json({error:error?.message||'Nu s-a putut crea invitația'},{status:403});
   const inviteLink=`${origin.replace(/\/$/,'')}/invite#token=${encodeURIComponent(token)}`;
