@@ -1,6 +1,6 @@
 'use client';
 import {EventSidebar} from './EventNavigation';
-import {useEffect,useState,type ReactNode} from 'react';
+import {useLayoutEffect,useState,type ReactNode} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {ArrowLeft,Home,ListChecks,Wallet,Users,ScanLine,Settings} from 'lucide-react';
@@ -8,8 +8,8 @@ import {useStore} from '../../lib/store';
 import SmartHomeLogo from './SmartHomeLogo';
 import EventMobileNav from './EventMobileNav';
 export default function SettingsRouteShell({children,always=false}:{children:ReactNode;always?:boolean}){
- const {ready,weddingId,data,can}=useStore();const router=useRouter();const [context,setContext]=useState(always);const [more,setMore]=useState(false);
- useEffect(()=>{setContext(always||new URLSearchParams(window.location.search).get('from')==='settings')},[always]);
+ const {ready,weddingId,data,can}=useStore();const router=useRouter();const [context,setContext]=useState(()=>always||(typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('from')==='settings'));const [more,setMore]=useState(false);
+ useLayoutEffect(()=>{setContext(always||new URLSearchParams(window.location.search).get('from')==='settings')},[always]);
  if(!context)return <>{children}</>;
  const href=(view:string)=>'/dashboard?'+new URLSearchParams({view,...(weddingId?{wedding:weddingId}:{})}).toString();
  const back=<Link className="settings-back" href={href('settings')}><ArrowLeft size={18}/> Toate setările</Link>;
