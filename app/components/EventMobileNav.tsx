@@ -25,9 +25,9 @@ async function logoutDevice(){
 
 export default function EventMobileNav({view,navigate,mobileMore,setMobileMore,platformAdmin}:{view:View|'team';navigate:(v:View)=>void;mobileMore:boolean;setMobileMore:React.Dispatch<React.SetStateAction<boolean>>;platformAdmin:boolean}){
 const {can}=useStore();
-const nav:[View,string][]=[['overview','Prezentare'],['tasks','Planificare'],['budget','Buget și furnizori'],['guests','Invitați'],['invitations','Invitații digitale'],['seating','Mese'],['reception','Ziua evenimentului'],['settings','Setări']];
+const nav:[View,string][]=[['overview','Prezentare'],['tasks','Planificare'],['budget','Buget și furnizori'],['guests','Invitați și invitații'],['reception','Ziua evenimentului'],['settings','Setări']];
 const moduleFor={overview:'wedding',tasks:'tasks',budget:'expenses',vendors:'vendors',guests:'guests',invitations:'wedding',seating:'wedding',reception:'wedding',calendar:'calendar',notifications:'wedding',settings:'wedding'} as const;
-const group=(v:View):View=>v==='calendar'?'tasks':v==='vendors'?'budget':v;
+const group=(v:View):View=>v==='calendar'?'tasks':v==='vendors'?'budget':v==='invitations'||v==='seating'?'guests':v;
 const visibleNav=nav.filter(([id])=>id==='tasks'?can('tasks','read')||can('calendar','read'):id==='budget'?can('expenses','read')||can('vendors','read'):can(moduleFor[id],'read')&&(!['invitations','seating','reception'].includes(id)||can('guests','read')));
 const target=(v:View):View=>v==='tasks'&&!can('tasks','read')?'calendar':v==='budget'&&!can('expenses','read')?'vendors':v;
 const mobileIcons={overview:Home,tasks:ListChecks,guests:Users,calendar:CalendarDays,budget:Wallet,vendors:Store,invitations:Mail,seating:LayoutGrid,reception:ScanLine,settings:Settings,notifications:Settings};
