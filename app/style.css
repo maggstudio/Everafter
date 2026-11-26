@@ -1329,3 +1329,5 @@ html[data-wedly-theme=dark] .wedly-form-sheet,html[data-wedly-theme=dark] .wedly
 .studio-renderer .studio-photo-credit a{color:inherit;text-decoration:underline;text-underline-offset:2px}.studio-renderer .studio-photo-credit a:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 .online-photo-picker .guided-library small{display:block;font-size:10px;line-height:1.35;margin-top:3px;color:inherit}.online-photo-picker .guided-library small a{color:inherit;text-decoration:underline}
 @media(max-width:600px){.studio-renderer .studio-photo-credit{right:8px;bottom:6px;max-width:calc(100% - 16px)}}
+
+.studio-credits-footer{padding:14px 20px 8px;text-align:center;background:#fff;color:#666;font:400 11px/1.65 Arial,sans-serif;overflow-wrap:anywhere}.studio-credits-footer a{color:inherit;text-decoration:underline;text-underline-offset:2px}.studio-credits-footer a:focus-visible{outline:2px solid currentColor;outline-offset:2px}
