@@ -13,5 +13,5 @@ for(const [folder,category] of Object.entries(categories)){
   catalog[key]={label:entry.name.replace(/\\.[^.]+$/,'').replace(/[-_]+/g,' '),category,url:'/invitation-photos/'+folder+'/'+encodeURIComponent(entry.name)};
  }
 }
-fs.writeFileSync('lib/manual-invitation-photos.json',JSON.stringify(catalog,null,2)+'\\n');
+fs.writeFileSync('lib/manual-invitation-photos.json',JSON.stringify(catalog,null,2));
 console.log('Manual invitation photos:',Object.keys(catalog).length);
