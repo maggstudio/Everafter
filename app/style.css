@@ -1235,3 +1235,11 @@ html[data-wedly-theme=dark] .wedly-form-sheet,html[data-wedly-theme=dark] .wedly
 .settings-route-layout .side-nav a.active{background:var(--lux-soft);color:var(--lux-primary);border-radius:12px}
 .settings-route-fallback>.settings-back{display:inline-flex;margin:16px}
 .wedly-luxury-dashboard .settings-back{text-decoration:none;width:fit-content;margin-bottom:12px}
+
+.events-sheet-content,.events-page-content{display:grid;gap:16px}
+.events-sheet-content>.panel{margin:0;padding:16px}
+.events-sheet-content .list-row{display:grid;gap:12px;padding:14px 0}
+.events-sheet-content .list-row .row-controls{display:flex;flex-wrap:wrap;gap:8px}
+.events-sheet-content .two{grid-template-columns:minmax(0,1fr)}
+.events-sheet-content .event-delete-overlay{position:fixed;inset:0;z-index:5;overflow:auto}
+.wedly-form-sheet-body>.panel{margin:0}

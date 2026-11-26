@@ -1,0 +1,72 @@
+'use client';
+
+
+
+import AuthLoading from '../components/AuthLoading';
+import Link from 'next/link';
+import {useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {useStore} from '../../lib/store';
+import {supabase} from '../../lib/supabase';
+export default function EventsContent({embedded=false}:{embedded?:boolean}){
+ const {events,ready,saveStatus,selectEvent,refresh}=useStore();const router=useRouter();
+ const [deleting,setDeleting]=useState<string|null>(null),[deleteConfirm,setDeleteConfirm]=useState(''),[deleteBusy,setDeleteBusy]=useState(false);
+ const [pendingDeclaration,setPendingDeclaration]=useState<string|null>(null),[declarationChecked,setDeclarationChecked]=useState(false);
+ const [accepted,setAccepted]=useState(false);
+ const [type,setType]=useState<'wedding'|'baptism'>('wedding');const [createOpen,setCreateOpen]=useState(false);
+ const [first,setFirst]=useState(''),[second,setSecond]=useState(''),[date,setDate]=useState(''),[city,setCity]=useState('');
+ const [brideParents,setBrideParents]=useState(''),[groomParents,setGroomParents]=useState(''),[pairs,setPairs]=useState<string[]>([]),[weddingElders,setWeddingElders]=useState('');
+ const [child,setChild]=useState(''),[godparents,setGodparents]=useState(''),[elders,setElders]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[opening,setOpening]=useState<string|null>(null);
+ async function openEvent(id:string){
+  if(opening)return;
+  setOpening(id);setError('');
+  try{
+   if(events.find(e=>e.id===id)?.role==='owner'){
+    if(!supabase)throw Error('Serviciu indisponibil.');
+    const {data,error}=await supabase.rpc('wedly_organizer_status',{p_wedding:id});
+    if(error)throw Error('Nu am putut verifica declarația. Reîncearcă.');
+    if(data!==true){setPendingDeclaration(id);setDeclarationChecked(false);return;}
+   }
+   const ok=await selectEvent(id);
+   if(ok)router.push('/dashboard?wedding='+encodeURIComponent(id));
+   else setError('Nu am putut schimba evenimentul. Verifică mesajul de sincronizare și încearcă din nou.');
+  }catch{setError('A apărut o eroare la încărcarea evenimentului.');}
+  finally{setOpening(null)}
+ }
+ async function acceptExisting(){
+  if(!supabase||!pendingDeclaration||!declarationChecked||opening)return;
+  const id=pendingDeclaration;setOpening(id);setError('');
+  try{const {error}=await supabase.rpc('wedly_accept_organizer',{p_wedding:id});if(error)throw Error('Declarația nu a putut fi salvată.');setPendingDeclaration(null);if(await selectEvent(id))router.push('/dashboard?wedding='+encodeURIComponent(id));else setError('Declarația a fost salvată. Redeschide evenimentul.');}catch(e){setError(e instanceof Error?e.message:'Eroare.')}finally{setOpening(null)}
+ }
+ async function deleteEvent(){if(!supabase||!deleting||deleteConfirm!=='STERGE DEFINITIV'||deleteBusy)return;
+  const event=events.find(x=>x.id===deleting);if(!event||event.role!=='owner')return;
+  setDeleteBusy(true);setError('');
+  try{const {data:{session}}=await supabase.auth.getSession();if(!session)throw new Error('Autentificare necesară.');
+   const response=await fetch('/api/events/delete',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+session.access_token},body:JSON.stringify({weddingId:deleting,confirmation:deleteConfirm})});
+   const result=await response.json();if(!response.ok)throw new Error(result.error||'Ștergerea a eșuat.');
+   setDeleting(null);setDeleteConfirm('');await refresh();
+   if(result.storageWarning)setError('Evenimentul a fost șters, dar unele fotografii nu au putut fi eliminate din stocare. Contactează suportul.');
+  }catch(e){setError(e instanceof Error?e.message:'Eroare la ștergere.');}finally{setDeleteBusy(false)}
+ }
+ async function create(e:React.FormEvent){e.preventDefault();if(!supabase||busy||!accepted)return;setBusy(true);setError('');
+  const {data,error:rpcError}=await supabase.rpc('wedly_create_event_with_family',{p_bride_parents:type==='wedding'?brideParents.trim():'',p_groom_parents:type==='wedding'?groomParents.trim():'',p_pairs:type==='wedding'?pairs.map(v=>v.trim()).filter(Boolean):[],p_wedding_elders:type==='wedding'?weddingElders.trim():'',p_accepted:accepted,p_type:type,p_first:first.trim(),p_second:second.trim(),p_date:date,p_city:city.trim(),p_child_name:type==='baptism'?child.trim():'',p_godparents:type==='baptism'?godparents.trim():'',p_elders:type==='baptism'?elders.trim():''});
+  if(rpcError||!data){setError(rpcError?.message||'Nu am putut crea evenimentul. Contactează suportul dacă problema persistă.');setBusy(false);return}
+  window.location.href='/dashboard?wedding='+encodeURIComponent(data);
+ }
+ if(!ready)return <AuthLoading message={saveStatus}/>;
+ return <div className={embedded?"events-sheet-content":"events-page-content"}>
+ <div className="panel">{!embedded&&<><span className="eyebrow">SPAȚIILE TALE</span><h1>Evenimentele mele</h1></>}{error&&<p role="alert" style={{color:"crimson"}}>{error}</p>}
+ {events.length===0?<p>Nu ai încă evenimente accesibile.</p>:<div>{events.map(event=><div className="list-row" key={event.id}><div><b>{event.name}</b><div><small>{event.type==='baptism'?'Botez':'Nuntă'} · {event.city||'Oraș nespecificat'} · {event.date||'Fără dată'} · {event.role==='owner'?'Organizator':'Colaborator'}</small></div></div><div className="row-controls"><button type="button" className="button" disabled={Boolean(opening)||deleteBusy} onClick={()=>void openEvent(event.id)}>{opening===event.id?'Se deschide...':'Deschide'}</button>{event.role==='owner'&&<button type="button" className="button secondary" disabled={deleteBusy||Boolean(opening)} onClick={()=>{setDeleting(event.id);setDeleteConfirm('');setError('')}}>Șterge</button>}</div></div>)}</div>}
+ {pendingDeclaration&&<section className="panel"><h2>Declarație pentru evenimentul existent</h2><p>{events.find(e=>e.id===pendingDeclaration)?.name}</p><p>Tu alegi datele invitaților, furnizorilor și colaboratorilor. WEDLY oferă infrastructura tehnică și răspunde pentru propriile obligații legale.</p><label className="check-row" style={{display:"flex",alignItems:"flex-start",justifyContent:"flex-start",gap:12,padding:"12px 0"}}><input style={{flexShrink:0,width:18,height:18,margin:"3px 0 0"}} type="checkbox" checked={declarationChecked} onChange={e=>setDeclarationChecked(e.target.checked)}/><span style={{minWidth:0,flex:1,lineHeight:1.6}}>Confirm că sunt responsabil pentru legalitatea și corectitudinea datelor și materialelor pe care le introduc, precum și pentru distribuirea lor. Am consultat <Link href="/termeni" target="_blank" rel="noopener noreferrer" style={{display:"inline",textDecoration:"underline",padding:0,margin:0}}>termenii</Link>.</span></label><div style={{display:"flex",flexWrap:"wrap",gap:10,marginTop:12}}><button className="button" disabled={!declarationChecked||Boolean(opening)} onClick={()=>void acceptExisting()}>Confirmă și deschide</button><button className="button secondary" disabled={Boolean(opening)} onClick={()=>setPendingDeclaration(null)}>Anulează</button></div></section>}
+ {deleting&&<div className="event-delete-overlay" role="presentation"><section className="event-delete-dialog" role="dialog" aria-modal="true" aria-labelledby="event-delete-title"><h2 id="event-delete-title">Ștergi definitiv evenimentul?</h2><p><strong>{events.find(e=>e.id===deleting)?.name}</strong></p><p><strong>Atenție: această acțiune este ireversibilă.</strong> Vor fi șterse definitiv toate datele asociate evenimentului: invitați, răspunsuri RSVP, invitații digitale, fotografii, bugete, cheltuieli, sarcini, furnizori, programări, echipă și celelalte informații salvate. Linkurile invitaților nu vor mai funcționa.</p><p>Confirmă că înțelegi pierderea definitivă a datelor introducând <strong>STERGE DEFINITIV</strong>:</p><label>Confirmare ștergere<input autoFocus autoComplete="off" value={deleteConfirm} onChange={e=>setDeleteConfirm(e.target.value)} placeholder="STERGE DEFINITIV" disabled={deleteBusy}/></label><div className="row-controls"><button type="button" className="button secondary" disabled={deleteBusy} onClick={()=>{setDeleting(null);setDeleteConfirm('')}}>Anulează, păstrează evenimentul</button><button type="button" className="button event-delete-danger" disabled={deleteBusy||deleteConfirm!=='STERGE DEFINITIV'} onClick={()=>void deleteEvent()}>{deleteBusy?'Se șterge...':'Da, șterge definitiv toate datele'}</button></div></section></div>}
+ </div><div className="panel"><div className="christmas-offer"><strong>🎁 Promoție de lansare</strong><p>Funcționalitățile disponibile sunt gratuite în perioada de lansare. Nu ai nevoie de card bancar.</p></div><h2>Începe un eveniment nou</h2><p>Completează câteva detalii de bază. Restul le poți adăuga ulterior.</p>{!createOpen&&<button type="button" className="button" onClick={()=>setCreateOpen(true)}>+ Creează eveniment</button>}{createOpen&&<>
+ <form onSubmit={create}><label>Tip eveniment<select value={type} onChange={e=>setType(e.target.value as 'wedding'|'baptism')}><option value="wedding">Nuntă</option><option value="baptism">Botez</option></select></label>
+ <div className="two"><label>{type==='baptism'?'Primul părinte':'Primul partener'}<input required maxLength={100} value={first} onChange={e=>setFirst(e.target.value)}/></label>
+ <label>{type==='baptism'?'Al doilea părinte':'Al doilea partener'}<input required maxLength={100} value={second} onChange={e=>setSecond(e.target.value)}/></label>
+ {type==='baptism'&&<><label>Numele copilului<input required maxLength={100} value={child} onChange={e=>setChild(e.target.value)}/></label><label>Nașii copilului<input maxLength={200} value={godparents} onChange={e=>setGodparents(e.target.value)}/></label><label>Moșii copilului (opțional)<input maxLength={240} value={elders} onChange={e=>setElders(e.target.value)}/></label></>}
+ {type==='wedding'&&<details style={{gridColumn:'1 / -1'}}><summary>Familia și tradițiile (opțional)</summary><p className="hint">Poți completa aceste informații acum sau mai târziu, din configurarea evenimentului.</p><label>Părinții miresei<input maxLength={240} value={brideParents} onChange={e=>setBrideParents(e.target.value)}/></label><label>Părinții mirelui<input maxLength={240} value={groomParents} onChange={e=>setGroomParents(e.target.value)}/></label>{pairs.map((pair,i)=><label key={i}>Perechea de nași {i+1}<input maxLength={160} value={pair} onChange={e=>setPairs(old=>old.map((v,j)=>j===i?e.target.value:v))}/><button type="button" className="text-button" onClick={()=>setPairs(old=>old.filter((_,j)=>j!==i))}>Elimină</button></label>)}<button type="button" className="button secondary" disabled={pairs.length>=5} onClick={()=>setPairs(old=>[...old,''])}>+ Adaugă pereche de nași</button><label>Moșii<input maxLength={240} value={weddingElders} onChange={e=>setWeddingElders(e.target.value)}/></label></details>}<label>Data evenimentului<input type="date" required value={date} onChange={e=>setDate(e.target.value)}/></label><label>Oraș<input required maxLength={120} value={city} onChange={e=>setCity(e.target.value)}/></label></div>
+
+ <p className="hint">Tu alegi datele invitaților, furnizorilor și colaboratorilor. WEDLY oferă infrastructura tehnică și răspunde pentru propriile obligații legale.</p><label className="check-row" style={{display:"flex",alignItems:"flex-start",justifyContent:"flex-start",gap:12,padding:"12px 0"}}><input style={{flexShrink:0,width:18,height:18,margin:"3px 0 0"}} type="checkbox" required checked={accepted} onChange={e=>setAccepted(e.target.checked)}/><span style={{minWidth:0,flex:1,lineHeight:1.6}}>Confirm că sunt responsabil pentru legalitatea și corectitudinea datelor și materialelor pe care le introduc, precum și pentru distribuirea lor. Am consultat <Link href="/termeni" target="_blank" rel="noopener noreferrer" style={{display:"inline",textDecoration:"underline",padding:0,margin:0}}>termenii</Link>.</span></label><button className="button full" disabled={busy||!accepted}>{busy?'Se creează...':'Creează eveniment'}</button></form><button type="button" className="text-button" onClick={()=>setCreateOpen(false)}>Anulează</button></>}</div></div>
+}
+
+
