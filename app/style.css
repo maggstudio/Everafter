@@ -1158,3 +1158,13 @@ html[data-wedly-theme=dark] .wedly-form-sheet,html[data-wedly-theme=dark] .wedly
 @media(max-width:700px){.wedly-form-sheet{inset:auto 0 0;width:100%;height:auto;max-height:92dvh;border-radius:24px 24px 0 0}.wedly-form-sheet .wedly-form-sheet-panel{height:auto;max-height:92dvh}.wedly-form-sheet-header{padding:20px 18px 14px}.wedly-form-sheet-header h2{font-size:24px}.wedly-form-sheet-body{padding:18px 18px calc(20px + env(safe-area-inset-bottom,0px))}.wedly-form-sheet-body form .two{grid-template-columns:minmax(0,1fr)}}
 @media(prefers-reduced-motion:no-preference){.wedly-form-sheet[open]{animation:wedly-drawer-in .2s ease-out}@keyframes wedly-drawer-in{from{transform:translateX(24px);opacity:.6}to{transform:translateX(0);opacity:1}}}
 @media(max-width:700px) and (prefers-reduced-motion:no-preference){.wedly-form-sheet[open]{animation:wedly-bottom-in .2s ease-out}@keyframes wedly-bottom-in{from{transform:translateY(24px);opacity:.6}to{transform:translateY(0);opacity:1}}}
+
+/* Compact module toolbars and progressive disclosure */
+.wedly-luxury-dashboard .main-area .module-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:14px}
+.wedly-luxury-dashboard .main-area .module-head h2{font:400 clamp(22px,2.3vw,30px)/1.2 Georgia,serif;margin:0}
+.wedly-luxury-dashboard .main-area .module-head .row-controls{display:flex;flex-wrap:wrap;gap:8px}
+.wedly-luxury-dashboard .main-area .lux-filter-disclosure{margin:16px 0;border:1px solid var(--lux-border);border-radius:14px;background:var(--lux-card)}
+.wedly-luxury-dashboard .main-area .lux-filter-disclosure summary{padding:14px 16px;cursor:pointer;font-weight:600;color:var(--lux-ink)}
+.wedly-luxury-dashboard .main-area .lux-filter-disclosure .task-filters{margin:0 10px 10px}
+.wedly-luxury-dashboard .lux-filter-active{font-size:.72rem;font-weight:600;margin-left:8px;color:var(--lux-muted)}
+@media(max-width:600px){.wedly-luxury-dashboard .main-area .module-head{align-items:flex-start;gap:10px}.wedly-luxury-dashboard .main-area .module-head>.row-controls{width:100%}.wedly-luxury-dashboard .main-area .module-head>.row-controls>.button{flex:1 1 130px}}
