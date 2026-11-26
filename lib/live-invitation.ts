@@ -10,7 +10,7 @@ export async function liveInvitation(token:string){
  const admin=createClient(url,key,{auth:{persistSession:false}});
  const {data,error:err}=await admin.rpc('wedly_public_invitation_context',{p_token:token});if(err||!data?.wedding)return null;
  const w=data.wedding as Wedding,d=w.invitationDesign,b=w.eventType==='baptism';
- if(d?.studioDraft||d?.configured===false)return null;
+ if(!d?.studio&&d?.configured===false)return null;
  const family:{label:string;names:string}[]=[];
  const add=(label:string,names?:string)=>{if(names?.trim())family.push({label,names:names.trim()})};
  if(b){if(d?.showParents!==false)add('Părinții copilului',[w.first,w.second].filter(Boolean).join(' și '));if(d?.showGodparents!==false)add('Împreună cu nașii',w.godparents);if(d?.showGrandparents!==false)add('Și moșii copilului',w.childGrandparents)}
