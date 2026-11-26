@@ -1,0 +1,3 @@
+export type OnlinePhoto={id:string;url:string;thumb:string;author:string;profile:string};
+function allowed(v:unknown,host:string){try{return typeof v==='string'&&v.length<2500&&new URL(v).protocol==='https:'&&new URL(v).hostname===host&&!/["\\\\\s]/.test(v)}catch{return false}}
+export function sanitizeOnlinePhoto(v:unknown):OnlinePhoto|undefined{if(!v||typeof v!=='object')return;const p=v as OnlinePhoto;if(typeof p.id!=='string'||!/^[A-Za-z0-9_-]{1,80}$/.test(p.id)||!allowed(p.url,'images.unsplash.com')||!allowed(p.thumb,'images.unsplash.com')||!allowed(p.profile,'unsplash.com')||typeof p.author!=='string')return;return {id:p.id,url:p.url,thumb:p.thumb,author:p.author.slice(0,120),profile:p.profile}}
