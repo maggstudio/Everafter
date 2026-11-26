@@ -1,1 +1,604 @@
-{}
+{
+  "commons30878341": {
+    "label": "Trandafiri 30878341",
+    "category": "Floral",
+    "source": "https://commons.wikimedia.org/wiki/File:Close-up_of_roses_(CHS-2357).jpg",
+    "license": "Public domain",
+    "hash": "ef4fb1dc23c99527fa26718a9513633abe4f248b591242c3f3c47780ccd08d71"
+  },
+  "commons24897660": {
+    "label": "Trandafiri 24897660",
+    "category": "Floral",
+    "source": "https://commons.wikimedia.org/wiki/File:Close_up_of_rose_pogonia_snake_mouth_orchid_blossom_pogonia_ophioglossoides.jpg",
+    "license": "Public domain",
+    "hash": "f17cfb6d01cb1cc32644b35cb12975c86f97d9cfcb0cd3314d677561d2e5def1"
+  },
+  "commons14883526": {
+    "label": "Bujori 14883526",
+    "category": "Floral",
+    "source": "https://commons.wikimedia.org/wiki/File:Japanese_peony_pivoine_JdP.jpg",
+    "license": "CC0",
+    "hash": "a6636e189bbcd5bc23f5e50d8a8e8c5926ab126745468c5934e7077e3136fff6"
+  },
+  "commons18809105": {
+    "label": "Bujori 18809105",
+    "category": "Floral",
+    "source": "https://commons.wikimedia.org/wiki/File:Nomura_Katsumori_-_Tsuba_with_a_Peony_Blossom_-_Walters_51167.jpg",
+    "license": "Public domain",
+    "hash": "a45b9ee143354e13e02ecd853b3e02eba8fb549c8563a884b99b97c1bf77ec26"
+  },
+  "commons16195125": {
+    "label": "Bujori 16195125",
+    "category": "Floral",
+    "source": "https://commons.wikimedia.org/wiki/File:Peony_2.jpg",
+    "license": "CC0",
+    "hash": "861039b4ce6ce37ce84cf967954dd4d65d031c417151917ba004ba806c105bae"
+  },
+  "commons165290533": {
+    "label": "Bujori 165290533",
+    "category": "Floral",
+    "source": "https://commons.wikimedia.org/wiki/File:Peony_bud_and_ants.jpg",
+    "license": "CC0",
+    "hash": "9723ab4ae190f75b8461580a4b0479a7e1446178d0c46347bc17464e86123b0a"
+  },
+  "commons84650412": {
+    "label": "Bujori 84650412",
+    "category": "Floral",
+    "source": "https://commons.wikimedia.org/wiki/File:Peony_flowers_and_butterflies_Bloemen_en_vlinders,_RP-P-1967-30.jpg",
+    "license": "CC0",
+    "hash": "5b21b13ee1311d5345aa7e8dba949926f435ad66112943a09320d20106ccdb02"
+  },
+  "commons46746669": {
+    "label": "Verighete 46746669",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:After_the_ball_(NYPL_Hades-448586-1687304).jpg",
+    "license": "Public domain",
+    "hash": "bad6a56dc20558972aee30c9e001d78f454f8acb90c5e09608e0c2dac2083fe9"
+  },
+  "commons46746757": {
+    "label": "Verighete 46746757",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:After_the_ball_(NYPL_Hades-448586-1687305).jpg",
+    "license": "Public domain",
+    "hash": "795b3569af9aad62af1a06e388a6a45cba423d06b980aa099d025cfcd26f8446"
+  },
+  "commons46746826": {
+    "label": "Verighete 46746826",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:After_the_ball_(NYPL_Hades-448586-1687306).jpg",
+    "license": "Public domain",
+    "hash": "e5eca925821310a6e8036543626a4bef73282bde417a369d2776e8c8c8ecd87d"
+  },
+  "commons46746909": {
+    "label": "Verighete 46746909",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:After_the_ball_(NYPL_Hades-448586-1687307).jpg",
+    "license": "Public domain",
+    "hash": "4582e93ae5d9ac57dfe14dffb75dda64a44040f972b9fa22ebafd714f27816c2"
+  },
+  "commons48769958": {
+    "label": "Verighete 48769958",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:An_old_time_wedding_ring_(NYPL_Hades-1932195-1995111).jpg",
+    "license": "Public domain",
+    "hash": "28dbe112c48c368bf3eb0e3e6b25e92ea52ea9ae54a6f0962cda809ba2233641"
+  },
+  "commons48769994": {
+    "label": "Verighete 48769994",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:An_old_time_wedding_ring_(NYPL_Hades-1932195-1995112).jpg",
+    "license": "Public domain",
+    "hash": "b6ae71cddf453ab95fdca9f386235922fd35810c9aba524cfd67aa5e8b81f056"
+  },
+  "commons48702279": {
+    "label": "Verighete 48702279",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Little_plain_gold_ring_(NYPL_Hades-1929039-1990119).jpg",
+    "license": "Public domain",
+    "hash": "9a24fcfa27f0bfb8557c11aa3225367390b40d47fa70ce139844c66bfd5b1758"
+  },
+  "commons48702474": {
+    "label": "Verighete 48702474",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Little_plain_gold_ring_(NYPL_Hades-1929039-1990122).jpg",
+    "license": "Public domain",
+    "hash": "f7b56f6371ba8bcc78bb109ca7e7f74489667cf93b9d332c19b3920ac8f54c2f"
+  },
+  "commons48702527": {
+    "label": "Verighete 48702527",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Little_plain_gold_ring_(NYPL_Hades-1929039-1990123).jpg",
+    "license": "Public domain",
+    "hash": "1298cb1359690498f4edefd9ef98d65794354abf69d7a029a92307a5b8ab3cdc"
+  },
+  "commons48773161": {
+    "label": "Verighete 48773161",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Our_wedding_bells_will_ring_some_day_(NYPL_Hades-1932223-1995507).jpg",
+    "license": "Public domain",
+    "hash": "3d6de96a3ee0e3bbedf95d5b379207fe06aa4e9126d31bbb1a79c6dacc586226"
+  },
+  "commons48773222": {
+    "label": "Verighete 48773222",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Our_wedding_bells_will_ring_some_day_(NYPL_Hades-1932223-1995508).jpg",
+    "license": "Public domain",
+    "hash": "4609ac77b5d3512265d8b1da06357efa60b646bdbf6a1b5bcf214b3299d60085"
+  },
+  "commons48773275": {
+    "label": "Verighete 48773275",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Our_wedding_bells_will_ring_some_day_(NYPL_Hades-1932223-1995509).jpg",
+    "license": "Public domain",
+    "hash": "28f1767dd50579033f53dca289e957ed995da223abf0eb61c1fd58b737144ee4"
+  },
+  "commons48773374": {
+    "label": "Verighete 48773374",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Our_wedding_bells_will_ring_some_day_(NYPL_Hades-1932223-1995510).jpg",
+    "license": "Public domain",
+    "hash": "50a94d9331493746968fc6f6c47a24c2dd30445147f8333afaebfbd158db899c"
+  },
+  "commons36557489": {
+    "label": "Verighete 36557489",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Prstan_z_zelenim_kamnom_iz_leta_1840,_drugi_prstan_pa_je_iz_leta_1876_kot_poro%C4%8Dni_prstan,_Malo_Lipje_1957.jpg",
+    "license": "Public domain",
+    "hash": "fc235e52fa2fe1d9adac68bf591f8edef0ed70cbd1fa5024c2ea2393ec7282d7"
+  },
+  "commons36579308": {
+    "label": "Verighete 36579308",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Prstan_z_zelenim_kamnom_iz_leta_1840,_drugi_prstan_pa_je_iz_leta_1876_kot_poro%C4%8Dni_prstan,_Malo_Lipje_1957_(2).jpg",
+    "license": "Public domain",
+    "hash": "9fc875ba7c72a66d24c9f4e40be639c1517c40157a06c4eb99bce5228d27acc4"
+  },
+  "commons47209892": {
+    "label": "Buchet 47209892",
+    "category": "Floral",
+    "source": "https://commons.wikimedia.org/wiki/File:Bouquet_Ukraine_2005_G1.jpg",
+    "license": "Public domain",
+    "hash": "76280eb4f38fe99168bc57d655c956df34aac6ded4c2dbee4decc0a2d1521b47"
+  },
+  "commons33147043": {
+    "label": "Lumânări 33147043",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:A_vanitas_still_life.jpg",
+    "license": "Public domain",
+    "hash": "abee0e43abf87f1714f9ba1f2021b471d251265175c922ddff07c0e9eb872aff"
+  },
+  "commons21988696": {
+    "label": "Lumânări 21988696",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Albert_Lebourg_(French_-_Still_Life_with_Candle_-_Google_Art_Project.jpg",
+    "license": "Public domain",
+    "hash": "a9a5e4e8f04b70d8477a07838f175c03c2a967e182c6c1a9631f6d0fe27ffc85"
+  },
+  "commons24916243": {
+    "label": "Lumânări 24916243",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Alter_candles.jpg",
+    "license": "Public domain",
+    "hash": "4df3678f036d2b0a1776a3cc6a48594cc74eda3d6bf09092c8ee064adeed18ed"
+  },
+  "commons52682069": {
+    "label": "Lumânări 52682069",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Anonymous_painter_from_the_northern_Netherlands_-_A_still_life_of_a_pewter-mounted_stoneware_jug,_an_overturned_roemer.jpg",
+    "license": "Public domain",
+    "hash": "a74d8fb3756aa4f451585a56d4107d4bb12403cf9ccf536e931be37a6970430d"
+  },
+  "commons104082843": {
+    "label": "Lumânări 104082843",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Arthur_Segal_-_Stilleben_mit_Leuchter.jpg",
+    "license": "Public domain",
+    "hash": "f8a6a9d010096d58d6f3ab72a2b0f88dad1e3963340742ee33c1743750f67b2f"
+  },
+  "commons19938837": {
+    "label": "Lumânări 19938837",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Bartolomeo_Bettera_-_A_still_life_of_musical_instruments.jpg",
+    "license": "Public domain",
+    "hash": "d9888872787a02310218d6180d51c17c9bbdd357f2bc2fc22ad5ddb320e35007"
+  },
+  "commons7519328": {
+    "label": "Lumânări 7519328",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Baugin_Lubin,_Still-Life_with_Candle.jpg",
+    "license": "Public domain",
+    "hash": "61a649f1dd95effe59a952160289880030371e5e40e901e9a40064e64fe14875"
+  },
+  "commons1015145": {
+    "label": "Lumânări 1015145",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Book-rose-and-candle-on-teak.jpg",
+    "license": "Public domain",
+    "hash": "7d7dc163ab0f0934871c724246ba7dd9572a0079b540740e1d0c20acc59d2a6f"
+  },
+  "commons109557348": {
+    "label": "Lumânări 109557348",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Carel_Fonteyn_(Attr._to)_-_Vanitas_still_life_with_skull,_playing_cards,_candle_and_flowers.jpg",
+    "license": "Public domain",
+    "hash": "91904a978b10f740c8bdeba7c3e0200c839826cd31c70b3025a4acd4678d3de6"
+  },
+  "commons119312655": {
+    "label": "Lumânări 119312655",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Gerrit_van_Vucht_-_Still_Life_with_a_Skull_and_Books_ASH_ASHM_WA1940_2_77.jpg",
+    "license": "Public domain",
+    "hash": "138e4be62970ae7a0ae07572ab85a5cf57f697af40be4910cdbcf3b39adc8031"
+  },
+  "commons62811979": {
+    "label": "Lumânări 62811979",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Heemskerck_Still_life_with_jug_and_candle_(detail)_01.jpg",
+    "license": "Public domain",
+    "hash": "ed17aa6fac91b1fbb475deb28e661969cbb28fe6a595f05bcbdda0ce837da314"
+  },
+  "commons62811991": {
+    "label": "Lumânări 62811991",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Heemskerck_Still_life_with_jug_and_candle_01.jpg",
+    "license": "CC0",
+    "hash": "e1e28300975b7d578bbf4e800194f258b8c60d3e2b3fc70953d2c8811c4e3ba0"
+  },
+  "commons64143044": {
+    "label": "Lumânări 64143044",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Hendrick_Andriessen_-_Smokers%27_still_life_with_a_candle_and_a_comet_glass.JPG",
+    "license": "Public domain",
+    "hash": "d3e9802bba4a32ca0c064fa66d46fa98e262a5af8cd853b766982804d1ace42e"
+  },
+  "commons133464318": {
+    "label": "Aranjament de masă 133464318",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Eisenhower_Christmas_Dinner_Table_Setting_(74008404-5232-4670-94e2-3fd902842538).jpg",
+    "license": "Public domain",
+    "hash": "2bed9063cfd71894c2745bd610656cd408ad9d1c14b85d8f23935d009faea5b2"
+  },
+  "commons59810286": {
+    "label": "Aranjament de masă 59810286",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:England%27s_newest_way_in_all_sorts_of_cookery,_pastry,_and_all_pickles_that_are_fit_to_be_used_Fleuron_T091231-7.png",
+    "license": "Public domain",
+    "hash": "2b402796ac6a20cc8f023924aa95acaf9f49d600590800f7b0cac1731b818c53"
+  },
+  "commons156866429": {
+    "label": "Aranjament de masă 156866429",
+    "category": "Elegant",
+    "source": "https://commons.wikimedia.org/wiki/File:Milan_Petrovits_-_76148fc895.jpg",
+    "license": "Public domain",
+    "hash": "183d1ff41e3ce53a383848f60c508174309ee1cf59dccc744884b8382bcc51b2"
+  },
+  "commons140220001": {
+    "label": "Grădină 140220001",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Annie_L._Pressland_Delphiniums_Cambridge_Cottage_garden_at_Kew_Gardens_J_Salmon_postcard.jpg",
+    "license": "Public domain",
+    "hash": "d131565e6e05ce58ca44cf38da0aee36aed5f544ebe2ce2c251d2052ae2efe33"
+  },
+  "commons140043276": {
+    "label": "Grădină 140043276",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Annie_L._Pressland_Old_Mill_House_Wannock_New_Gardens_with_flower_borders_in_bloom.jpg",
+    "license": "Public domain",
+    "hash": "197bd9a82c76abd044855c94d331f831cb5842670a8d4e3592a2e92a705f315e"
+  },
+  "commons140525957": {
+    "label": "Grădină 140525957",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Annie_L._Pressland_Rose_and_Lily_Garden_with_path_lawn_borders_bird_bath_and_house_J_Salmon_postcard.jpg",
+    "license": "Public domain",
+    "hash": "2ba9875e906043b2e9999b5476164b9e48ac733d4f0fa8aacc9dd95a88f5f3fa"
+  },
+  "commons140525958": {
+    "label": "Grădină 140525958",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Annie_L._Pressland_St_Botolph%27s_Sevenoaks_Garden_with_path_and_flower_borders_J_Salmon_postcard.jpg",
+    "license": "Public domain",
+    "hash": "3d3bd3a69aae8595205769368c34bf85a701e331ddce15bfb034f9c566aa049a"
+  },
+  "commons140525963": {
+    "label": "Grădină 140525963",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Annie_L._Pressland_St_Botolph%27s_Sevenoaks_Garden_with_path_lawn_birdbath_sundial_and_flower_borders_J_Salmon_postcard.jpg",
+    "license": "Public domain",
+    "hash": "8ab5e5302d92b7086e0d0f677c6bda8f9a33e5232a32405fc3d8c412ab43e699"
+  },
+  "commons140043277": {
+    "label": "Grădină 140043277",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Annie_L._Pressland_The_New_Gardens_with_view_of_The_Downs_with_flower_borders_in_bloom.jpg",
+    "license": "Public domain",
+    "hash": "d001d05cc22700222cd5e28606c01ec105e9499c6360f4cc7eebed3a80e9ba69"
+  },
+  "commons96915605": {
+    "label": "Flori de cireș 96915605",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:A_view_of_the_Washington_Monument_through_the_branches_of_a_cherry_tree_in_blossom_-_DPLA_-_15652f7b35da0cbe71c2b27fd0f6fa55.jpeg",
+    "license": "Public domain",
+    "hash": "57d952619aa1bab07fc2a3aec1ba064162d2edfe6785c36a144fb8a6e1417361"
+  },
+  "commons18836545": {
+    "label": "Flori de cireș 18836545",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Ando_Cloisonn%C3%A9_Company_-_Vase_with_Flowering_Cherry_and_Birds_-_Walters_44708_-_Back.jpg",
+    "license": "Public domain",
+    "hash": "7aa673aa84fba4a5b44de80dbd44f4258ed50033c983d4e2f1db42b5057c0737"
+  },
+  "commons61810028": {
+    "label": "Flori de cireș 61810028",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Cherry-blossom-branch_(Unsplash).jpg",
+    "license": "CC0",
+    "hash": "d5a62750e623b3b77266954dcc6836ddb447d77d24fedb8193d21b6692afb1e4"
+  },
+  "commons71361151": {
+    "label": "Flori de cireș 71361151",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Cherry_Blossoms_(240707721).jpeg",
+    "license": "CC0",
+    "hash": "22e716341321a9093348083b3b95591207bdf10e2892670122be8da2b93b1b20"
+  },
+  "commons58376597": {
+    "label": "Flori de cireș 58376597",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Cherry_blossom_buds_1.jpg",
+    "license": "Public domain",
+    "hash": "a2e23da1ecc5b3dd52488cb31944bdce0cbcf6eba0d0f78a6fcfca7e4e4867ee"
+  },
+  "commons58376601": {
+    "label": "Flori de cireș 58376601",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Cherry_blossom_buds_3.jpg",
+    "license": "Public domain",
+    "hash": "b9b8b30930909c39c84417d3ee9e234db566a9f85099637e0dff3c4c77fb844c"
+  },
+  "commons58376602": {
+    "label": "Flori de cireș 58376602",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Cherry_blossom_buds_4.jpg",
+    "license": "Public domain",
+    "hash": "e07602cc387740b9158281d9d7eb7420207d1038a0961f4bf6520d33a5a0cbde"
+  },
+  "commons58376599": {
+    "label": "Flori de cireș 58376599",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Cherry_blossom_buds_4_-_cropped.jpg",
+    "license": "Public domain",
+    "hash": "2e9cc2b97fd82049d2828538a72ede14624fd59f1b1ec376c50a5ca8294eefda"
+  },
+  "commons129660525": {
+    "label": "Flori de cireș 129660525",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Cherry_blossoms_(Prunus_x_yedoensis_%27Awanui%27)_on_branch_in_front_of_tree_starting_to_flower_in_Aston_Norwood_Gardens.jpg",
+    "license": "Public domain",
+    "hash": "301e0d5fdf12382eb9f804aa6fc3acac85dcf3930cebd1e415255f04af7923aa"
+  },
+  "commons129660475": {
+    "label": "Flori de cireș 129660475",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Cherry_blossoms_on_branches_overhanging_pond_in_Aston_Norwood_Gardens.jpg",
+    "license": "Public domain",
+    "hash": "d012de9872265a360d7ec9f15bc59f4f1034763df93ce2c6710aa51ece084aa7"
+  },
+  "commons34113187": {
+    "label": "Apus 34113187",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Abendlandschaft.JPG",
+    "license": "Public domain",
+    "hash": "dc9d2cce392cca31b134622bb8b1656740f33d0b24462fb0c244876409ad590d"
+  },
+  "commons164933788": {
+    "label": "Apus 164933788",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Aert_van_der_Neer_(1603-1677)_-_Winter_Landscape_at_Sunset_-_L.F15.1981.0.0_-_Leicester_Museum_%5E_Art_Gallery.jpg",
+    "license": "Public domain",
+    "hash": "6fa497b95199c6bb5edec2f2c181e24d3805ac38efa311a4959f87a7747deca4"
+  },
+  "commons32176387": {
+    "label": "Apus 32176387",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Backlit_Margarita_Island_Sunset_in_Las_Guevaras,_Venezuela_CaptureNX2.jpg",
+    "license": "CC0",
+    "hash": "7b92096adce192da8467f4ea655f4adbbe5babaac924b7939c01cf6748299740"
+  },
+  "commons91903681": {
+    "label": "Apus 91903681",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Claude-Joseph_Vernet_(1714-1789)_-_A_Landscape_at_Sunset_with_Fishermen_returning_with_their_Catch_-_NG6600_-_National_Gallery.jpg",
+    "license": "Public domain",
+    "hash": "88639109005ac5aef4350c438858df08a4875b16677a4dc8874cd37899f0db1f"
+  },
+  "commons77745645": {
+    "label": "Apus 77745645",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:George_Inness_-_Sunset_Landscape,_Medfield_-_1990.160_-_Museum_of_Fine_Arts.jpg",
+    "license": "Public domain",
+    "hash": "28bc0031f38134568b823459cd124ecb38253d1fbb768326f9e7626338ef8ddb"
+  },
+  "commons202226521": {
+    "label": "Apus 202226521",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Gustaf_Fj%C3%A6stad_-_Winter_landscape_with_sunset_1895.jpg",
+    "license": "Public domain",
+    "hash": "3ae7fdbdb5bdb09560bdeeac96479e59ead6da5cad449f628b7aa7a6e367e726"
+  },
+  "commons142135337": {
+    "label": "Apus 142135337",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Julian_Onderdonk_-_Sunset_landscape.jpg",
+    "license": "Public domain",
+    "hash": "b21f701175578962c9c3f0ea94a40658d20a86064b6ca6c8ae3d0e8d10ac3468"
+  },
+  "commons129511557": {
+    "label": "Apus 129511557",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Landscape,_Sunset_1907_10.jpeg",
+    "license": "Public domain",
+    "hash": "cd7074913250c8e673834b50fce2c416f29b594667a864120d80e64d732173ea"
+  },
+  "commons57671006": {
+    "label": "Apus 57671006",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Landscape_at_Sunset_MET_DP146446.jpg",
+    "license": "CC0",
+    "hash": "39df9f31db8449611c0db5e2e2ff17640f675ddb84f7f562a8046675bfc89520"
+  },
+  "commons57257113": {
+    "label": "Apus 57257113",
+    "category": "Natură",
+    "source": "https://commons.wikimedia.org/wiki/File:Landscape_at_Sunset_with_Fishermen_Returning_with_Their_Catch_by_Joseph_Vernet.JPG",
+    "license": "Public domain",
+    "hash": "09a2c8881338082bb3e41016239b91b75370a768a323b574ca39ac0c1752bfc8"
+  },
+  "commons95074290": {
+    "label": "Pantofiori 95074290",
+    "category": "Botez",
+    "source": "https://commons.wikimedia.org/wiki/File:Franklin_Park_Murder_in_The_Daily_News-Times_of_New_Brunswick,_New_Jersey_on_1_March_1894.jpg",
+    "license": "Public domain",
+    "hash": "2b532bcbf430733e79c1d0c77c31b6df9b0682ab5af95624ef7f4339b092535f"
+  },
+  "commons164276568": {
+    "label": "Ursuleț 164276568",
+    "category": "Botez",
+    "source": "https://commons.wikimedia.org/wiki/File:Big_Bear_Riding_Toy_--_1921_(53393498558).jpg",
+    "license": "CC0",
+    "hash": "4bf4725371060292a4df946f40fefc5be904042c089327c061309b5f6bda1207"
+  },
+  "commons82128602": {
+    "label": "Ursuleț 82128602",
+    "category": "Botez",
+    "source": "https://commons.wikimedia.org/wiki/File:Pearl_Torell,_Toy_Bank_-_%22Teddy_and_the_Bear%22,_1935-1942,_NGA_20653.jpg",
+    "license": "CC0",
+    "hash": "553b7c2cd2ff1c45b3bf222a6bfe09c187a4099f8b2ec433d7ffd365bb7a8680"
+  },
+  "commons3203004": {
+    "label": "Ursuleț 3203004",
+    "category": "Botez",
+    "source": "https://commons.wikimedia.org/wiki/File:Soft_toy_bear_and_seal.JPG",
+    "license": "Public domain",
+    "hash": "9c1c01ed9f13b117eb735e0daffc0a60fef69d0514da341f1050c5caea26e331"
+  },
+  "commons158204046": {
+    "label": "Ursuleț 158204046",
+    "category": "Botez",
+    "source": "https://commons.wikimedia.org/wiki/File:Steiff_Company_Teddy_Bear_with_Blue_Overalls_-_DPLA_-_dc1d6ce26aa057b33cf68fd4c027088c_(page_3).jpg",
+    "license": "Public domain",
+    "hash": "6ff146daa399a95b007bbc8ed88e6ca63073687e29e53ce5a689c61692ccb867"
+  },
+  "commons194847431": {
+    "label": "Cer înstelat 194847431",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:A_bright_atmospheric_glow_and_a_starry_night_sky_above_Earth_(iss074e0759993).jpg",
+    "license": "Public domain",
+    "hash": "de56e61bb5c14e163c25ac07d832fb2e3d4e76e459a55d0f137c255e376a3a32"
+  },
+  "commons191420707": {
+    "label": "Cer înstelat 191420707",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:A_bright_orange_airglow_outlines_Earth%E2%80%99s_horizon_beneath_the_starry_expanse_of_the_night_sky_(iss074e0531901).jpg",
+    "license": "Public domain",
+    "hash": "826397bd290297c26205b197aaa8e607c1381d93b240acc5ef65c988a874d3a1"
+  },
+  "commons162400671": {
+    "label": "Cer înstelat 162400671",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:Big_Meadows_Starry_Sky_(51834372833).jpg",
+    "license": "Public domain",
+    "hash": "a42ea2ecb54f4f419818d2c0f49c319a0cf0c8ab7601d0fa73f38a1d20291e66"
+  },
+  "commons161443493": {
+    "label": "Cer înstelat 161443493",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:Elmer_Tree_Under_Starry_Sky_(53433012217).jpg",
+    "license": "Public domain",
+    "hash": "7e76964e9f542dd2aade427882a846a6fc2384fdcf63affe815b4bbd167c75de"
+  },
+  "commons202006509": {
+    "label": "Cer înstelat 202006509",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:Gustaf_Fj%C3%A6stad_-_Under_the_starry_sky,_moose_in_winter_landscape_1929.jpg",
+    "license": "Public domain",
+    "hash": "c7bc387eeac56bebeb1d15ef306ed8d4220d0504c69eee047101a8ff278b4b49"
+  },
+  "commons109027435": {
+    "label": "Cer înstelat 109027435",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:ISS-65_Starry_night_sky_over_southeastern_African_coast.jpg",
+    "license": "Public domain",
+    "hash": "0eb34ea3a0f451ef410c8f9e760b768e38eaa4a8fd03e83a7e8cef5a0619c3fc"
+  },
+  "commons110735609": {
+    "label": "Cer înstelat 110735609",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:Milky_Way_and_starry_night_sky_(26972689115).jpg",
+    "license": "Public domain",
+    "hash": "a49cce72a36d65708e0717ce86a4239591a201e63559c21c5576763e9a3d834c"
+  },
+  "commons182446438": {
+    "label": "Cer înstelat 182446438",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:Starry,_Starry_Night_(heic0811b).jpg",
+    "license": "Public domain",
+    "hash": "8657c0f52e011f5af017b79bb43f57d8b13aad994353f218d814d8cc96b477d4"
+  },
+  "commons90762907": {
+    "label": "Lună 90762907",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:20200309_Night_sky.jpg",
+    "license": "CC0",
+    "hash": "5259ebe97340ed368a7cd69ef311dbf2a21e34b28e7dad6f43881a6a8c24f4ef"
+  },
+  "commons177715528": {
+    "label": "Lună 177715528",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:Crescent_Moon_in_the_Night_Sky.jpg",
+    "license": "CC0",
+    "hash": "c83a6cc70f2c05b9a6a6f1305984253b6e85027f7c47741389c1b475c6f747d7"
+  },
+  "commons177406564": {
+    "label": "Lună 177406564",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:Full_moon_in_a_hazy_night_sky_with_palm_tree.jpg",
+    "license": "CC0",
+    "hash": "57d58fbc790e2e777d37d4b7c1ee27b562f9f8d8242aea884a98b2112adcc6ee"
+  },
+  "commons81657736": {
+    "label": "Lună 81657736",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:Full_moon_on_night_sky.jpg",
+    "license": "CC0",
+    "hash": "29893f5f6c33691a70943e1546e1c906e3451f24ffdf75bf8d2214fb4d7187b3"
+  },
+  "commons165954905": {
+    "label": "Lună 165954905",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:Glacier_Bay_Entrance_Night_Sky_with_Aurora_and_Moon_(53943226099).jpg",
+    "license": "Public domain",
+    "hash": "6220539430f74c0a6a5878e473f5bd7bf4ea927fdd4716c0c89f07348d4b18f5"
+  },
+  "commons152715927": {
+    "label": "Lună 152715927",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:International_Observe_the_Moon_Night_2024_(SVS14676).jpg",
+    "license": "Public domain",
+    "hash": "d08069f015706f6e588f82411d7199452d1b7397c5b0cd493e6818b867faf317"
+  },
+  "commons194435095": {
+    "label": "Lună 194435095",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:Moon-sky_night.jpg",
+    "license": "CC0",
+    "hash": "a566efefc4163572997426230631e21bcf4f15b1025b44c437caa819548dfa6f"
+  },
+  "commons56992826": {
+    "label": "Lună 56992826",
+    "category": "Celestial",
+    "source": "https://commons.wikimedia.org/wiki/File:Moon_Painted_Night_Sky_(3018982190).jpg",
+    "license": "CC0",
+    "hash": "1c1a77a26b4c7ab7b65c7e4604dda009643acbd5afba451045c5003d5f22a2aa"
+  }
+}
