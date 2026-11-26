@@ -1,0 +1,3 @@
+export const weddingPhotoIds=[["qgCL-6QO1Ns","KjwadmwCMXs"],["pXYaQEgVfxE","vtsO9X23qtM"],["t4UqhwHDTi4","NkxtUVoQRnk"],["bMGG7FKSISg","S2X1-8XKmTs"],["cH3sw3ILU0U","qgCL-6QO1Ns"],["3nj-jsGwjVg","mE55CKaJAUo"],["KjwadmwCMXs","pXYaQEgVfxE"],["S2X1-8XKmTs","bMGG7FKSISg"],["vtsO9X23qtM","mE55CKaJAUo"],["qgCL-6QO1Ns","cH3sw3ILU0U"]];
+export const baptismPhotoIds=[["TT8oJU0j4dk","9BMvbnkwVZ0"],["8QIJdenxJPw","jjDqU0P0-SM"],["9BMvbnkwVZ0","TT8oJU0j4dk"],["bDlIr4OCqS0","8QIJdenxJPw"],["jjDqU0P0-SM","TT8oJU0j4dk"],["9BMvbnkwVZ0","8QIJdenxJPw"],["TT8oJU0j4dk","bDlIr4OCqS0"],["bDlIr4OCqS0","TT8oJU0j4dk"],["8QIJdenxJPw","9BMvbnkwVZ0"],["TT8oJU0j4dk","jjDqU0P0-SM"]];
+export const curatedIds=Array.from(new Set([...weddingPhotoIds,...baptismPhotoIds].flat()));
