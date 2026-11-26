@@ -1225,3 +1225,13 @@ html[data-wedly-theme=dark] .wedly-form-sheet,html[data-wedly-theme=dark] .wedly
 .wedly-luxury-dashboard .settings-detail-content>.panel{margin:0}
 @media(max-width:760px){.wedly-luxury-dashboard .settings-group-grid{grid-template-columns:minmax(0,1fr);gap:12px}.wedly-luxury-dashboard .settings-profile-card{padding:20px;gap:10px}.wedly-luxury-dashboard .settings-group-grid .settings-group{padding:16px}.wedly-luxury-dashboard .settings-tile{min-height:70px;padding:10px}.wedly-luxury-dashboard .settings-group header h2{font-size:22px}}
 @media(prefers-reduced-motion:reduce){.wedly-luxury-dashboard .settings-tile{transition:none}}
+
+/* Settings-linked routes keep the event workspace around their original content. */
+.settings-route-content{display:grid;gap:16px;min-width:0}
+.settings-route-content>.shell.narrow{width:100%;max-width:100%;margin:0;padding:0!important;box-sizing:border-box}
+.settings-route-content>.shell>.brand,.settings-route-content>.shell>.wedly-brand{display:none}
+.settings-route-content>.shell>.panel{margin-top:0!important}
+.settings-route-layout .side-nav a{display:flex;align-items:center;gap:10px}
+.settings-route-layout .side-nav a.active{background:var(--lux-soft);color:var(--lux-primary);border-radius:12px}
+.settings-route-fallback>.settings-back{display:inline-flex;margin:16px}
+.wedly-luxury-dashboard .settings-back{text-decoration:none;width:fit-content;margin-bottom:12px}
