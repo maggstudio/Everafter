@@ -1243,3 +1243,23 @@ html[data-wedly-theme=dark] .wedly-form-sheet,html[data-wedly-theme=dark] .wedly
 .events-sheet-content .two{grid-template-columns:minmax(0,1fr)}
 .events-sheet-content .event-delete-overlay{position:fixed;inset:0;z-index:5;overflow:auto}
 .wedly-form-sheet-body>.panel{margin:0}
+
+/* Event configuration: editorial introduction and logical field groups. */
+.setup-workspace{display:grid;gap:18px;max-width:1100px}
+.setup-intro{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 28px;border-radius:20px;background:linear-gradient(120deg,#502d4b,#38263f);color:#fff8ed}
+.setup-intro .eyebrow{color:#efd5ad}
+.setup-intro h2{font:400 clamp(26px,3vw,36px)/1.2 Georgia,serif;color:#fff8ed;margin:8px 0}
+.setup-intro p{color:#efdee8;margin:0;line-height:1.6}
+.setup-intro-icon{display:grid;place-items:center;width:58px;height:58px;border:1px solid #ffffff45;border-radius:50%;flex-shrink:0;color:#efd5ad}
+.setup-fields{display:grid;gap:16px;border:0;padding:0;margin:0;min-width:0}
+.setup-fields .setup-section{margin:0;padding:24px;min-width:0}
+.setup-section header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.setup-section header h2{font:400 24px/1.2 Georgia,serif;margin:0 0 5px}
+.setup-section header p{margin:0;font-size:.88rem;color:var(--lux-muted)}
+.setup-icon{display:grid;place-items:center;width:46px;height:46px;flex-shrink:0;border-radius:13px;background:var(--lux-soft,#f4ede3);color:var(--lux-primary,#502d4b)}
+.setup-section .two{gap:18px}
+.setup-section label{min-width:0}
+.setup-section input,.setup-section select{box-sizing:border-box;width:100%}
+.setup-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px 0}
+.setup-footer span{font-size:.85rem;color:var(--lux-muted)}
+@media(max-width:700px){.setup-intro{padding:20px}.setup-intro-icon{display:none}.setup-fields .setup-section{padding:16px}.setup-section .two{grid-template-columns:minmax(0,1fr);gap:14px}.setup-section header h2{font-size:22px}.setup-footer .button{width:100%}}
