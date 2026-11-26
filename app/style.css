@@ -1139,3 +1139,22 @@ html[data-wedly-theme=dark] .wedly-luxury-dashboard{--lux-primary:#b98fc1;--lux-
 @keyframes wedly-lux-pop{from{opacity:0;translate:0 -5px}to{opacity:1;translate:0 0}}
 @keyframes wedly-lux-fade{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){.wedly-luxury-dashboard :is(.side-nav button,.module-section-tabs button,.settings-hub-link,.overview-row,.notification-item,.global-search-results button,.overview-metric .progress span){transition:none}}
+
+/* Shared native form dialog: desktop drawer, mobile bottom sheet. */
+.wedly-form-sheet{position:fixed;inset:0 0 0 auto;margin:0;width:min(540px,100%);max-width:100%;height:100dvh;max-height:100dvh;padding:0;border:0;background:var(--lux-card,#fffdfa);color:var(--lux-ink,#30283a);box-shadow:-16px 0 64px #21152935;overflow:hidden}
+.wedly-form-sheet::backdrop{background:#21152970}
+.wedly-form-sheet .wedly-form-sheet-panel{display:flex;flex-direction:column;height:100%;box-sizing:border-box;margin:0!important;padding:0!important;border:0;border-radius:0!important;background:var(--lux-card,#fffdfa);overflow:hidden}
+.wedly-form-sheet-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:26px 24px 20px;border-bottom:1px solid var(--lux-border,#e8ded1);flex-shrink:0}
+.wedly-form-sheet-header small{font-size:.65rem;letter-spacing:.15em;color:var(--lux-accent,#9a7650);font-weight:700}
+.wedly-form-sheet-header h2{font:400 28px/1.2 Georgia,serif;margin:7px 0 0}
+.wedly-form-sheet-close{display:grid;place-items:center;width:44px;height:44px;flex-shrink:0;border:1px solid var(--lux-border,#e8ded1);border-radius:50%;background:var(--lux-soft,#f4ede3);color:inherit;font-size:26px;cursor:pointer}
+.wedly-form-sheet-body{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:24px;box-sizing:border-box}
+.wedly-form-sheet-body form{display:grid;gap:18px;margin:0}
+.wedly-form-sheet-body form .two{gap:16px}
+.wedly-form-sheet-body form label{min-width:0}
+.wedly-form-sheet-body form :is(input:not([type=checkbox]):not([type=radio]),select,textarea){max-width:100%;box-sizing:border-box}
+.wedly-form-sheet-body form .row-controls{display:flex;flex-wrap:wrap;gap:10px}
+html[data-wedly-theme=dark] .wedly-form-sheet,html[data-wedly-theme=dark] .wedly-form-sheet .wedly-form-sheet-panel{background:#2c2434;color:#f1e8f4}
+@media(max-width:700px){.wedly-form-sheet{inset:auto 0 0;width:100%;height:auto;max-height:92dvh;border-radius:24px 24px 0 0}.wedly-form-sheet .wedly-form-sheet-panel{height:auto;max-height:92dvh}.wedly-form-sheet-header{padding:20px 18px 14px}.wedly-form-sheet-header h2{font-size:24px}.wedly-form-sheet-body{padding:18px 18px calc(20px + env(safe-area-inset-bottom,0px))}.wedly-form-sheet-body form .two{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:no-preference){.wedly-form-sheet[open]{animation:wedly-drawer-in .2s ease-out}@keyframes wedly-drawer-in{from{transform:translateX(24px);opacity:.6}to{transform:translateX(0);opacity:1}}}
+@media(max-width:700px) and (prefers-reduced-motion:no-preference){.wedly-form-sheet[open]{animation:wedly-bottom-in .2s ease-out}@keyframes wedly-bottom-in{from{transform:translateY(24px);opacity:.6}to{transform:translateY(0);opacity:1}}}
