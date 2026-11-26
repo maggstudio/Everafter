@@ -1073,3 +1073,44 @@ html[data-wedly-theme=dark] .wedly-luxury-dashboard .side-nav button.active{back
 }
 @media(max-width:600px){.wedly-luxury-dashboard .overview-summary .overview-hero{min-height:190px;padding:22px 18px}.wedly-luxury-dashboard .overview-metrics{gap:10px}.wedly-luxury-dashboard .overview-summary button.overview-metric{padding:14px}.wedly-luxury-dashboard .overview-hero-date{max-width:34%}.wedly-luxury-dashboard .reception-tabs button{flex-basis:100px}}
 @media(prefers-reduced-motion:reduce){.wedly-luxury-dashboard .overview-summary button.overview-metric{transition:none}}
+
+/* Editorial workspace: module surfaces and controls. Invitation artwork excluded. */
+.wedly-luxury-dashboard{--lux-primary:#502d4b;--lux-on-primary:#fff8ed;--lux-muted:#746779;--lux-field:#fffefa}
+html[data-wedly-theme=dark] .wedly-luxury-dashboard{--lux-primary:#b98fc1;--lux-on-primary:#24192c;--lux-muted:#c7b8cc;--lux-field:#302638}
+.wedly-luxury-dashboard .main-area :is(.panel,.stats article,.settings-hub-link,.seating-table,.room-plan,.guest-table-scroll,.reception-occupancy article){border-color:var(--lux-border);border-radius:18px}
+.wedly-luxury-dashboard .main-area :is(.stats article,.settings-hub-link,.seating-table,.reception-occupancy article){background:var(--lux-card);color:var(--lux-ink)}
+.wedly-luxury-dashboard .main-area .panel:not(.overview-hero):not(:has(.invitation-preview))>h2,.wedly-luxury-dashboard .main-area .settings-hub> .panel>h2{font:400 clamp(21px,2.2vw,28px)/1.25 Georgia,serif;letter-spacing:-.02em}
+.wedly-luxury-dashboard .main-area .stats{gap:14px}
+.wedly-luxury-dashboard .main-area .stats article{padding:20px;box-shadow:0 4px 18px #35263e08}
+.wedly-luxury-dashboard .main-area .stats article strong{font-family:Georgia,serif;font-weight:400;font-size:clamp(20px,2.3vw,30px);overflow-wrap:anywhere}
+.wedly-luxury-dashboard .main-area .stats article :is(span,small){color:var(--lux-muted)}
+.wedly-luxury-dashboard .main-area .module-section-tabs{padding:6px;background:var(--lux-soft);border:1px solid var(--lux-border);border-radius:16px;gap:6px}
+.wedly-luxury-dashboard .main-area .module-section-tabs button{border:1px solid transparent;border-radius:11px;min-height:46px;flex:1 1 0;min-width:0;font-size:.9rem}
+.wedly-luxury-dashboard .main-area .module-section-tabs button[aria-pressed=true]{background:var(--lux-primary);color:var(--lux-on-primary);box-shadow:0 3px 10px #35263e18}
+.wedly-luxury-dashboard .main-area .module-section-tabs button[aria-pressed=false]{background:transparent;color:var(--lux-ink)}
+.wedly-luxury-dashboard .main-area .button:not(.secondary):not(.event-delete-danger):not([class*=danger]){border-radius:11px}
+.wedly-luxury-dashboard .main-area .button.secondary{border-color:var(--lux-border);border-radius:11px}
+.wedly-luxury-dashboard .main-area :is(.task-filters,.task-edit,.budget-form,.calendar-form,.guest-form,.invitation-editor,.poster-fields) label{line-height:1.5}
+.wedly-luxury-dashboard .main-area :is(.task-filters,.task-edit,.budget-form,.calendar-form,.guest-form,.invitation-editor,.poster-fields) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),select,textarea){background:var(--lux-field);color:var(--lux-ink);border:1px solid var(--lux-border);border-radius:11px;min-height:42px}
+.wedly-luxury-dashboard .main-area :is(.task-filters,.task-edit){background:var(--lux-soft);padding:16px;border:1px solid var(--lux-border);border-radius:14px}
+.wedly-luxury-dashboard .main-area .task-item:not(.task-late){padding:10px 12px;border-color:var(--lux-border)}
+.wedly-luxury-dashboard .main-area .budget-category .progress{height:9px}
+.wedly-luxury-dashboard .main-area .calendar-grid{gap:7px}
+.wedly-luxury-dashboard .main-area .calendar-day{border-radius:11px;border-color:var(--lux-border);background:var(--lux-card);color:var(--lux-ink)}
+.wedly-luxury-dashboard .main-area .calendar-day.is-today{border-color:var(--lux-accent)}
+.wedly-luxury-dashboard .main-area .calendar-day.is-selected{background:var(--lux-soft);outline:2px solid var(--lux-accent)}
+.wedly-luxury-dashboard .main-area .calendar-weekday{color:var(--lux-muted);font-weight:600}
+.wedly-luxury-dashboard .main-area .guest-data-table th{color:var(--lux-muted);background:var(--lux-soft);letter-spacing:.04em}
+.wedly-luxury-dashboard .main-area .guest-data-table td{border-color:var(--lux-border)}
+.wedly-luxury-dashboard .main-area .guest-data-table tbody tr:nth-child(even){background:var(--lux-card)}
+.wedly-luxury-dashboard .main-area .guest-data-table tbody tr:hover,.wedly-luxury-dashboard .main-area .guest-data-table tbody tr.guest-table-expanded{background:var(--lux-soft)}
+.wedly-luxury-dashboard .main-area .settings-hub-link{padding:20px;gap:5px;position:relative;padding-right:42px}
+.wedly-luxury-dashboard .main-area a.settings-hub-link:after{content:"›";position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:24px;color:var(--lux-accent)}
+.wedly-luxury-dashboard .main-area .settings-hub-link span{color:var(--lux-muted)}
+.wedly-luxury-dashboard .main-area .settings-hub-link:hover{border-color:var(--lux-accent);background:var(--lux-soft)}
+.wedly-luxury-dashboard .main-area .invitation-steps button{border-radius:12px;border-color:var(--lux-border)}
+.wedly-luxury-dashboard .main-area .invitation-steps button.active{background:var(--lux-soft);color:var(--lux-ink);border-color:var(--lux-accent)}
+.wedly-luxury-dashboard .main-area .reception-occupancy article{padding:18px}
+.wedly-luxury-dashboard .main-area .checkin-list article{border-color:var(--lux-border);border-radius:14px}
+@media(min-width:1025px){.wedly-luxury-dashboard .main-area .calendar-day{min-height:100px;padding:12px}.wedly-luxury-dashboard .main-area .guest-data-table :is(th,td){padding:16px 14px}.wedly-luxury-dashboard .main-area .settings-hub>.panel{padding:28px!important}.wedly-luxury-dashboard .main-area .settings-hub>.panel>div[style*="display: grid"]{gap:12px!important}}
+@media(max-width:600px){.wedly-luxury-dashboard .main-area .stats{gap:8px}.wedly-luxury-dashboard .main-area .stats article{padding:12px}.wedly-luxury-dashboard .main-area .module-section-tabs button{font-size:.75rem;padding:8px 4px;overflow-wrap:anywhere}.wedly-luxury-dashboard .main-area .calendar-grid{gap:3px}.wedly-luxury-dashboard .main-area .calendar-day{border-radius:7px}.wedly-luxury-dashboard .main-area .task-filters{padding:10px}.wedly-luxury-dashboard .main-area .settings-hub-link{padding:16px 36px 16px 16px}}
