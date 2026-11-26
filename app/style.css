@@ -1114,3 +1114,28 @@ html[data-wedly-theme=dark] .wedly-luxury-dashboard{--lux-primary:#b98fc1;--lux-
 .wedly-luxury-dashboard .main-area .checkin-list article{border-color:var(--lux-border);border-radius:14px}
 @media(min-width:1025px){.wedly-luxury-dashboard .main-area .calendar-day{min-height:100px;padding:12px}.wedly-luxury-dashboard .main-area .guest-data-table :is(th,td){padding:16px 14px}.wedly-luxury-dashboard .main-area .settings-hub>.panel{padding:28px!important}.wedly-luxury-dashboard .main-area .settings-hub>.panel>div[style*="display: grid"]{gap:12px!important}}
 @media(max-width:600px){.wedly-luxury-dashboard .main-area .stats{gap:8px}.wedly-luxury-dashboard .main-area .stats article{padding:12px}.wedly-luxury-dashboard .main-area .module-section-tabs button{font-size:.75rem;padding:8px 4px;overflow-wrap:anywhere}.wedly-luxury-dashboard .main-area .calendar-grid{gap:3px}.wedly-luxury-dashboard .main-area .calendar-day{border-radius:7px}.wedly-luxury-dashboard .main-area .task-filters{padding:10px}.wedly-luxury-dashboard .main-area .settings-hub-link{padding:16px 36px 16px 16px}}
+
+/* WEDLY — quiet interaction polish */
+.wedly-luxury-dashboard .lux-empty{display:flex;align-items:flex-start;gap:14px;padding:18px 14px;background:var(--lux-soft);border:1px solid var(--lux-border);border-radius:14px;margin-top:12px;color:var(--lux-ink)}
+.wedly-luxury-dashboard .lux-empty>svg{flex-shrink:0;color:var(--lux-accent);margin-top:3px}
+.wedly-luxury-dashboard .lux-empty strong{display:block;font-size:.92rem;margin-bottom:5px}
+.wedly-luxury-dashboard .lux-empty small{line-height:1.55;color:var(--lux-muted);opacity:1}
+.wedly-luxury-dashboard .lux-save-status{max-width:240px;white-space:normal;overflow-wrap:anywhere;background:var(--lux-soft);color:var(--lux-ink);border:1px solid var(--lux-border);padding:8px 13px}
+.wedly-luxury-dashboard :is(.notification-popover,.global-search-dialog,.event-delete-dialog){background:var(--lux-card);color:var(--lux-ink);border:1px solid var(--lux-border);border-radius:20px;box-shadow:0 20px 60px #21152940}
+.wedly-luxury-dashboard .notification-popover:before{border-color:var(--lux-border);border-width:1px}
+.wedly-luxury-dashboard .notification-popover header h2,.wedly-luxury-dashboard .global-search-dialog header h2{font:400 24px Georgia,serif}
+.wedly-luxury-dashboard .notification-item{border-radius:12px}
+.wedly-luxury-dashboard .notification-item.unread,.wedly-luxury-dashboard .global-search-results button{background:var(--lux-soft);border-color:var(--lux-border);color:var(--lux-ink)}
+.wedly-luxury-dashboard .global-search-results button:hover{border-color:var(--lux-accent)}
+.wedly-luxury-dashboard :is(.side-nav button,.module-section-tabs button,.settings-hub-link,.overview-row,.notification-item,.global-search-results button){transition:background-color .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease}
+.wedly-luxury-dashboard .overview-row:hover{background:var(--lux-soft);border-radius:8px}
+.wedly-luxury-dashboard :is(button,a,input,select,textarea):focus-visible{outline:2px solid var(--lux-accent);outline-offset:3px}
+.wedly-luxury-dashboard .overview-metric .progress span{transition:width .25s ease}
+@media(prefers-reduced-motion:no-preference){
+.wedly-luxury-dashboard .notification-popover{animation:wedly-lux-pop .16s ease-out}
+.wedly-luxury-dashboard .global-search-dialog{animation:wedly-lux-fade .16s ease-out}
+.wedly-luxury-dashboard :is(.module-section-tabs button,.overview-metric):active:not(:disabled){transform:scale(.985)}
+}
+@keyframes wedly-lux-pop{from{opacity:0;translate:0 -5px}to{opacity:1;translate:0 0}}
+@keyframes wedly-lux-fade{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.wedly-luxury-dashboard :is(.side-nav button,.module-section-tabs button,.settings-hub-link,.overview-row,.notification-item,.global-search-results button,.overview-metric .progress span){transition:none}}
