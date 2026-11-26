@@ -1,0 +1,24 @@
+name: Expand invitation photo library
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/expand-invitation-photos.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install Pillow opencv-python-headless
+      - run: python scripts/import-invitation-photos.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/invitation-photos lib/imported-invitation-photos.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Import additional public domain invitation photos"
+          git pull --rebase origin main
+          git push origin HEAD:main
