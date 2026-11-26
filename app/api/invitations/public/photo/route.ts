@@ -9,7 +9,8 @@ export async function GET(req:NextRequest){
  const headers={'Cache-Control':'private, no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'};
  if((params.get('token')||'').length>512||(params.get('invite')||'').length>65536)return new NextResponse(null,{status:400,headers});
  const details=params.get('invite')?verifyPublicInvitation(params.get('invite')||'',params.get('token')||''):await liveInvitation(params.get('token')||'');
- const requested=params.get('kind')==='background'?details?.backgroundPhotoPath:details?.photoPath;
+ const asset=params.get('asset');const live=asset?await liveInvitation(params.get('token')||''):null;
+ const requested=asset?(live?.studio?.blocks.some(b=>!b.hidden&&b.photos?.includes(asset))?asset:undefined):params.get('kind')==='background'?details?.backgroundPhotoPath:details?.photoPath;
  if(!requested||!/^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(jpg|png|webp)$/i.test(requested))return new NextResponse(null,{status:404,headers});
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY,anon=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY||process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
  if(!url||!anon)return new NextResponse(null,{status:503,headers});
