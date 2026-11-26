@@ -3,7 +3,7 @@ import FormModal from '../components/FormModal';
 import {useEffect,useState} from 'react';
 import {useStore} from '../../lib/store';
 import RsvpPanel from './RsvpPanel';
-import GiftCountingPanel from './GiftCountingPanel';
+
 import {useRsvpSync} from './useRsvpSync';
 import type {Guest} from '../../lib/demo';
 
@@ -27,7 +27,7 @@ export default function GuestsPanel({quickAdd=0}:{quickAdd?:number}){
  const [sort,setSort]=useState('name');
  const [showFilters,setShowFilters]=useState(false);
  const [showTools,setShowTools]=useState(false);
- const [showGifts,setShowGifts]=useState(false);
+
  const [printOrder,setPrintOrder]=useState<'alphabetical'|'seating'>('alphabetical');
  if(!can('guests','read'))return <section className="panel"><p>Nu ai acces la invitați.</p></section>;
  const writable=can('guests','write');
@@ -47,7 +47,7 @@ export default function GuestsPanel({quickAdd=0}:{quickAdd?:number}){
  setData(d=>({...d,guests:editing?d.guests.map(g=>g.id===editing?next:g):[...d.guests,next]}));reset();
  };
  return <><section className="panel"><div className="guest-page-title"><div><h2>Invitați</h2></div><div className="row-controls">{writable&&<button type="button" className="button" onClick={()=>{reset();setShowForm(true)}}>+ Adaugă invitat</button>}</div></div>{rsvpError&&<p role="status">{rsvpError}</p>}
- <div style={{display:"flex",gap:8,flexWrap:"wrap",margin:"8px 0"}}><button type="button" className="button secondary" aria-expanded={showTools} onClick={()=>setShowTools(v=>!v)}>Instrumente</button><button type="button" className="button secondary" aria-expanded={showFilters} onClick={()=>setShowFilters(v=>!v)}>Filtre{statusFilter!=="all"||groupFilter!=="all"?" •":""}</button></div>{showTools&&<><p className="hint">Introdu numai date necesare, informează invitații când este necesar și evită datele sensibile în note.</p><div className="gift-module-toggle"><button type="button" className="button secondary" aria-expanded={showGifts} onClick={()=>setShowGifts(v=>!v)}>{showGifts?'Închide numărarea darului':'💶 Numărarea darului (lei / euro)'}</button></div>{showGifts&&<GiftCountingPanel/>}</>}
+ <div style={{display:"flex",gap:8,flexWrap:"wrap",margin:"8px 0"}}><button type="button" className="button secondary" aria-expanded={showTools} onClick={()=>setShowTools(v=>!v)}>Instrumente</button><button type="button" className="button secondary" aria-expanded={showFilters} onClick={()=>setShowFilters(v=>!v)}>Filtre{statusFilter!=="all"||groupFilter!=="all"?" •":""}</button></div>{showTools&&<><p className="hint">Introdu numai date necesare, informează invitații când este necesar și evită datele sensibile în note.</p></>}
  <div style={{display:"grid",gridTemplateColumns:"repeat(4,minmax(0,1fr))",gap:4,margin:"12px 0",textAlign:"center"}}>{[["Grupuri",guests.length],["Persoane",totalPeople],["Confirmați",confirmedPeople],["Așteptare",pendingPeople]].map(([label,n])=><div key={label} style={{padding:"8px 2px",border:"1px solid var(--border, #aaa5)",borderRadius:9}}><strong style={{display:"block",fontSize:19}}>{n}</strong><small style={{fontSize:10}}>{label}</small></div>)}</div>
  <input aria-label="Caută invitați" placeholder="Caută nume sau telefon" value={search} onChange={e=>setSearch(e.target.value)} style={{width:"100%"}}/>{showFilters&&<div className="task-filters"><label>Status<select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}><option value="all">Toate</option>{Object.entries(statusLabels).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label><label>Grup<select value={groupFilter} onChange={e=>setGroupFilter(e.target.value)}><option value="all">Toate grupurile</option>{groups.map(g=><option key={g}>{g}</option>)}</select></label><label>Sortare<select value={sort} onChange={e=>setSort(e.target.value)}><option value="name">Nume</option><option value="size">Număr persoane</option><option value="status">Status</option></select></label><button type="button" className="text-button" onClick={()=>{setStatusFilter("all");setGroupFilter("all");setSort("name")}}>Resetează filtrele</button></div>}
  {showTools&&<div className="guest-print-toolbar"><label>Listă pentru imprimare<select value={printOrder} onChange={e=>setPrintOrder(e.target.value as 'alphabetical'|'seating')}><option value="alphabetical">Ordine alfabetică</option><option value="seating">Ordinea meselor</option></select></label><button type="button" className="button secondary" disabled={guests.length===0} onClick={printList}>Printează / Salvează PDF</button><small className="hint">Se exportă lista completă, indiferent de filtre. În fereastra de imprimare poți alege „Salvare ca PDF”.</small></div>}
