@@ -1286,3 +1286,5 @@ html[data-wedly-theme=dark] .wedly-form-sheet,html[data-wedly-theme=dark] .wedly
 .admin-workspace>[hidden]{display:none!important}
 .admin-workspace>div:not([hidden])>.panel{margin-bottom:16px}
 @media(max-width:700px){.clean-section{padding:16px}.clean-section h2{font-size:21px}.admin-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px}.admin-tabs button{flex-shrink:0}.admin-intro{flex-wrap:wrap}}
+
+.wedly-reset-filters{display:inline-flex;align-items:center;gap:6px;justify-self:start;align-self:center;min-height:36px;padding:6px 10px;border:0;background:transparent;color:var(--lux-muted,inherit);font:inherit;font-size:.8rem;cursor:pointer;border-radius:8px;text-decoration:underline;text-underline-offset:3px}.wedly-reset-filters:hover{background:var(--lux-soft,#eee);color:var(--lux-primary,#502d4b)}
