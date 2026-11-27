@@ -3,7 +3,7 @@ from PIL import Image,ImageOps,ImageStat
 root=pathlib.Path('public/invitation-photos')
 manifest=pathlib.Path('lib/imported-invitation-photos.json')
 data=json.loads(manifest.read_text())
-ids=[37458574,34360453,16929058,15125475,8674225,8146869,14505984,8335103,34615201,17492042]
+ids=[33136449,35629338,31217382,35629351,37710444,14703685,11433914,32799679,33136448,35538634]
 for id in ids:
  key='pexels'+str(id)
  file=root/(key+'.webp')
@@ -15,5 +15,5 @@ for id in ids:
  img.thumbnail((1800,1800))
  img.save(file,'WEBP',quality=84,method=6)
  stat=ImageStat.Stat(img.resize((64,64)))
- data[key]={'label':'Interior biserică '+str(id),'category':'Elegant','source':f'https://www.pexels.com/photo/{id}/','license':'Pexels License https://www.pexels.com/license/','hash':hashlib.sha256(file.read_bytes()).hexdigest(),'meanRGB':[round(x) for x in stat.mean],'size':list(img.size)}
+ data[key]={'label':'Decor ceremonie '+str(id),'category':'Elegant','source':f'https://www.pexels.com/photo/{id}/','license':'Pexels License https://www.pexels.com/license/','hash':hashlib.sha256(file.read_bytes()).hexdigest(),'meanRGB':[round(x) for x in stat.mean],'size':list(img.size)}
 manifest.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
