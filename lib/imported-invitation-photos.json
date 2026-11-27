@@ -776,5 +776,165 @@
       1202,
       1800
     ]
+  },
+  "pexels37458574": {
+    "label": "Interior biserică 37458574",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/37458574/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "5c3200672e074b3432b58b7ce95def93b66518c61fd5feb819d713a5bfe9321c",
+    "meanRGB": [
+      108,
+      100,
+      97
+    ],
+    "size": [
+      1800,
+      1200
+    ]
+  },
+  "pexels34360453": {
+    "label": "Interior biserică 34360453",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/34360453/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "0074898cafd57a069e394909a2ccdc53b6a4c48d8de04aade427750cf1ec7879",
+    "meanRGB": [
+      80,
+      53,
+      33
+    ],
+    "size": [
+      1800,
+      1350
+    ]
+  },
+  "pexels16929058": {
+    "label": "Interior biserică 16929058",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/16929058/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "19acb047685c30969d1e38e8fa2b490d50341edf848cc9ceeac82855cdff411c",
+    "meanRGB": [
+      137,
+      137,
+      137
+    ],
+    "size": [
+      1800,
+      1200
+    ]
+  },
+  "pexels15125475": {
+    "label": "Interior biserică 15125475",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/15125475/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "5a7e45d67b49da6eb438fb8f4d6d98fe1c27ff318007845ec1eae8406e2b651a",
+    "meanRGB": [
+      120,
+      112,
+      110
+    ],
+    "size": [
+      1350,
+      1800
+    ]
+  },
+  "pexels8674225": {
+    "label": "Interior biserică 8674225",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/8674225/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "c304684cc99a9a3d3b5970b2a558dfcc7d92c693642311dde07eba1152f20d59",
+    "meanRGB": [
+      166,
+      113,
+      96
+    ],
+    "size": [
+      1800,
+      1200
+    ]
+  },
+  "pexels8146869": {
+    "label": "Interior biserică 8146869",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/8146869/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "e3f542ee3ae3a1957aff6a42c4dbf6fde6055f8254cd1041e78c89612f55a83e",
+    "meanRGB": [
+      99,
+      80,
+      57
+    ],
+    "size": [
+      1800,
+      1200
+    ]
+  },
+  "pexels14505984": {
+    "label": "Interior biserică 14505984",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/14505984/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "7a9860c533141169d9986503af7bcb80f2937a65e4b1e2a354ce11b153652b80",
+    "meanRGB": [
+      84,
+      65,
+      52
+    ],
+    "size": [
+      1440,
+      1800
+    ]
+  },
+  "pexels8335103": {
+    "label": "Interior biserică 8335103",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/8335103/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "4563f9d107f550b4277100553275d56e50125b4cbba25cb5c25f40e2378e5c00",
+    "meanRGB": [
+      69,
+      39,
+      19
+    ],
+    "size": [
+      1200,
+      1800
+    ]
+  },
+  "pexels34615201": {
+    "label": "Interior biserică 34615201",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/34615201/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "75754584fbbeae5656b031d94999c18a9490a1935adde320e5268ae2ba84521d",
+    "meanRGB": [
+      189,
+      150,
+      113
+    ],
+    "size": [
+      1200,
+      1800
+    ]
+  },
+  "pexels17492042": {
+    "label": "Interior biserică 17492042",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/17492042/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "c5e9a050039775e6d7d9a14506c4b0814996a03dd9ac2b22c5a19bdd0ef5d54c",
+    "meanRGB": [
+      125,
+      83,
+      68
+    ],
+    "size": [
+      1202,
+      1800
+    ]
   }
 }
