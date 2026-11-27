@@ -1096,5 +1096,165 @@
       1200,
       1800
     ]
+  },
+  "pexels34241947": {
+    "label": "Detalii nuntă 34241947",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/34241947/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "715a969a38d15770f0f2acdb1de31ff6aee519744728204a1cad21d9c0b5799e",
+    "meanRGB": [
+      169,
+      154,
+      138
+    ],
+    "size": [
+      1800,
+      1200
+    ]
+  },
+  "pexels9931822": {
+    "label": "Detalii nuntă 9931822",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/9931822/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "55e05a8238127eca321257dd4c8a86c9b12583cc6aab3082e23b8d5c5a5e7e4d",
+    "meanRGB": [
+      165,
+      154,
+      150
+    ],
+    "size": [
+      1200,
+      1800
+    ]
+  },
+  "pexels30655484": {
+    "label": "Detalii nuntă 30655484",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/30655484/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "2606fe4ff7fe571444bee4649dd15f07aa6cc2cfc6c91580e19069b075a3d7c6",
+    "meanRGB": [
+      173,
+      171,
+      165
+    ],
+    "size": [
+      1800,
+      1200
+    ]
+  },
+  "pexels34100236": {
+    "label": "Detalii nuntă 34100236",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/34100236/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "326e6a9903cdd18897f6d0a9ab05581483355f02f984530511d155d2b0a62c1a",
+    "meanRGB": [
+      98,
+      88,
+      67
+    ],
+    "size": [
+      1200,
+      1800
+    ]
+  },
+  "pexels32541829": {
+    "label": "Detalii nuntă 32541829",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/32541829/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "9465d1868e31ccf4aedc61254dc39731bba6600fe5f2edeb0523952fe47c18ab",
+    "meanRGB": [
+      161,
+      157,
+      154
+    ],
+    "size": [
+      1800,
+      1200
+    ]
+  },
+  "pexels4802269": {
+    "label": "Detalii nuntă 4802269",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/4802269/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "a76342d78dc898356e964259bbec9e7261fa87b0e7c1e7828fc7c820cd63f768",
+    "meanRGB": [
+      135,
+      128,
+      126
+    ],
+    "size": [
+      1800,
+      1200
+    ]
+  },
+  "pexels931155": {
+    "label": "Detalii nuntă 931155",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/931155/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "bd1c1712995e0639077e3116eae48601fa393f87029f364aab78a5a55bdece64",
+    "meanRGB": [
+      168,
+      145,
+      135
+    ],
+    "size": [
+      1350,
+      1800
+    ]
+  },
+  "pexels34341297": {
+    "label": "Detalii nuntă 34341297",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/34341297/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "9b8502e8ebecbeaea0ae8821589ba573f6bed3f2dd32adc87a4cd81aacb13239",
+    "meanRGB": [
+      72,
+      72,
+      66
+    ],
+    "size": [
+      1200,
+      1800
+    ]
+  },
+  "pexels9816195": {
+    "label": "Detalii nuntă 9816195",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/9816195/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "20c0ec6b1a88fbb49e26b3ea4cf21254a67f4337c99663941643f9e5d02f4693",
+    "meanRGB": [
+      110,
+      69,
+      48
+    ],
+    "size": [
+      1800,
+      1200
+    ]
+  },
+  "pexels6392886": {
+    "label": "Detalii nuntă 6392886",
+    "category": "Elegant",
+    "source": "https://www.pexels.com/photo/6392886/",
+    "license": "Pexels License https://www.pexels.com/license/",
+    "hash": "34789cd7e98f607392c9b8c23ecce55266c19c39f5dcad57cb624b11d57a0ba8",
+    "meanRGB": [
+      121,
+      78,
+      64
+    ],
+    "size": [
+      1566,
+      1800
+    ]
   }
 }
